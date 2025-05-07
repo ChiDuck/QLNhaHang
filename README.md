@@ -1,2 +1,2 @@
-# QLDatBanNhaHang
-Website for making table reservations online for diners and managing reservations for restaurant owners
+# QLNhaHang
+Website for managing restaurant reservations, orders, members, incomes, ... 
