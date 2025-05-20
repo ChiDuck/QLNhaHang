@@ -12,7 +12,6 @@ namespace QLNhaHang.Models
 
         public int IdStafftype { get; set; }
         public string Name { get; set; } = null!;
-        public string? Phone { get; set; }
 
         public virtual ICollection<Staff> Staff { get; set; }
     }

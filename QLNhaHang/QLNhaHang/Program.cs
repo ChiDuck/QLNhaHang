@@ -1,4 +1,10 @@
+using Microsoft.EntityFrameworkCore;
+using QLNhaHang.Models;
+
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddDbContext<QLNhaHangContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("QLNhaHangContext")));
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
