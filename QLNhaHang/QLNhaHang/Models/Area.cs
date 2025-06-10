@@ -1,15 +1,18 @@
-﻿namespace QLNhaHang.Models
+﻿using System;
+using System.Collections.Generic;
+
+namespace QLNhaHang.Models
 {
     public partial class Area
     {
         public Area()
         {
-            Tables = new HashSet<Table>();
+            Dinetables = new HashSet<Dinetable>();
         }
 
         public int IdArea { get; set; }
         public string Name { get; set; } = null!;
 
-        public virtual ICollection<Table> Tables { get; set; }
+        public virtual ICollection<Dinetable> Dinetables { get; set; }
     }
 }

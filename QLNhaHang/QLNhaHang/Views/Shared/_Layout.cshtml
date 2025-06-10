@@ -38,11 +38,18 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Inventoryitem" asp-action="Index">Quản lý kho</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Customer" asp-action="Index">Quản lý bàn</a>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-dark" href="#" id="dinetableDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Quản lý bàn
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="dinetableDropdown">
+                                <li><a class="dropdown-item" asp-controller="Dinetable" asp-action="Index">Bàn</a></li>
+                                <li><a class="dropdown-item" asp-controller="Tabletype" asp-action="Index">Loại bàn</a></li>
+                                <li><a class="dropdown-item" asp-controller="Area" asp-action="Index">Khu vực</a></li>
+                            </ul>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Customer" asp-action="Index">Quản lý nhân sự</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Staff" asp-action="Index">Quản lý nhân sự</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Customer" asp-action="Index">Quản lý thời gian biểu</a>

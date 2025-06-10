@@ -1,4 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace QLNhaHang.Models
 {
@@ -17,6 +20,7 @@ namespace QLNhaHang.Models
         public virtual DbSet<Cart> Carts { get; set; } = null!;
         public virtual DbSet<Cartdetail> Cartdetails { get; set; } = null!;
         public virtual DbSet<Customer> Customers { get; set; } = null!;
+        public virtual DbSet<Dinetable> Dinetables { get; set; } = null!;
         public virtual DbSet<Dish> Dishes { get; set; } = null!;
         public virtual DbSet<Dishcategory> Dishcategories { get; set; } = null!;
         public virtual DbSet<Dishingredient> Dishingredients { get; set; } = null!;
@@ -24,7 +28,6 @@ namespace QLNhaHang.Models
         public virtual DbSet<Importticketdetail> Importticketdetails { get; set; } = null!;
         public virtual DbSet<Inventoryitem> Inventoryitems { get; set; } = null!;
         public virtual DbSet<Inventoryitemtype> Inventoryitemtypes { get; set; } = null!;
-        public virtual DbSet<Order> Orders { get; set; } = null!;
         public virtual DbSet<Orderstatus> Orderstatuses { get; set; } = null!;
         public virtual DbSet<Payment> Payments { get; set; } = null!;
         public virtual DbSet<Payroll> Payrolls { get; set; } = null!;
@@ -32,9 +35,9 @@ namespace QLNhaHang.Models
         public virtual DbSet<Reservation> Reservations { get; set; } = null!;
         public virtual DbSet<Reservationorder> Reservationorders { get; set; } = null!;
         public virtual DbSet<Reservationstatus> Reservationstatuses { get; set; } = null!;
+        public virtual DbSet<Shiporder> Shiporders { get; set; } = null!;
         public virtual DbSet<Staff> Staff { get; set; } = null!;
         public virtual DbSet<Stafftype> Stafftypes { get; set; } = null!;
-        public virtual DbSet<Table> Tables { get; set; } = null!;
         public virtual DbSet<Tabletype> Tabletypes { get; set; } = null!;
         public virtual DbSet<Weeklyshift> Weeklyshifts { get; set; } = null!;
         public virtual DbSet<Workday> Workdays { get; set; } = null!;
@@ -54,7 +57,7 @@ namespace QLNhaHang.Models
             modelBuilder.Entity<Area>(entity =>
             {
                 entity.HasKey(e => e.IdArea)
-                    .HasName("PK__AREA__6E15A1AA2393F153");
+                    .HasName("PK__AREA__6E15A1AAA44045D0");
 
                 entity.ToTable("AREA");
 
@@ -68,11 +71,11 @@ namespace QLNhaHang.Models
             modelBuilder.Entity<Cart>(entity =>
             {
                 entity.HasKey(e => e.IdCart)
-                    .HasName("PK__CART__7A1680A53B9CACD4");
+                    .HasName("PK__CART__7A1680A5D6F50EB5");
 
                 entity.ToTable("CART");
 
-                entity.HasIndex(e => e.IdCustomer, "UQ__CART__7F6B0B8B30C14C60")
+                entity.HasIndex(e => e.IdCustomer, "UQ__CART__7F6B0B8BA3EB8532")
                     .IsUnique();
 
                 entity.Property(e => e.IdCart).HasColumnName("ID_CART");
@@ -91,7 +94,7 @@ namespace QLNhaHang.Models
             modelBuilder.Entity<Cartdetail>(entity =>
             {
                 entity.HasKey(e => new { e.IdCart, e.IdDish })
-                    .HasName("PK__CARTDETA__0FD258355CE49E12");
+                    .HasName("PK__CARTDETA__0FD2583514A269D6");
 
                 entity.ToTable("CARTDETAIL");
 
@@ -119,7 +122,7 @@ namespace QLNhaHang.Models
             modelBuilder.Entity<Customer>(entity =>
             {
                 entity.HasKey(e => e.IdCustomer)
-                    .HasName("PK__CUSTOMER__7F6B0B8A61DDFDE3");
+                    .HasName("PK__CUSTOMER__7F6B0B8ABBA51862");
 
                 entity.ToTable("CUSTOMER");
 
@@ -127,7 +130,6 @@ namespace QLNhaHang.Models
 
                 entity.Property(e => e.Address)
                     .HasMaxLength(100)
-                    .IsUnicode(false)
                     .HasColumnName("ADDRESS");
 
                 entity.Property(e => e.Birthday)
@@ -163,13 +165,44 @@ namespace QLNhaHang.Models
                 entity.HasOne(d => d.IdPaymentNavigation)
                     .WithMany(p => p.Customers)
                     .HasForeignKey(d => d.IdPayment)
-                    .HasConstraintName("FK__CUSTOMER__ID_PAY__3A81B327");
+                    .HasConstraintName("FK__CUSTOMER__ID_PAY__398D8EEE");
+            });
+
+            modelBuilder.Entity<Dinetable>(entity =>
+            {
+                entity.HasKey(e => e.IdDinetable)
+                    .HasName("PK__DINETABL__9C6E10999AD0345B");
+
+                entity.ToTable("DINETABLE");
+
+                entity.HasIndex(e => e.Name, "UQ__DINETABL__D9C1FA00656EBEE5")
+                    .IsUnique();
+
+                entity.Property(e => e.IdDinetable).HasColumnName("ID_DINETABLE");
+
+                entity.Property(e => e.IdArea).HasColumnName("ID_AREA");
+
+                entity.Property(e => e.IdTabletype).HasColumnName("ID_TABLETYPE");
+
+                entity.Property(e => e.Name)
+                    .HasMaxLength(50)
+                    .HasColumnName("NAME");
+
+                entity.HasOne(d => d.IdAreaNavigation)
+                    .WithMany(p => p.Dinetables)
+                    .HasForeignKey(d => d.IdArea)
+                    .HasConstraintName("FK__DINETABLE__ID_AR__4316F928");
+
+                entity.HasOne(d => d.IdTabletypeNavigation)
+                    .WithMany(p => p.Dinetables)
+                    .HasForeignKey(d => d.IdTabletype)
+                    .HasConstraintName("FK__DINETABLE__ID_TA__4222D4EF");
             });
 
             modelBuilder.Entity<Dish>(entity =>
             {
                 entity.HasKey(e => e.IdDish)
-                    .HasName("PK__DISH__5C4D8906B27439B2");
+                    .HasName("PK__DISH__5C4D89062FBE0C2C");
 
                 entity.ToTable("DISH");
 
@@ -198,14 +231,13 @@ namespace QLNhaHang.Models
                 entity.HasOne(d => d.IdDishcategoryNavigation)
                     .WithMany(p => p.Dishes)
                     .HasForeignKey(d => d.IdDishcategory)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK__DISH__ID_DISHCAT__5070F446");
             });
 
             modelBuilder.Entity<Dishcategory>(entity =>
             {
                 entity.HasKey(e => e.IdDishcategory)
-                    .HasName("PK__DISHCATE__F7727DD8EB185CDA");
+                    .HasName("PK__DISHCATE__F7727DD8EECDC154");
 
                 entity.ToTable("DISHCATEGORY");
 
@@ -219,7 +251,7 @@ namespace QLNhaHang.Models
             modelBuilder.Entity<Dishingredient>(entity =>
             {
                 entity.HasKey(e => new { e.IdInventoryitem, e.IdDish })
-                    .HasName("PK__DISHINGR__CF955B20E094EF64");
+                    .HasName("PK__DISHINGR__CF955B20D9A11055");
 
                 entity.ToTable("DISHINGREDIENT");
 
@@ -245,7 +277,7 @@ namespace QLNhaHang.Models
             modelBuilder.Entity<Importticket>(entity =>
             {
                 entity.HasKey(e => e.IdImportticket)
-                    .HasName("PK__IMPORTTI__6DDBAD9749F34B27");
+                    .HasName("PK__IMPORTTI__6DDBAD974F30F2B4");
 
                 entity.ToTable("IMPORTTICKET");
 
@@ -264,14 +296,13 @@ namespace QLNhaHang.Models
                 entity.HasOne(d => d.IdStaffNavigation)
                     .WithMany(p => p.Importtickets)
                     .HasForeignKey(d => d.IdStaff)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK__IMPORTTIC__ID_ST__02FC7413");
             });
 
             modelBuilder.Entity<Importticketdetail>(entity =>
             {
                 entity.HasKey(e => new { e.IdInventoryitem, e.IdImportticket })
-                    .HasName("PK__IMPORTTI__DC8C39695BC518C9");
+                    .HasName("PK__IMPORTTI__DC8C3969BF3AD3D4");
 
                 entity.ToTable("IMPORTTICKETDETAIL");
 
@@ -299,7 +330,7 @@ namespace QLNhaHang.Models
             modelBuilder.Entity<Inventoryitem>(entity =>
             {
                 entity.HasKey(e => e.IdInventoryitem)
-                    .HasName("PK__INVENTOR__BA5183B030F4B2EB");
+                    .HasName("PK__INVENTOR__BA5183B0DD3746FE");
 
                 entity.ToTable("INVENTORYITEM");
 
@@ -320,14 +351,13 @@ namespace QLNhaHang.Models
                 entity.HasOne(d => d.IdInventoryitemtypeNavigation)
                     .WithMany(p => p.Inventoryitems)
                     .HasForeignKey(d => d.IdInventoryitemtype)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK__INVENTORY__ID_IN__5535A963");
             });
 
             modelBuilder.Entity<Inventoryitemtype>(entity =>
             {
                 entity.HasKey(e => e.IdInventoryitemtype)
-                    .HasName("PK__INVENTOR__06C9E7EB43055CE0");
+                    .HasName("PK__INVENTOR__06C9E7EB85355BA1");
 
                 entity.ToTable("INVENTORYITEMTYPE");
 
@@ -338,78 +368,10 @@ namespace QLNhaHang.Models
                     .HasColumnName("NAME");
             });
 
-            modelBuilder.Entity<Order>(entity =>
-            {
-                entity.HasKey(e => e.IdOrder)
-                    .HasName("PK__ORDER__D23A856543E3E223");
-
-                entity.ToTable("ORDER");
-
-                entity.Property(e => e.IdOrder).HasColumnName("ID_ORDER");
-
-                entity.Property(e => e.Customername)
-                    .HasMaxLength(30)
-                    .HasColumnName("CUSTOMERNAME");
-
-                entity.Property(e => e.Email)
-                    .HasMaxLength(35)
-                    .IsUnicode(false)
-                    .HasColumnName("EMAIL");
-
-                entity.Property(e => e.IdCart).HasColumnName("ID_CART");
-
-                entity.Property(e => e.IdOrderstatus).HasColumnName("ID_ORDERSTATUS");
-
-                entity.Property(e => e.IdPayment).HasColumnName("ID_PAYMENT");
-
-                entity.Property(e => e.Isshipping).HasColumnName("ISSHIPPING");
-
-                entity.Property(e => e.Note)
-                    .HasMaxLength(100)
-                    .HasColumnName("NOTE");
-
-                entity.Property(e => e.Orderdate)
-                    .HasColumnType("datetime")
-                    .HasColumnName("ORDERDATE");
-
-                entity.Property(e => e.Orderprice).HasColumnName("ORDERPRICE");
-
-                entity.Property(e => e.Phone)
-                    .HasMaxLength(13)
-                    .IsUnicode(false)
-                    .HasColumnName("PHONE")
-                    .IsFixedLength();
-
-                entity.Property(e => e.Shipaddress)
-                    .HasMaxLength(100)
-                    .IsUnicode(false)
-                    .HasColumnName("SHIPADDRESS");
-
-                entity.Property(e => e.Shipfee).HasColumnName("SHIPFEE");
-
-                entity.HasOne(d => d.IdCartNavigation)
-                    .WithMany(p => p.Orders)
-                    .HasForeignKey(d => d.IdCart)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__ORDER__ID_CART__6A30C649");
-
-                entity.HasOne(d => d.IdOrderstatusNavigation)
-                    .WithMany(p => p.Orders)
-                    .HasForeignKey(d => d.IdOrderstatus)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__ORDER__ID_ORDERS__693CA210");
-
-                entity.HasOne(d => d.IdPaymentNavigation)
-                    .WithMany(p => p.Orders)
-                    .HasForeignKey(d => d.IdPayment)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__ORDER__ID_PAYMEN__6B24EA82");
-            });
-
             modelBuilder.Entity<Orderstatus>(entity =>
             {
                 entity.HasKey(e => e.IdOrderstatus)
-                    .HasName("PK__ORDERSTA__9CAE67D9548B6C7C");
+                    .HasName("PK__ORDERSTA__9CAE67D97C1DD4B1");
 
                 entity.ToTable("ORDERSTATUS");
 
@@ -423,7 +385,7 @@ namespace QLNhaHang.Models
             modelBuilder.Entity<Payment>(entity =>
             {
                 entity.HasKey(e => e.IdPayment)
-                    .HasName("PK__PAYMENT__1EFCED2BB03FD342");
+                    .HasName("PK__PAYMENT__1EFCED2BF5CA5E34");
 
                 entity.ToTable("PAYMENT");
 
@@ -445,7 +407,7 @@ namespace QLNhaHang.Models
             modelBuilder.Entity<Payroll>(entity =>
             {
                 entity.HasKey(e => e.IdPayroll)
-                    .HasName("PK__PAYROLL__73C8C76912377FE6");
+                    .HasName("PK__PAYROLL__73C8C76957E4B5A8");
 
                 entity.ToTable("PAYROLL");
 
@@ -459,7 +421,7 @@ namespace QLNhaHang.Models
             modelBuilder.Entity<Payrolldetail>(entity =>
             {
                 entity.HasKey(e => new { e.IdStaff, e.IdPayroll })
-                    .HasName("PK__PAYROLLD__60652F07D3618027");
+                    .HasName("PK__PAYROLLD__60652F070350DEC5");
 
                 entity.ToTable("PAYROLLDETAIL");
 
@@ -501,7 +463,7 @@ namespace QLNhaHang.Models
             modelBuilder.Entity<Reservation>(entity =>
             {
                 entity.HasKey(e => e.IdReservation)
-                    .HasName("PK__RESERVAT__3CB7398BF8FCD49F");
+                    .HasName("PK__RESERVAT__3CB7398BBFFED37B");
 
                 entity.ToTable("RESERVATION");
 
@@ -514,9 +476,13 @@ namespace QLNhaHang.Models
 
                 entity.Property(e => e.IdCustomer).HasColumnName("ID_CUSTOMER");
 
+                entity.Property(e => e.IdDinetable).HasColumnName("ID_DINETABLE");
+
                 entity.Property(e => e.IdReservationstatus).HasColumnName("ID_RESERVATIONSTATUS");
 
-                entity.Property(e => e.IdTable).HasColumnName("ID_TABLE");
+                entity.Property(e => e.Note)
+                    .HasMaxLength(150)
+                    .HasColumnName("NOTE");
 
                 entity.Property(e => e.Partysize).HasColumnName("PARTYSIZE");
 
@@ -537,23 +503,21 @@ namespace QLNhaHang.Models
                     .HasForeignKey(d => d.IdCustomer)
                     .HasConstraintName("FK__RESERVATI__ID_CU__48CFD27E");
 
+                entity.HasOne(d => d.IdDinetableNavigation)
+                    .WithMany(p => p.Reservations)
+                    .HasForeignKey(d => d.IdDinetable)
+                    .HasConstraintName("FK__RESERVATI__ID_DI__49C3F6B7");
+
                 entity.HasOne(d => d.IdReservationstatusNavigation)
                     .WithMany(p => p.Reservations)
                     .HasForeignKey(d => d.IdReservationstatus)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK__RESERVATI__ID_RE__47DBAE45");
-
-                entity.HasOne(d => d.IdTableNavigation)
-                    .WithMany(p => p.Reservations)
-                    .HasForeignKey(d => d.IdTable)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__RESERVATI__ID_TA__49C3F6B7");
             });
 
             modelBuilder.Entity<Reservationorder>(entity =>
             {
                 entity.HasKey(e => new { e.IdReservation, e.IdDish })
-                    .HasName("PK__RESERVAT__4973E11B02DBDB61");
+                    .HasName("PK__RESERVAT__4973E11B560B1614");
 
                 entity.ToTable("RESERVATIONORDER");
 
@@ -581,7 +545,7 @@ namespace QLNhaHang.Models
             modelBuilder.Entity<Reservationstatus>(entity =>
             {
                 entity.HasKey(e => e.IdReservationstatus)
-                    .HasName("PK__RESERVAT__4B5D56B12E25EA23");
+                    .HasName("PK__RESERVAT__4B5D56B1BFD0DD6A");
 
                 entity.ToTable("RESERVATIONSTATUS");
 
@@ -592,10 +556,75 @@ namespace QLNhaHang.Models
                     .HasColumnName("NAME");
             });
 
+            modelBuilder.Entity<Shiporder>(entity =>
+            {
+                entity.HasKey(e => e.IdShiporder)
+                    .HasName("PK__SHIPORDE__89B37B56C4757AC4");
+
+                entity.ToTable("SHIPORDER");
+
+                entity.Property(e => e.IdShiporder).HasColumnName("ID_SHIPORDER");
+
+                entity.Property(e => e.Customername)
+                    .HasMaxLength(30)
+                    .HasColumnName("CUSTOMERNAME");
+
+                entity.Property(e => e.Email)
+                    .HasMaxLength(35)
+                    .IsUnicode(false)
+                    .HasColumnName("EMAIL");
+
+                entity.Property(e => e.IdCart).HasColumnName("ID_CART");
+
+                entity.Property(e => e.IdOrderstatus).HasColumnName("ID_ORDERSTATUS");
+
+                entity.Property(e => e.IdPayment).HasColumnName("ID_PAYMENT");
+
+                entity.Property(e => e.Isshipping).HasColumnName("ISSHIPPING");
+
+                entity.Property(e => e.Note)
+                    .HasMaxLength(150)
+                    .HasColumnName("NOTE");
+
+                entity.Property(e => e.Orderdate)
+                    .HasColumnType("datetime")
+                    .HasColumnName("ORDERDATE");
+
+                entity.Property(e => e.Orderprice).HasColumnName("ORDERPRICE");
+
+                entity.Property(e => e.Phone)
+                    .HasMaxLength(13)
+                    .IsUnicode(false)
+                    .HasColumnName("PHONE")
+                    .IsFixedLength();
+
+                entity.Property(e => e.Shipaddress)
+                    .HasMaxLength(100)
+                    .IsUnicode(false)
+                    .HasColumnName("SHIPADDRESS");
+
+                entity.Property(e => e.Shipfee).HasColumnName("SHIPFEE");
+
+                entity.HasOne(d => d.IdCartNavigation)
+                    .WithMany(p => p.Shiporders)
+                    .HasForeignKey(d => d.IdCart)
+                    .HasConstraintName("FK__SHIPORDER__ID_CA__6A30C649");
+
+                entity.HasOne(d => d.IdOrderstatusNavigation)
+                    .WithMany(p => p.Shiporders)
+                    .HasForeignKey(d => d.IdOrderstatus)
+                    .HasConstraintName("FK__SHIPORDER__ID_OR__693CA210");
+
+                entity.HasOne(d => d.IdPaymentNavigation)
+                    .WithMany(p => p.Shiporders)
+                    .HasForeignKey(d => d.IdPayment)
+                    .HasConstraintName("FK__SHIPORDER__ID_PA__6B24EA82");
+            });
+
             modelBuilder.Entity<Staff>(entity =>
             {
                 entity.HasKey(e => e.IdStaff)
-                    .HasName("PK__STAFF__E759A3717BFFA739");
+                    .HasName("PK__STAFF__E759A37199D97721");
 
                 entity.ToTable("STAFF");
 
@@ -655,14 +684,13 @@ namespace QLNhaHang.Models
                 entity.HasOne(d => d.IdStafftypeNavigation)
                     .WithMany(p => p.Staff)
                     .HasForeignKey(d => d.IdStafftype)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK__STAFF__ID_STAFFT__70DDC3D8");
             });
 
             modelBuilder.Entity<Stafftype>(entity =>
             {
                 entity.HasKey(e => e.IdStafftype)
-                    .HasName("PK__STAFFTYP__702D805B9DDE5FAA");
+                    .HasName("PK__STAFFTYP__702D805B8A579505");
 
                 entity.ToTable("STAFFTYPE");
 
@@ -673,43 +701,10 @@ namespace QLNhaHang.Models
                     .HasColumnName("NAME");
             });
 
-            modelBuilder.Entity<Table>(entity =>
-            {
-                entity.HasKey(e => e.IdTable)
-                    .HasName("PK__TABLE__109917883DD63124");
-
-                entity.ToTable("TABLE");
-
-                entity.HasIndex(e => e.Tablenumber, "UQ__TABLE__60BBD5EC1F873743")
-                    .IsUnique();
-
-                entity.Property(e => e.IdTable).HasColumnName("ID_TABLE");
-
-                entity.Property(e => e.IdArea).HasColumnName("ID_AREA");
-
-                entity.Property(e => e.IdTabletype).HasColumnName("ID_TABLETYPE");
-
-                entity.Property(e => e.Seats).HasColumnName("SEATS");
-
-                entity.Property(e => e.Tablenumber).HasColumnName("TABLENUMBER");
-
-                entity.HasOne(d => d.IdAreaNavigation)
-                    .WithMany(p => p.Tables)
-                    .HasForeignKey(d => d.IdArea)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__TABLE__ID_AREA__4316F928");
-
-                entity.HasOne(d => d.IdTabletypeNavigation)
-                    .WithMany(p => p.Tables)
-                    .HasForeignKey(d => d.IdTabletype)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__TABLE__ID_TABLET__4222D4EF");
-            });
-
             modelBuilder.Entity<Tabletype>(entity =>
             {
                 entity.HasKey(e => e.IdTabletype)
-                    .HasName("PK__TABLETYP__A1F1FC57C151EFB6");
+                    .HasName("PK__TABLETYP__A1F1FC57A438A90D");
 
                 entity.ToTable("TABLETYPE");
 
@@ -718,12 +713,14 @@ namespace QLNhaHang.Models
                 entity.Property(e => e.Name)
                     .HasMaxLength(35)
                     .HasColumnName("NAME");
+
+                entity.Property(e => e.Seats).HasColumnName("SEATS");
             });
 
             modelBuilder.Entity<Weeklyshift>(entity =>
             {
                 entity.HasKey(e => new { e.IdWorkshift, e.IdWorkday, e.IdStaff })
-                    .HasName("PK__WEEKLYSH__97A56D2602E2B0FD");
+                    .HasName("PK__WEEKLYSH__97A56D26FDF5CD6C");
 
                 entity.ToTable("WEEKLYSHIFT");
 
@@ -761,7 +758,7 @@ namespace QLNhaHang.Models
             modelBuilder.Entity<Workday>(entity =>
             {
                 entity.HasKey(e => e.IdWorkday)
-                    .HasName("PK__WORKDAY__D06DB5AD62E4EEC5");
+                    .HasName("PK__WORKDAY__D06DB5AD998EADF2");
 
                 entity.ToTable("WORKDAY");
 
@@ -775,7 +772,7 @@ namespace QLNhaHang.Models
             modelBuilder.Entity<Workshift>(entity =>
             {
                 entity.HasKey(e => e.IdWorkshift)
-                    .HasName("PK__WORKSHIF__2A44EFDF91F2BFD9");
+                    .HasName("PK__WORKSHIF__2A44EFDFB8B04A54");
 
                 entity.ToTable("WORKSHIFT");
 

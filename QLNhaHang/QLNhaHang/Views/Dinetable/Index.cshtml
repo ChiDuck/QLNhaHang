@@ -1,0 +1,57 @@
+﻿@{
+    ViewData["Title"] = "Bàn";
+}
+
+<h1 class="mb-4">Danh sách bàn ăn</h1>
+<button type="button" class="btn btn-primary" onclick="showAddForm()">Thêm bàn</button>
+
+<table class="table table-bordered">
+    <thead class="table-dark">
+        <tr>
+            <th>ID</th>
+            <th>Tên bàn</th>
+            <th>Số ghế</th>
+            <th>Khu vực</th>
+            <th>Loại bàn</th>
+            <th>Thao tác</th>
+        </tr>
+    </thead>
+    <tbody id="dinetableTableBody">
+        <!-- Dữ liệu sẽ được render ở đây -->
+    </tbody>
+</table>
+
+<!-- Modal Thêm/Sửa bàn -->
+<div class="modal fade" id="dinetableModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="dinetableForm">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="dinetableModalTitle">Thêm bàn</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="dinetableId" />
+
+                    <div class="mb-2">
+                        <label>Tên bàn</label>
+                        <input type="text" class="form-control" id="dinetableName"/>
+                    </div>
+                    <div class="mb-2">
+                        <label>Khu vực</label>
+                        <select class="form-select" id="dinetableArea"></select>
+                    </div>
+                    <div class="mb-2">
+                        <label>Loại bàn</label>
+                        <select class="form-select" id="dinetableType"></select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Xác nhận</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script src="~/js/dinetable.js"></script>

@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace QLNhaHang.Models
 {
-    public partial class Order
+    public partial class Shiporder
     {
-        public int IdOrder { get; set; }
+        public int IdShiporder { get; set; }
         public DateTime Orderdate { get; set; }
         public string Customername { get; set; } = null!;
         public string? Phone { get; set; }

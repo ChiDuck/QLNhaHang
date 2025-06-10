@@ -3,14 +3,14 @@ using System.Collections.Generic;
 
 namespace QLNhaHang.Models
 {
-    public partial class Table
+    public partial class Dinetable
     {
-        public Table()
+        public Dinetable()
         {
             Reservations = new HashSet<Reservation>();
         }
 
-        public int IdTable { get; set; }
+        public int IdDinetable { get; set; }
         public string Name { get; set; } = null!;
         public int? IdTabletype { get; set; }
         public int? IdArea { get; set; }

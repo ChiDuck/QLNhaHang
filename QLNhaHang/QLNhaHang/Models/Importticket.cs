@@ -1,4 +1,7 @@
-﻿namespace QLNhaHang.Models
+﻿using System;
+using System.Collections.Generic;
+
+namespace QLNhaHang.Models
 {
     public partial class Importticket
     {
@@ -11,9 +14,9 @@
         public DateTime Createdate { get; set; }
         public double Vat { get; set; }
         public double Totalfee { get; set; }
-        public int IdStaff { get; set; }
+        public int? IdStaff { get; set; }
 
-        public virtual Staff IdStaffNavigation { get; set; } = null!;
+        public virtual Staff? IdStaffNavigation { get; set; }
         public virtual ICollection<Importticketdetail> Importticketdetails { get; set; }
     }
 }

@@ -1,18 +1,71 @@
-html {
-  font-size: 14px;
+﻿html {
+    font-size: 14px;
 }
 
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+    html {
+        font-size: 16px;
+    }
 }
 
 html {
-  position: relative;
-  min-height: 100%;
+    position: relative;
+    min-height: 100%;
 }
 
 body {
-  margin-bottom: 60px;
+    margin-bottom: 60px;
 }
+
+#staffTable {
+    width: 100%;
+    margin-top: 20px;
+}
+
+    #staffTable th {
+        background-color: #343a40;
+        color: white;
+        text-align: center;
+    }
+
+    #staffTable td {
+        vertical-align: middle;
+    }
+
+/* Modal styles */
+#staffModal .modal-body {
+    padding: 20px;
+}
+
+#staffModal img {
+    max-width: 200px;
+    max-height: 200px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+}
+
+#staffModal p {
+    margin-bottom: 10px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid #eee;
+}
+
+#staffModal strong {
+    min-width: 120px;
+    display: inline-block;
+    color: #555;
+}
+/* Hiệu ứng hover cho bảng nhân viên */
+
+
+    #staffTable tbody tr:hover {
+        background-color: #f8f9fa;
+        /*transform: scale(1.005);*/
+        /*box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);*/
+    }
+
+        /* Làm đậm text khi hover */
+        #staffTable tbody tr:hover td {
+            /*font-weight: 500;*/
+            color: #212529;
+        }

@@ -1,4 +1,7 @@
-﻿namespace QLNhaHang.Models
+﻿using System;
+using System.Collections.Generic;
+
+namespace QLNhaHang.Models
 {
     public partial class Staff
     {
@@ -22,9 +25,9 @@
         public DateTime? Startdate { get; set; }
         public double? Hourlysalary { get; set; }
         public bool Isactive { get; set; }
-        public int IdStafftype { get; set; }
+        public int? IdStafftype { get; set; }
 
-        public virtual Stafftype IdStafftypeNavigation { get; set; } = null!;
+        public virtual Stafftype? IdStafftypeNavigation { get; set; }
         public virtual ICollection<Importticket> Importtickets { get; set; }
         public virtual ICollection<Payrolldetail> Payrolldetails { get; set; }
         public virtual ICollection<Weeklyshift> Weeklyshifts { get; set; }

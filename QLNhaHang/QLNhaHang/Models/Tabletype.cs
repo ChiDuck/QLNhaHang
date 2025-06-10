@@ -1,15 +1,19 @@
-﻿namespace QLNhaHang.Models
+﻿using System;
+using System.Collections.Generic;
+
+namespace QLNhaHang.Models
 {
     public partial class Tabletype
     {
         public Tabletype()
         {
-            Tables = new HashSet<Table>();
+            Dinetables = new HashSet<Dinetable>();
         }
 
         public int IdTabletype { get; set; }
         public string Name { get; set; } = null!;
+        public int Seats { get; set; }
 
-        public virtual ICollection<Table> Tables { get; set; }
+        public virtual ICollection<Dinetable> Dinetables { get; set; }
     }
 }

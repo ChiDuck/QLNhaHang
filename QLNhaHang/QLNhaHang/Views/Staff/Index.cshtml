@@ -1,0 +1,82 @@
+﻿@{
+    ViewData["Title"] = "Danh Sách Nhân Viên";
+}
+
+<div class="container mt-4">
+    <h2>Danh Sách Nhân Viên</h2>
+
+    <div class="table-responsive">
+        <table id="staffTable" class="table table-striped table-bordered">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Mã NV</th>
+                    <th>Họ Tên</th>
+                    <th>SĐT</th>
+                    <th>Email</th>
+                    <th>Ảnh</th>
+                    <th>Vị Trí</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Dữ liệu sẽ được thêm bằng JavaScript -->
+            </tbody>
+        </table>
+    </div>
+</div>
+<!-- Modal Chi Tiết Nhân Viên -->
+<div class="modal fade" id="staffModal" tabindex="-1" aria-labelledby="staffModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staffModalLabel">Thông Tin Chi Tiết Nhân Viên</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <div id="staffPhoto" class="text-center mb-3"></div>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p><strong>Mã nhân viên:</strong> <span id="staffId"></span></p>
+                                    <p><strong>Họ và tên:</strong> <span id="staffName"></span></p>
+                                    <p><strong>Số CCCD:</strong> <span id="staffCitizenId"></span></p>
+                                    <p><strong>Giới tính:</strong> <span id="staffGender"></span></p>
+                                    <p><strong>Ngày sinh:</strong> <span id="staffBirthday"></span></p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p><strong>Số điện thoại:</strong> <span id="staffPhone"></span></p>
+                                    <p><strong>Email:</strong> <span id="staffEmail"></span></p>
+                                    <p><strong>Ngày vào làm:</strong> <span id="staffStartDate"></span></p>
+                                    <p><strong>Lương theo giờ:</strong> <span id="staffHourlySalary"></span></p>
+                                    <p><strong>Trạng thái:</strong> <span id="staffStatus"></span></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <p><strong>Địa chỉ:</strong> <span id="staffAddress"></span></p>
+                            <p><strong>Vị trí:</strong> <span id="staffType"></span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script src="~/js/staff.js"></script>
+    <style>
+        .staff-photo {
+            max-width: 80px;
+            max-height: 80px;
+            border-radius: 50%;
+        }
+    </style>
+}

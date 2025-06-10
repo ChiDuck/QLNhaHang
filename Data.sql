@@ -10,7 +10,7 @@ IF exists (SELECT * FROM DISHCATEGORY)		DBCC CHECKIDENT (DISHCATEGORY,		RESEED, 
 IF exists (SELECT * FROM IMPORTTICKET)		DBCC CHECKIDENT (IMPORTTICKET,		RESEED, 0)
 IF exists (SELECT * FROM INVENTORYITEM)		DBCC CHECKIDENT (INVENTORYITEM,		RESEED, 0)
 IF exists (SELECT * FROM INVENTORYITEMTYPE)	DBCC CHECKIDENT (INVENTORYITEMTYPE,	RESEED, 0)
-IF exists (SELECT * FROM [ORDER])			DBCC CHECKIDENT ([ORDER],			RESEED, 0)
+IF exists (SELECT * FROM SHIPORDER)			DBCC CHECKIDENT (SHIPORDER,			RESEED, 0)
 IF exists (SELECT * FROM ORDERSTATUS)		DBCC CHECKIDENT (ORDERSTATUS,		RESEED, 0)
 IF exists (SELECT * FROM PAYMENT)			DBCC CHECKIDENT (PAYMENT,			RESEED, 0)
 IF exists (SELECT * FROM PAYROLL)			DBCC CHECKIDENT (PAYROLL,			RESEED, 0)
@@ -18,13 +18,12 @@ IF exists (SELECT * FROM RESERVATION)		DBCC CHECKIDENT (RESERVATION,		RESEED, 0)
 IF exists (SELECT * FROM RESERVATIONSTATUS) DBCC CHECKIDENT (RESERVATIONSTATUS, RESEED, 0)
 IF exists (SELECT * FROM STAFF)				DBCC CHECKIDENT (STAFF,				RESEED, 0)
 IF exists (SELECT * FROM STAFFTYPE)			DBCC CHECKIDENT (STAFFTYPE,			RESEED, 0) 
-IF exists (SELECT * FROM [TABLE])			DBCC CHECKIDENT ([TABLE],			RESEED, 0) 
+IF exists (SELECT * FROM DINETABLE)			DBCC CHECKIDENT (DINETABLE,			RESEED, 0) 
 IF exists (SELECT * FROM TABLETYPE)			DBCC CHECKIDENT (TABLETYPE,			RESEED, 0) 
 IF exists (SELECT * FROM WORKDAY)			DBCC CHECKIDENT (WORKDAY,			RESEED, 0) 
 IF exists (SELECT * FROM WORKSHIFT)			DBCC CHECKIDENT (WORKSHIFT,			RESEED, 0) 
 
 -- DELETE DATA FROM TABLES
-DELETE FROM AREA				
 DELETE FROM RESERVATIONORDER				
 DELETE FROM CARTDETAIL				
 DELETE FROM DISHINGREDIENT				
@@ -38,7 +37,7 @@ DELETE FROM DISHCATEGORY
 DELETE FROM IMPORTTICKET				
 DELETE FROM INVENTORYITEM		
 DELETE FROM INVENTORYITEMTYPE		
-DELETE FROM [ORDER]	
+DELETE FROM SHIPORDER	
 DELETE FROM ORDERSTATUS		
 DELETE FROM PAYMENT		
 DELETE FROM PAYROLL
@@ -46,8 +45,9 @@ DELETE FROM RESERVATION
 DELETE FROM RESERVATIONSTATUS 
 DELETE FROM STAFF			
 DELETE FROM STAFFTYPE			
-DELETE FROM [TABLE]		
+DELETE FROM DINETABLE		
 DELETE FROM TABLETYPE	
+DELETE FROM AREA				
 DELETE FROM WORKDAY		
 DELETE FROM WORKSHIFT		
 
@@ -157,22 +157,81 @@ VALUES
 -- Khoai tây chiên (12)
 (12, 12, 150)	-- Khoai tây
 
-INSERT INTO TABLETYPE VALUES 
-('Bàn thường'),
-('Bàn VIP'),
-('Bàn VIP tròn'),
-('Bàn ngoài trời')
+INSERT INTO TABLETYPE (NAME, SEATS) VALUES 
+(N'Bàn vuông', 4),
+(N'Bàn vuông lớn', 8),
+(N'Bàn dài', 14),
+(N'Bàn tròn', 6),
+(N'Bàn tròn lớn', 12),
+(N'Bàn vuông ghế sofa', 4)
 
 INSERT INTO AREA VALUES 
-('Tầng trệt'),
-('Lầu 1'),
-('Ngoài trời lầu 1')
-('Phòng VIP 1'),
-('Phòng VIP 2'),
+(N'Tầng trệt'),
+(N'Lầu 1'),
+(N'Ngoài trời lầu 1'),
+(N'Phòng VIP 1'),
+(N'Phòng VIP 2')
 
-INSERT INTO [TABLE] (TABLENUMBER, SEATS, ID_TABLETYPE, ID_AREA) VALUES 
-(1, 4, 1, 1),
-(2, 2, 1, 1),
-(3, 6, 2, 2),  -- Bàn VIP ở Lầu 1
-(4, 4, 3, 3),  -- Bàn ngoài trời ở Lầu 1
-(5, 8, 2, 2);  -- Bàn VIP lớn ở Lầu 1
+INSERT INTO DINETABLE (NAME, ID_TABLETYPE, ID_AREA) VALUES 
+(N'Bàn trệt 1', 1, 1),
+(N'Bàn trệt 2', 1, 1),
+(N'Bàn trệt 3', 1, 1),
+(N'Bàn trệt 4', 1, 1),
+(N'Bàn trệt 5', 1, 1),
+(N'Bàn trệt 6', 2, 1),
+(N'Bàn trệt 7', 2, 1),
+(N'Bàn trệt 8', 3, 1),
+(N'Bàn lầu 1_1', 1, 2),
+(N'Bàn lầu 1_2', 1, 2),
+(N'Bàn lầu 1_3', 1, 2),
+(N'Bàn lầu 1_4', 4, 2),
+(N'Bàn lầu 1_5', 4, 2),
+(N'Bàn lầu 1_6', 5, 2),
+(N'Bàn lầu 1_7', 6, 2),
+(N'Bàn lầu 1_8', 6, 2),
+(N'Bàn trời lầu 1_1', 2, 3),
+(N'Bàn trời lầu 1_2', 2, 3),
+(N'Bàn phòng VIP 1', 3, 4),
+(N'Bàn phòng VIP 2', 5, 5)
+
+INSERT INTO STAFFTYPE VALUES 
+(N'Quản lý'),
+(N'Nhân viên bếp'),
+(N'Bếp trưởng'),
+(N'Kế toán'),
+(N'Nhân viên phục vụ'),
+(N'Nhân viên an ninh'),
+(N'Nhân viên trực kho'),
+(N'Lễ tân'),
+(N'Nhân viên giao hàng')
+
+-- Chèn dữ liệu nhân viên
+INSERT INTO STAFF (NAME, PASSWORD_HASH, CITIZENID, PHONE, EMAIL, GENDER, BIRTHDAY, ADDRESS, STARTDATE, HOURLYSALARY, ISACTIVE, ID_STAFFTYPE) VALUES
+-- Quản lý (1 người)
+(N'Lê Thị Thanh Hương', 'e10adc3949ba59abbe56e057f20f883e', '036198000123', '0912345678', 'lethihuong.ql@email.com', 0, '1985-11-15', N'12 Nguyễn Huệ, Q.1, TP.HCM', '2018-06-10', 50000, 1, 1),
+-- Nhân viên phục vụ (10 người)
+(N'Nguyễn Văn Minh',	'e10adc3949ba59abbe56e057f20f883e', '036198001234', '0912345679', 'nguyenminh.nv@email.com', 1, '1995-03-22', N'45 Lê Lợi, Q.1, TP.HCM', '2021-01-15', 30000, 1, 5),
+(N'Trần Thị Ngọc Ánh',	'e10adc3949ba59abbe56e057f20f883e', '036198002345', '0912345680', 'trananh.nv@email.com', 0,	'1996-07-18', N'78 Trần Hưng Đạo, Q.5, TP.HCM', '2021-02-20', 30000, 1, 5),
+(N'Phạm Hoàng Long',	'e10adc3949ba59abbe56e057f20f883e', '036198003456', '0912345681', 'phamlong.nv@email.com', 1,	'1997-05-30', N'23 Nguyễn Trãi, Q.5, TP.HCM', '2021-03-10', 30000, 1, 5),
+(N'Vũ Thị Mai Linh',	'e10adc3949ba59abbe56e057f20f883e', '036198004567', '0912345682', 'vulinh.nv@email.com', 0,		'1994-09-12', N'56 Cách Mạng Tháng 8, Q.3, TP.HCM', '2020-11-05', 32000, 1, 5),
+(N'Đặng Văn Tú',		'e10adc3949ba59abbe56e057f20f883e', '036198005678', '0912345683', 'dangtu.nv@email.com', 1,		'1993-12-05', N'89 Lý Thường Kiệt, Q.10, TP.HCM', '2020-09-15', 32000, 1, 5),
+(N'Bùi Thị Thu Hà',		'e10adc3949ba59abbe56e057f20f883e', '036198006789', '0912345684', 'buiha.nv@email.com', 0,		'1998-02-28', N'34 Điện Biên Phủ, Q.Bình Thạnh, TP.HCM', '2022-01-10', 28000, 1, 5),
+(N'Hoàng Văn Đức',		'e10adc3949ba59abbe56e057f20f883e', '036198007890', '0912345685', 'hoangduc.nv@email.com', 1,	'1992-08-15', N'67 Nguyễn Thị Minh Khai, Q.3, TP.HCM', '2019-07-22', 35000, 1, 5),
+(N'Lý Thị Kim Ngân',	'e10adc3949ba59abbe56e057f20f883e', '036198008901', '0912345686', 'lyngan.nv@email.com', 0,		'1999-04-03', N'12 Lê Duẩn, Q.1, TP.HCM', '2022-03-05', 28000, 1, 5),
+(N'Mai Văn Hải',		'e10adc3949ba59abbe56e057f20f883e', '036198009012', '0912345687', 'maihai.nv@email.com', 1,		'1991-10-20', N'45 Võ Văn Tần, Q.3, TP.HCM', '2019-05-18', 35000, 1, 5),
+(N'Đỗ Thị Phương Thảo', 'e10adc3949ba59abbe56e057f20f883e', '036198010123', '0912345688', 'dothao.nv@email.com', 0,		'1996-01-25', N'78 Nguyễn Đình Chiểu, Q.3, TP.HCM', '2021-04-12', 30000, 1, 5),
+-- Bếp trưởng (1 người)
+(N'Trần Văn Đại',		'e10adc3949ba59abbe56e057f20f883e', '036198011234', '0912345689', 'tran.dai@email.com', 1,		'1982-06-08', N'23 Trương Định, Q.3, TP.HCM', '2017-08-15', 80000, 1, 3),
+-- Nhân viên bếp (2 người)
+(N'Nguyễn Thị Hồng Nhung', 'e10adc3949ba59abbe56e057f20f883e', '036198012345', '0912345690', 'nguyennhung.bep@email.com', 0, '1990-07-19', N'56 Nguyễn Văn Trỗi, Q.Phú Nhuận, TP.HCM', '2019-09-10', 45000, 1, 2),
+(N'Phan Văn Thắng',		'e10adc3949ba59abbe56e057f20f883e', '036198013456', '0912345691', 'phan.thang@email.com', 1,	'1988-11-30', N'89 Hoàng Văn Thụ, Q.Tân Bình, TP.HCM', '2018-11-05', 48000, 1, 2),
+-- Kế toán (1 người)
+(N'Lê Thị Bích Ngọc',	'e10adc3949ba59abbe56e057f20f883e', '036198014567', '0912345692', 'le.ngoc@email.com', 0,		'1987-03-22', N'34 Lê Quý Đôn, Q.3, TP.HCM', '2017-05-20', 60000, 1, 4),
+-- Nhân viên an ninh (2 người)
+(N'Võ Văn Sơn',			'e10adc3949ba59abbe56e057f20f883e', '036198015678', '0912345693', 'vo.son@email.com', 1,		'1983-09-14', N'12 Đinh Tiên Hoàng, Q.Bình Thạnh, TP.HCM', '2016-12-01', 35000, 1, 6),
+(N'Đinh Thị Hồng Nga',	'e10adc3949ba59abbe56e057f20f883e', '036198016789', '0912345694', 'dinh.nga@email.com', 0,		'1984-12-05', N'45 Phan Đăng Lưu, Q.Bình Thạnh, TP.HCM', '2017-02-15', 35000, 1, 6),
+-- Nhân viên trực kho (2 người)
+(N'Trương Văn Tài',		'e10adc3949ba59abbe56e057f20f883e', '036198017890', '0912345695', 'truong.tai@email.com', 1,	'1986-04-18', N'78 Nguyễn Hữu Cảnh, Q.Bình Thạnh, TP.HCM', '2018-03-10', 40000, 1, 7),
+(N'Ngô Thị Thu Hiền',	'e10adc3949ba59abbe56e057f20f883e', '036198018901', '0912345696', 'ngo.hien@email.com', 0,		'1989-08-22', N'23 Xô Viết Nghệ Tĩnh, Q.Bình Thạnh, TP.HCM', '2019-04-05', 38000, 1, 7),
+-- Lễ tân (1 người)
+(N'Hoàng Thị Ngọc Hân', 'e10adc3949ba59abbe56e057f20f883e', '036198019012', '0912345697', 'hoang.han@email.com', 0,		'1995-02-28', N'56 Nguyễn Văn Cừ, Q.1, TP.HCM', '2020-07-15', 45000, 1, 8);
