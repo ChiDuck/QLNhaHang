@@ -6,7 +6,6 @@ async function getAllCustomers() {
         const response = await fetch(apiUrl);
         if (!response.ok) throw new Error("Lấy danh sách khách hàng thất bại.");
         const customers = await response.json();
-        console.log(customers);
         return customers;
     } catch (error) {
         console.error("Error:", error);
@@ -58,13 +57,23 @@ async function updateCustomer(id, customer) {
     }
 }
 
-// DELETE customer
-async function deleteCustomer(id) {
-    try {
-        const response = await fetch(`${apiUrl}/${id}`, { method: "DELETE" });
-        if (!response.ok) throw new Error("Failed to delete customer");
-        console.log(`Customer ${id} deleted`);
-    } catch (error) {
-        console.error("Error:", error);
+function confirmDeleteCustomer(id) {
+    if (confirm("Bạn có chắc chắn muốn xóa khách hàng này không?")) {
+        deleteCustomer(id).then(loadCustomers);
     }
 }
+
+// DELETE customer
+async function deleteCustomer(id) {
+    if (confirm("Bạn có chắc chắn muốn xóa khách hàng này không?")) {
+        try {
+            const response = await fetch(`${apiUrl}/${id}`, { method: "DELETE" });
+            //if (!response.ok) throw new Error("Failed to delete customer");
+            console.log(`Customer ${id} deleted`);
+        } catch (error) {
+            console.error("Error:", error);
+        }
+    }
+
+}
+

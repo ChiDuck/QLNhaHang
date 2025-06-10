@@ -2,11 +2,11 @@
 
 namespace QLNhaHang.Controllers
 {
-	public class CustomerController : Controller
-	{
-		public IActionResult Index()
-		{
-			return View();
-		}
-	}
+    public class CustomerController : Controller
+    {
+        public IActionResult Index()
+        {
+            return View();
+        }
+    }
 }

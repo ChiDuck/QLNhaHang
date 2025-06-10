@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Text.Json.Serialization;
 
 namespace QLNhaHang.Models
 {
@@ -21,7 +20,7 @@ namespace QLNhaHang.Models
         public string? Description { get; set; }
         public int IdDishcategory { get; set; }
 
-        public virtual Dishcategory IdDishcategoryNavigation { get; set; } = null!;
+        public virtual Dishcategory? IdDishcategoryNavigation { get; set; } = null!;
         public virtual ICollection<Cartdetail> Cartdetails { get; set; }
         public virtual ICollection<Dishingredient> Dishingredients { get; set; }
         public virtual ICollection<Reservationorder> Reservationorders { get; set; }

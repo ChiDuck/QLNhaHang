@@ -1,0 +1,45 @@
+﻿@model QLNhaHang.Models.Dish
+<div class="modal-header">
+    <h5 class="modal-title" id="dishDetailLabel">Chi tiết món ăn</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+</div>
+<div class="modal-body">
+    <h4>@Model.Name</h4>
+    <p><strong>Giá:</strong> @Model.Price VNĐ</p>
+    <p><strong>Giảm giá:</strong> @(Model.Discount ?? 0)% </p>
+    <p><strong>Loại món:</strong> @Model.IdDishcategoryNavigation.Name </p>
+    <p><strong>Mô tả:</strong> @Model.Description</p>
+    @if (!string.IsNullOrEmpty(Model.Photo))
+    {
+        <img src="@Model.Photo" class="img-thumbnail mb-3" style="max-height:150px;" />
+    }
+	@if (Model.Issoldout)
+	{
+		<p><strong>✔️ Đã hết hàng</strong></p>
+	}
+
+	<h5 class="mt-3">Nguyên liệu</h5>
+    <table class="table table-bordered table-sm">
+        <thead class="table-light">
+            <tr>
+                <th>Tên</th>
+                <th>Đơn vị</th>
+                <th>Số lượng</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var ing in Model.Dishingredients)
+            {
+                <tr>
+                    <td>@ing.IdInventoryitemNavigation.Name</td>
+                    <td>@ing.IdInventoryitemNavigation.Unit</td>
+                    <td>@ing.Amount</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-warning" onclick="openEditDishModal(@Model.IdDish)">Sửa món</button>
+    <button type="button" class="btn btn-danger" onclick="deleteDish(@Model.IdDish)">Xóa</button>
+</div>

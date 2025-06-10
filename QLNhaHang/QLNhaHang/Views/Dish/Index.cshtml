@@ -1,0 +1,42 @@
+﻿@{
+    ViewData["Title"] = "Danh sách món ăn";
+}
+
+<h1 class="mb-4">Danh sách món ăn</h1>
+<button type="button" class="btn btn-primary" onclick="openAddDishModal()">Thêm món</button>
+<table class="table table-bordered">
+    <thead class="table-dark">
+        <tr>
+            <th>ID</th>
+            <th>Tên món</th>
+            <th>Giá</th>
+            <th>Giảm giá</th>
+            <th>Hết hàng</th>
+            <th>Loại món</th>
+            <th>Ảnh</th>
+            <th>Thao tác</th>
+        </tr>
+    </thead>
+    <tbody id="dishTableBody">
+        <!-- Dữ liệu sẽ được render bằng JavaScript -->
+    </tbody>
+</table>
+
+<!-- Modal chi tiết món ăn -->
+<div class="modal fade" id="dishDetailModal" tabindex="-1" aria-labelledby="dishDetailLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <!-- modal giữa màn hình -->
+		<div class="modal-content" id="dishDetailContent">
+            <!-- Nội dung chi tiết sẽ được load tại đây -->
+        </div>
+    </div>
+</div>
+
+<!-- Modal sửa món -->
+<div class="modal fade" id="editDishModal" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content" id="editDishModalContent"></div>
+    </div>
+</div>
+
+<script src="~/js/dish.js"></script>

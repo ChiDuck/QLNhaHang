@@ -1,0 +1,119 @@
+﻿@model QLNhaHang.Models.Dish
+@{
+    bool isEdit = Model != null && Model.IdDish > 0;
+    int dishId = isEdit ? Model.IdDish : 0;
+}
+
+<div class="modal-header">
+    <h5 class="modal-title">
+        @(isEdit ? $"Sửa món: {Model.Name}" : "Thêm món mới")
+    </h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+</div>
+
+<div class="modal-body">
+    <form id="editDishForm">
+        <input type="hidden" name="IdDish" value="@dishId" />
+
+        <!-- TÊN MÓN -->
+        <div class="mb-2">
+            <label class="form-label">Tên món</label>
+            <input class="form-control" name="Name" value="@(isEdit ? Model.Name : "")" required />
+            <span hidden class="text-danger" id="validateName">Tên không được để trống!</span>
+        </div>
+
+        <!-- GIÁ & GIẢM GIÁ -->
+        <div class="row g-2 mb-2">
+            <div class="col">
+                <label class="form-label">Giá (VNĐ)</label>
+                <input type="number" class="form-control" name="Price"
+                       value="@(isEdit ? Model.Price.ToString() : "")" min="0" required />
+                <span hidden class="text-danger" id="validatePrice">Giá không hợp lệ!</span>
+            </div>
+            <div class="col">
+                <label class="form-label">Giảm giá (%)</label>
+                <input type="number" class="form-control" name="Discount"
+                       value="@(isEdit && Model.Discount.HasValue ? Model.Discount : "")"
+                       min="0" max="100" step="0.01" />
+                <span hidden class="text-danger" id="validateDiscount">Giảm giá không hợp lệ!</span>
+            </div>
+        </div>
+
+        <!-- Ảnh -->
+        <div class="mb-2">
+            <label class="form-label">Ảnh</label>
+            <input type="file" accept="image/*" class="form-control" id="dishPhotoInput" />
+            <input type="hidden" name="Photo" id="dishPhotoPath" value="@(isEdit ? Model.Photo : "")" />
+
+            @if (isEdit && !string.IsNullOrEmpty(Model.Photo))
+            {
+                <div class="mt-2">
+                    <label>Ảnh hiện tại:</label><br />
+                    <img src="@Model.Photo" alt="Ảnh món" style="max-width: 100px;" />
+                </div>
+            }
+        </div>
+
+
+        <!-- MÔ TẢ -->
+        <div class="mb-2">
+            <label class="form-label">Mô tả</label>
+            <textarea class="form-control" name="Description">@((isEdit ? Model.Description : ""))</textarea>
+        </div>
+
+        <!-- LOẠI MÓN -->
+        <div class="mb-3">
+            <label class="form-label">Loại món</label>
+            <select class="form-select" id="editDishCategory" name="IdDishcategory" required>
+                <!-- option sẽ nạp bằng JS -->
+            </select>
+        </div>
+
+        <!-- SOLD-OUT -->
+        <div class="form-check mb-3">
+            <input class="form-check-input" type="checkbox" id="editDishSoldOut"
+                   name="Issoldout" @(isEdit && Model.Issoldout ? "checked" : "") />
+            <label class="form-check-label" for="editDishSoldOut">Tạm ngưng bán (Sold-out)</label>
+        </div>
+
+        <!-- NGUYÊN LIỆU -->
+        <div class="mb-2">
+            <label class="form-label">Nguyên liệu</label>
+            <table class="table table-bordered">
+                <thead>
+                    <tr><th>Tên</th><th>Đơn vị</th><th>Số lượng</th><th></th></tr>
+                </thead>
+                <tbody id="editIngredientBody">
+                    @if (isEdit)
+                    {
+                        foreach (var i in Model.Dishingredients)
+                        {
+                            <tr data-id="@i.IdInventoryitem">
+                                <td>@i.IdInventoryitemNavigation?.Name</td>
+                                <td>@i.IdInventoryitemNavigation?.Unit</td>
+                                <td><input type="number" value="@i.Amount" class="form-control form-control-sm" min="0.01" /></td>
+                                <td class="text-center">
+                                    <button type="button" class="btn btn-sm btn-danger" onclick="removeIngredientRow(this)">X</button>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+            <button type="button" class="btn btn-sm btn-primary" onclick="addIngredientRow()">+ Thêm nguyên liệu</button>
+            <span hidden class="text-danger" id="validateIngredients">Cần ít nhất 1 nguyên liệu (>0).</span>
+        </div>
+    </form>
+</div>
+
+<div class="modal-footer">
+    <button class="btn btn-success" onclick="submitDish()">Lưu</button>
+    @if (isEdit)
+    {
+        <button class="btn btn-secondary" onclick="returnToDetail(@dishId)">Trở lại</button>
+    }
+    else
+    {
+        <button class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+    }
+</div>

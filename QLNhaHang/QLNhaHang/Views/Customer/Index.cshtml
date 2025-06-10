@@ -21,7 +21,7 @@
             <!-- dữ liệu sẽ render ở đây -->
         </tbody>
     </table>
-
+    <script src="~/js/customer.js"></script>
     <script>
         // Hàm render danh sách khách hàng
         async function loadCustomers() {
@@ -41,8 +41,7 @@
                             <td>${c.address ?? ""}</td>
                             <td>${c.photo ? `<img src="${c.photo}" width="50">` : ""}</td>
                             <td>
-                                <button class="btn btn-sm btn-warning" onclick="editCustomer(${c.idCustomer})">Sửa</button>
-                                <button class="btn btn-sm btn-danger" onclick="deleteCustomer(${c.idCustomer}).then(loadCustomers)">Xoá</button>
+                                <button class="btn btn-sm btn-danger" onclick="deleteCustomer(${c.idCustomer})">Xóa</button>
                             </td>
                         `;
                 tableBody.appendChild(row);
@@ -51,9 +50,4 @@
 
         // Gọi hàm load khi trang load
         window.onload = loadCustomers;
-
-        // Hàm edit demo
-        function editCustomer(id) {
-            alert("Chức năng chỉnh sửa ID " + id + " chưa làm bro 😄");
-        }
     </script>

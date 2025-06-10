@@ -1,0 +1,62 @@
+﻿@{
+    ViewData["Title"] = "Inventory Item List";
+}
+
+<h1 class="mb-4">Danh sách nguyên liệu</h1>
+<button type="button" class="btn btn-primary" onclick="showAddForm()">Thêm nguyên liệu</button>
+
+<table class="table table-bordered">
+    <thead class="table-dark">
+        <tr>
+            <th>ID</th>
+            <th>Tên nguyên liệu</th>
+            <th>Đơn vị</th>
+            <th>Số lượng</th>
+            <th>Loại nguyên liệu</th>
+            <th>Thao tác</th>
+        </tr>
+    </thead>
+    <tbody id="inventoryTableBody">
+        <!-- Dữ liệu sẽ được render ở đây -->
+    </tbody>
+</table>
+<!-- Modal chỉnh sửa -->
+<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalLabel">Chỉnh sửa nguyên liệu</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="itemId">
+                <div class="mb-3">
+                    <label for="itemName" class="form-label">Tên nguyên liệu</label>
+                    <input type="text" class="form-control" id="itemName">
+                    <span hidden class="text-danger" id="validateName">Trường không được để trống!</span>
+                </div>
+                <div class="mb-3">
+                    <label for="itemUnit" class="form-label">Đơn vị</label>
+                    <input type="text" class="form-control" id="itemUnit">
+                    <span hidden class="text-danger" id="validateUnit">Trường không được để trống!</span>
+                </div>
+                <div class="mb-3">
+                    <label for="itemAmount" class="form-label">Số lượng</label>
+                    <input type="number" class="form-control" id="itemAmount">
+                </div>
+                <div class="mb-3">
+                    <label for="itemType" class="form-label">Loại</label>
+                    <select class="form-select" id="itemType">
+                        <!-- Sẽ render từ API -->
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                <button type="button" class="btn btn-primary" onclick="updateInventoryitem()">Xác nhận</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/js/inventoryitem.js"></script>

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace QLNhaHang.Models
+﻿namespace QLNhaHang.Models
 {
     public partial class Inventoryitem
     {
@@ -17,7 +14,7 @@ namespace QLNhaHang.Models
         public double Amount { get; set; }
         public int IdInventoryitemtype { get; set; }
 
-        public virtual Inventoryitemtype IdInventoryitemtypeNavigation { get; set; } = null!;
+        public virtual Inventoryitemtype? IdInventoryitemtypeNavigation { get; set; } = null!;
         public virtual ICollection<Dishingredient> Dishingredients { get; set; }
         public virtual ICollection<Importticketdetail> Importticketdetails { get; set; }
     }
