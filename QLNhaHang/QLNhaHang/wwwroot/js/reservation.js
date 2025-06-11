@@ -44,12 +44,7 @@ function renderReservations(reservations) {
 
     // Thêm sự kiện cho nút xem chi tiết
     document.querySelectorAll('.view-btn').forEach(btn => {
-        btn.addEventListener('click', () => showReservationDetails(btn.dataset.id));
-    });
-
-    // Thêm sự kiện cho nút xóa
-    document.querySelectorAll('.delete-btn').forEach(btn => {
-        btn.addEventListener('click', () => confirmDeleteReservation(btn.dataset.id));
+        btn.addEventListener('click', () => showReservationDetail(btn.dataset.id));
     });
 }
 
@@ -89,17 +84,68 @@ function getStatusBadgeClass(status) {
     }
 }
 
-async function showReservationDetails(reservationId) {
-    try {
-        const response = await fetch(`${apiUrl}/${reservationId}`);
-        if (!response.ok) throw new Error('Failed to load reservation details');
+async function showReservationDetail(id) {
+    const res = await fetch(`${apiUrl}/${id}`);
+    const data = await res.json();
 
-        const reservation = await response.json();
-        // Hiển thị modal chi tiết (có thể triển khai thêm)
-        console.log('Reservation details:', reservation);
-        alert(`Chi tiết đặt bàn #${reservation.idReservation}\n${reservation.tableName}\nKhách: ${reservation.customerName || 'Khách vãng lai'}`);
-    } catch (error) {
-        console.error('Error loading reservation details:', error);
-        alert('Có lỗi khi tải chi tiết đặt bàn');
+    document.getElementById("res-id").innerText = data.idReservation;
+    document.getElementById("res-datetime").innerText = formatDate(data.reservationDate) + ' ' + formatTime(data.reservationTime);
+    document.getElementById("res-party").innerText = data.partySize;
+    document.getElementById("res-note").innerText = data.note || "-";
+    document.getElementById("res-customer").innerText = data.customerName || "Khách vãng lai";
+    document.getElementById("res-phone").innerText = data.phone || "-";
+    document.getElementById("res-email").innerText = data.email || "-";
+    document.getElementById("res-status").innerText = data.status || "-";
+    document.getElementById("res-table").innerText = data.tableName || "-";
+
+    const tbody = document.getElementById("res-orders");
+    tbody.innerHTML = "";
+    console.log(data.orders);
+    if (data.orders === []) {
+        document.getElementById("res-order-section").hidden = false;
+        data.orders.forEach(order => {
+            tbody.innerHTML += `
+            <tr>
+                <td><img src="${order.dishPhoto}" width="50"/></td>
+                <td>${order.dishName}</td>
+                <td>${order.quantity}</td>
+                <td>${order.total.toFixed(2)}</td>
+            </tr>
+        `;
+        });
+    }
+
+    // Ẩn/Hiện nút theo trạng thái
+    const btnAccept = document.getElementById('btnAcceptReservation');
+    const btnReject = document.getElementById('btnRejectReservation');
+
+    if (data.status === "Chờ xác nhận") {
+        btnAccept.style.display = 'inline-block';
+        btnReject.style.display = 'inline-block';
+        btnAccept.onclick = () => updateReservationStatus(id, true);
+        btnReject.onclick = () => updateReservationStatus(id, false);
+    } else {
+        btnAccept.style.display = 'none';
+        btnReject.style.display = 'none';
+    }
+
+    new bootstrap.Modal(document.getElementById("reservationDetailModal")).show();
+}
+
+async function updateReservationStatus(id, isAccepted) {
+    const status = isAccepted ? 2 : 3;
+
+    const res = await fetch(`/api/reservationapi/${id}/status`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(status)
+    });
+    const updated = status == 2 ? "Đã chấp nhận" : "Đã từ chối";
+    if (res.ok) {
+        alert(`Đã cập nhật đơn đặt bàn thành: ${updated}`);
+        bootstrap.Modal.getInstance('#reservationDetailModal').hide();
+        await loadReservations(); // reload danh sách
+    } else {
+        alert("Cập nhật trạng thái thất bại.");
     }
 }

@@ -10,7 +10,7 @@
             <div class="col-md-6">
                 <h1 class="display-4 fw-bold mb-4">Ẩm thực Việt đỉnh cao</h1>
                 <p class="lead mb-4">Trải nghiệm hương vị truyền thống với phong cách hiện đại</p>
-                <a href="/reservation" class="btn btn-primary btn-lg px-4 me-2">Đặt bàn ngay</a>
+                <button class="btn btn-primary btn-lg px-4 me-2 book-now-btn">Đặt bàn ngay</button>
                 <a href="/menu" class="btn btn-outline-light btn-lg px-4">Xem thực đơn</a>
             </div>
             <div class="col-md-6">
@@ -30,6 +30,127 @@
     </div>
 </section>
 
+<!-- Modal 1: Chọn Ngày/Giờ/Số Người -->
+<div class="modal fade" id="bookingStep1Modal" data-bs-backdrop="static" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title">Chọn thời gian</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label class="form-label">Ngày đặt bàn</label>
+                    <input type="date" class="form-control" id="bookingDate" min="@DateTime.Now.ToString("yyyy-MM-dd")">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Giờ đặt bàn</label>
+                    <select class="form-select" id="bookingTime">
+                        <!-- Options sẽ được điền bằng JS -->
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Số lượng người</label>
+                    <input type="number" class="form-control" id="partySize" min="1" max="20" value="2">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                <button type="button" class="btn btn-primary" id="nextToStep2">Tiếp theo</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal 2: Chọn Loại Bàn -->
+<div class="modal fade" id="bookingStep2Modal" data-bs-backdrop="static" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title">Chọn bàn mong muốn</h5>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-info text-center">
+					<p><strong><span id="displayBookingTime"></span></strong> - <strong><span id="displayPartySize"></span> người<strong> </p>
+                </div>
+
+                <div id="availableTableTypesContainer">
+                    <!-- Các loại bàn sẽ được điền bằng JS -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="backToStep1">Quay lại</button>
+                <button type="button" class="btn btn-primary" id="nextToStep3" disabled>Tiếp theo</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal 3: Thông Tin Khách Hàng -->
+<div class="modal fade" id="bookingStep3Modal" data-bs-backdrop="static" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title">Bước 3: Thông tin liên hệ</h5>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label class="form-label">Họ tên</label>
+                    <input type="text" class="form-control" id="customerName">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Số điện thoại *</label>
+                    <input type="tel" class="form-control" id="customerPhone" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Email</label>
+                    <input type="email" class="form-control" id="customerEmail">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Ghi chú</label>
+                    <textarea class="form-control" id="bookingNote" rows="3"></textarea>
+                </div>
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h6 class="card-title">Thông tin đặt bàn</h6>
+                        <p class="mb-1"><strong>Bàn:</strong> <span id="displaySelectedTable"></span></p>
+                        <p class="mb-1"><strong>Ngày:</strong> <span id="displaySelectedDate"></span></p>
+                        <p class="mb-1"><strong>Giờ:</strong> <span id="displaySelectedTime"></span></p>
+                        <p class="mb-1"><strong>Số người:</strong> <span id="displaySelectedPartySize"></span></p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="backToStep2">Quay lại</button>
+                <button type="button" class="btn btn-success" id="confirmBooking">Xác nhận đặt bàn</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Thành Công -->
+<div class="modal fade" id="bookingSuccessModal" data-bs-backdrop="static" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title">Đặt bàn thành công!</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="text-center">
+                    <i class="fas fa-check-circle fa-5x text-success mb-4"></i>
+                    <h4>Cảm ơn bạn đã đặt bàn!</h4>
+                    <p>Mã đặt bàn của bạn: <strong id="bookingCode"></strong></p>
+                    <p>Chúng tôi đã gửi thông tin đặt bàn đến email của bạn.</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @section Styles {
     <style>
         .hero-banner {
@@ -43,10 +164,5 @@
 }
 
 @section Scripts {
-    <script>
-        $(document).ready(function () {
-            // Code JavaScript cho trang chủ
-            console.log("Trang chủ đã sẵn sàng");
-        });
-    </script>
+    <script src="~/js/booking.js"></script>
 }

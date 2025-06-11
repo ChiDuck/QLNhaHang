@@ -22,7 +22,8 @@ namespace QLNhaHang.Controllers
             var tables = await db.Dinetables
                 .Include(t => t.IdAreaNavigation)
                 .Include(t => t.IdTabletypeNavigation)
-                .Select(t => new {
+                .Select(t => new
+                {
                     t.IdDinetable,
                     t.Name,
                     t.IdTabletypeNavigation.Seats,
@@ -97,6 +98,80 @@ namespace QLNhaHang.Controllers
         private bool DinetableExists(int id)
         {
             return db.Dinetables.Any(e => e.IdDinetable == id);
+        }
+
+        // TablesController.cs
+        [HttpGet("available-types")]
+        public async Task<ActionResult<IEnumerable<AvailableTableTypeDto>>> GetAvailableTableTypes(
+            [FromQuery] string date,
+            [FromQuery] string time,
+            [FromQuery] int partySize)
+        {
+            try
+            {
+                var reservationDate = DateTime.Parse(date);
+                var reservationTime = TimeSpan.Parse(time);
+
+                // Lấy tất cả loại bàn có sức chứa >= số người
+                var suitableTableTypes = await db.Tabletypes
+                    .Where(t => (t.Seats <= 4 && partySize < 4) || (partySize >= 4 && t.Seats < partySize*2 && t.Seats >= partySize))
+                    .ToListAsync();
+
+                // Lấy các đặt bàn trùng khung giờ (+- 1 tiếng)
+                var startTime = reservationTime.Add(TimeSpan.FromHours(-1.5f));
+                var endTime = reservationTime.Add(TimeSpan.FromHours(1.5f));
+
+                var conflictingReservations = await db.Reservations
+                    .Include(r => r.IdDinetableNavigation)
+                    .Where(r => r.Reservationdate == reservationDate &&
+                               r.Reservationtime >= startTime &&
+                               r.Reservationtime <= endTime &&
+                               r.IdReservationstatus != 3 &&
+                               r.IdReservationstatus != 5)
+                    .ToListAsync();
+
+                // Tính số bàn trống cho từng loại
+                var availableTableTypes = new List<AvailableTableTypeDto>();
+
+                foreach (var tableType in suitableTableTypes)
+                {
+                    // Tổng số bàn thuộc loại này
+                    var totalTables = await db.Dinetables
+                        .CountAsync(t => t.IdTabletype == tableType.IdTabletype);
+
+                    // Số bàn đã đặt thuộc loại này
+                    var bookedTables = conflictingReservations
+                        .Count(r => r.IdDinetableNavigation?.IdTabletype == tableType.IdTabletype);
+
+                    // Số bàn còn trống
+                    var availableCount = totalTables - bookedTables;
+
+                    if (availableCount > 0)
+                    {
+                        availableTableTypes.Add(new AvailableTableTypeDto
+                        {
+                            Id = tableType.IdTabletype,
+                            Name = tableType.Name,
+                            Capacity = tableType.Seats,
+                            AvailableCount = availableCount,
+                        });
+                    }
+                }
+
+                return Ok(availableTableTypes);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        public class AvailableTableTypeDto
+        {
+            public int Id { get; set; }
+            public string Name { get; set; }
+            public int Capacity { get; set; }
+            public int AvailableCount { get; set; }
         }
     }
 }
