@@ -57,15 +57,69 @@ body {
 }
 /* Hiệu ứng hover cho bảng nhân viên */
 
+#staffTable tbody tr:hover {
+    background-color: #f8f9fa;
+    /*transform: scale(1.005);*/
+    /*box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);*/
+}
 
-    #staffTable tbody tr:hover {
-        background-color: #f8f9fa;
-        /*transform: scale(1.005);*/
-        /*box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);*/
+/* Làm đậm text khi hover */
+#staffTable tbody tr:hover td {
+    /*font-weight: 500;*/
+    color: #212529;
+}
+
+/* Nút thêm nhân viên */
+#addStaffBtn {
+    padding: 8px 16px;
+    font-weight: 500;
+}
+
+/* Modal chỉnh sửa */
+#staffEditModal .modal-header {
+    background-color: #ffc107;
+    color: #212529;
+}
+
+/* Hiệu ứng hover cho nút */
+.btn:hover {
+    transform: translateY(-1px);
+    transition: transform 0.2s ease;
+}
+
+/* Form input */
+.form-control, .form-select {
+    border-radius: 0.35rem;
+    padding: 0.5rem 0.75rem;
+}
+
+/* Responsive cho modal */
+@media (max-width: 768px) {
+    #staffEditModal .modal-dialog {
+        margin: 0.5rem auto;
+    }
+}
+
+/* Nút xóa */
+#deleteStaffBtn {
+    margin-right: auto;
+    transition: all 0.2s;
+}
+
+    #deleteStaffBtn:hover {
+        transform: translateY(-1px);
+        transition: transform 0.2s ease;
     }
 
-        /* Làm đậm text khi hover */
-        #staffTable tbody tr:hover td {
-            /*font-weight: 500;*/
-            color: #212529;
-        }
+/* Modal xác nhận xóa */
+#confirmDeleteModal .modal-body {
+    padding: 1.5rem;
+}
+
+#confirmDeleteModal .text-danger {
+    font-weight: 500;
+}
+
+#staffNameToDelete {
+    color: #dc3545;
+}

@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Nhà Hàng Delicious</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="~/css/client.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/QLNhaHang.styles.css" asp-append-version="true" />
+    @await RenderSectionAsync("Styles", required: false)
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="@Url.Action("Index", "Home")">
+                <i class="fas fa-utensils me-2"></i>Delicious
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="@Url.Action("Index", "Home")">
+                            <i class="fas fa-home me-1"></i>Trang chủ
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="@Url.Action("Menu", "Restaurant")">
+                            <i class="fas fa-book-open me-1"></i>Thực đơn
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="@Url.Action("About", "Home")">
+                            <i class="fas fa-info-circle me-1"></i>Giới thiệu
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="@Url.Action("Contact", "Home")">
+                            <i class="fas fa-phone me-1"></i>Liên hệ
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-area="" asp-controller="Dish" asp-action="Index">Admin Dashboard</a>
+                    </li>
+                </ul>
+                
+                <div class="d-flex align-items-center">
+                    <!-- Reservation Button -->
+                    <a href="@Url.Action("Reservation", "Restaurant")" class="btn btn-reservation me-3">
+                        <i class="fas fa-calendar-check me-2"></i>Đặt bàn
+                    </a>
+                    
+                    <!-- User Account -->
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <div class="dropdown user-dropdown">
+                            <a class="dropdown-toggle d-flex align-items-center text-decoration-none" 
+                               href="#" role="button" data-bs-toggle="dropdown">
+                                <div class="user-avatar me-2">
+                                    @User.Identity.Name.Substring(0, 1).ToUpper()
+                                </div>
+                                <span class="d-none d-md-inline">@User.Identity.Name</span>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li>
+                                    <a class="dropdown-item" href="@Url.Action("Profile", "Account")">
+                                        <i class="fas fa-user me-2"></i>Thông tin tài khoản
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="@Url.Action("Orders", "Account")">
+                                        <i class="fas fa-receipt me-2"></i>Lịch sử đặt bàn
+                                    </a>
+                                </li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <form asp-action="Logout" asp-controller="Account" method="post" class="d-inline">
+                                        <button type="submit" class="dropdown-item">
+                                            <i class="fas fa-sign-out-alt me-2"></i>Đăng xuất
+                                        </button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="d-flex">
+                            <a href="@Url.Action("Login", "Account")" class="btn btn-outline-primary me-2">
+                                <i class="fas fa-sign-in-alt me-1"></i>Đăng nhập
+                            </a>
+                            <a href="@Url.Action("Register", "Account")" class="btn btn-primary">
+                                <i class="fas fa-user-plus me-1"></i>Đăng ký
+                            </a>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main>
+        @RenderBody()
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <h5>Nhà Hàng Delicious</h5>
+                    <p class="mb-3">Trải nghiệm ẩm thực tuyệt vời với những món ăn được chế biến từ nguyên liệu tươi ngon nhất.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                
+                <div class="col-lg-2 col-md-6 mb-4">
+                    <h5>Menu</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="@Url.Action("Index", "Home")" class="text-light text-decoration-none">Trang chủ</a></li>
+                        <li><a href="@Url.Action("Menu", "Restaurant")" class="text-light text-decoration-none">Thực đơn</a></li>
+                        <li><a href="@Url.Action("About", "Home")" class="text-light text-decoration-none">Giới thiệu</a></li>
+                        <li><a href="@Url.Action("Contact", "Home")" class="text-light text-decoration-none">Liên hệ</a></li>
+                    </ul>
+                </div>
+                
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <h5>Liên hệ</h5>
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-map-marker-alt me-2"></i>123 Đường ABC, Quận 1, TP.HCM</li>
+                        <li><i class="fas fa-phone me-2"></i>(028) 1234 5678</li>
+                        <li><i class="fas fa-envelope me-2"></i>info@delicious.com</li>
+                    </ul>
+                </div>
+                
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <h5>Giờ mở cửa</h5>
+                    <ul class="list-unstyled">
+                        <li>Thứ 2 - Thứ 6: 10:00 - 22:00</li>
+                        <li>Thứ 7 - Chủ nhật: 9:00 - 23:00</li>
+                        <li class="text-warning">Nghỉ lễ: Liên hệ trước</li>
+                    </ul>
+                </div>
+            </div>
+
+            <hr class="my-4">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <p class="mb-0">&copy; 2024 Nhà Hàng Delicious. All rights reserved.</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <a href="#" class="text-light text-decoration-none me-3">Chính sách bảo mật</a>
+                    <a href="#" class="text-light text-decoration-none">Điều khoản sử dụng</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom Scripts -->
+    <script>
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Navbar background on scroll
+        window.addEventListener('scroll', function() {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 50) {
+                navbar.style.background = 'rgba(255, 255, 255, 0.98)';
+            } else {
+                navbar.style.background = 'rgba(255, 255, 255, 0.95)';
+            }
+        });
+
+        // Auto-hide alerts after 5 seconds
+        setTimeout(function() {
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(alert => {
+                if (alert.classList.contains('alert-dismissible')) {
+                    alert.style.transition = 'opacity 0.5s';
+                    alert.style.opacity = '0';
+                    setTimeout(() => alert.remove(), 500);
+                }
+            });
+        }, 5000);
+    </script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

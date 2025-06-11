@@ -10,7 +10,7 @@ namespace QLNhaHang.Models
         public int Quantity { get; set; }
         public double Total { get; set; }
 
-        public virtual Dish IdDishNavigation { get; set; } = null!;
-        public virtual Reservation IdReservationNavigation { get; set; } = null!;
+        public virtual Dish? IdDishNavigation { get; set; } = null!;
+        public virtual Reservation? IdReservationNavigation { get; set; } = null!;
     }
 }

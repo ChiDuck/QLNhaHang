@@ -55,7 +55,12 @@ namespace QLNhaHang.Controllers
                     s.Startdate,
                     s.Hourlysalary,
                     s.Isactive,
-                    StaffType = s.IdStafftypeNavigation.Name
+                    IdStafftype = s.IdStafftype,
+                    IdStafftypeNavigation = s.IdStafftypeNavigation != null ? new
+                    {
+                        s.IdStafftypeNavigation.IdStafftype,
+                        s.IdStafftypeNavigation.Name
+                    } : null
                 })
                 .FirstOrDefaultAsync();
 
@@ -66,5 +71,103 @@ namespace QLNhaHang.Controllers
 
             return staff;
         }
+
+        // POST: api/Staff
+        [HttpPost]
+        public async Task<ActionResult<Staff>> CreateStaff([FromBody] Staff staff)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            db.Staff.Add(staff);
+            await db.SaveChangesAsync();
+
+            return CreatedAtAction(nameof(GetStaff), new { id = staff.IdStaff }, staff);
+        }
+
+        // PUT: api/Staff/5
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateStaff(int id, [FromBody] Staff staff)
+        {
+            if (id != staff.IdStaff)
+            {
+                return BadRequest();
+            }
+
+            db.Entry(staff).State = EntityState.Modified;
+
+            try
+            {
+                await db.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!StaffExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
+        }
+
+        private bool StaffExists(int id)
+        {
+            return db.Staff.Any(e => e.IdStaff == id);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteStaff(int id)
+        {
+            using var transaction = await db.Database.BeginTransactionAsync();
+            try
+            {
+                var staff = await db.Staff.FindAsync(id);
+                if (staff == null)
+                {
+                    return NotFound();
+                }
+
+                // Kiểm tra các ràng buộc quan trọng (Importtickets và Payrolldetails)
+                var hasCriticalRelatedData = await db.Payrolldetails.AnyAsync(p => p.IdStaff == id);
+
+                if (hasCriticalRelatedData)
+                {
+                    return BadRequest("Không thể xóa nhân viên vì có dữ liệu quan trọng liên quan (hóa đơn nhập hoặc bảng lương)");
+                }
+
+                if (staff.IdStafftype == 1)
+                {
+                    return BadRequest("Không thể xóa quản lý.");
+                }
+
+                // Xóa tất cả Weeklyshifts liên quan
+                var weeklyShifts = await db.Weeklyshifts
+                    .Where(w => w.IdStaff == id)
+                    .ToListAsync();
+
+                db.Weeklyshifts.RemoveRange(weeklyShifts);
+
+                // Xóa nhân viên
+                db.Staff.Remove(staff);
+
+                await db.SaveChangesAsync();
+                await transaction.CommitAsync();
+
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                await transaction.RollbackAsync();
+                return StatusCode(500, $"Đã xảy ra lỗi khi xóa nhân viên: {ex.Message}");
+            }
+        }
     }
+
 }

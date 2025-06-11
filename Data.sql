@@ -30,7 +30,8 @@ DELETE FROM DISHINGREDIENT
 DELETE FROM IMPORTTICKETDETAIL				
 DELETE FROM PAYROLLDETAIL				
 DELETE FROM WEEKLYSHIFT				
-DELETE FROM CART			
+DELETE FROM CART
+DELETE FROM RESERVATION
 DELETE FROM CUSTOMER		
 DELETE FROM DISH		
 DELETE FROM DISHCATEGORY				
@@ -40,8 +41,7 @@ DELETE FROM INVENTORYITEMTYPE
 DELETE FROM SHIPORDER	
 DELETE FROM ORDERSTATUS		
 DELETE FROM PAYMENT		
-DELETE FROM PAYROLL
-DELETE FROM RESERVATION		
+DELETE FROM PAYROLL		
 DELETE FROM RESERVATIONSTATUS 
 DELETE FROM STAFF			
 DELETE FROM STAFFTYPE			
@@ -106,16 +106,16 @@ INSERT INTO DISH (NAME, PRICE, DISCOUNT, ISSOLDOUT, PHOTO, DESCRIPTION, ID_DISHC
 VALUES 
 (N'Cơm gà',			65000,		10, 0, NULL, N'Cơm trắng ăn kèm thịt gà luộc', 2),			--1
 (N'Cơm bò lúc lắc', 130000,		NULL, 0, NULL, N'Cơm với bò lúc lắc sốt tiêu', 2),			--2
-(N'Miến gà',		80000,		5, 0, NULL, N'Miến gà thơm ngon', 2),					--3
+(N'Miến gà',		80000,		5, 0, NULL, N'Miến gà thơm ngon', 2),						--3
 (N'Cơm cá hồi áp chảo', 75000,	NULL, 0, NULL, N'Cá hồi tươi áp chảo cùng cơm', 2),			--4
 (N'Trứng chiên',	50000,		NULL, 0, NULL, N'Trứng gà chiên giòn', 3),					--5
 (N'Rau luộc',		35000,		NULL, 0, NULL, N'Rau cải, cà rốt luộc chấm mắm', 3),		--6
-(N'Cơm trứng cà chua', 30000,	5, 0, NULL, N'Trứng chiên, sốt cà chua, cơm', 2),		--7
+(N'Cơm trứng cà chua', 30000,	5, 0, NULL, N'Trứng chiên, sốt cà chua, cơm', 2),			--7
 (N'Bò xào rau cải',	60000,		NULL, 0, NULL, N'Thịt bò xào với rau cải', 2),				--8
 (N'Miến xào thập cẩm', 70000,	10, 0, NULL, N'Miến xào với trứng, thịt và rau', 2),		--9
 (N'Salad rau trộn', 65000,		NULL, 0, NULL, N'Xà lách, cà chua, nước sốt', 1),			--10
 (N'Súp gà',         120000,		NULL, 0, NULL, N'Súp gà nóng hổi', 1),						--11
-(N'Khoai tây chiên',35000,		5, 0, NULL, N'Khoai tây chiên giòn', 1)					--12
+(N'Khoai tây chiên',35000,		5, 0, NULL, N'Khoai tây chiên giòn', 1)						--12
 																								
  INSERT INTO DISHINGREDIENT VALUES
 -- Cơm gà (DISH.ID = 1)
@@ -173,26 +173,26 @@ INSERT INTO AREA VALUES
 (N'Phòng VIP 2')
 
 INSERT INTO DINETABLE (NAME, ID_TABLETYPE, ID_AREA) VALUES 
-(N'Bàn trệt 1', 1, 1),
-(N'Bàn trệt 2', 1, 1),
-(N'Bàn trệt 3', 1, 1),
-(N'Bàn trệt 4', 1, 1),
-(N'Bàn trệt 5', 1, 1),
-(N'Bàn trệt 6', 2, 1),
-(N'Bàn trệt 7', 2, 1),
-(N'Bàn trệt 8', 3, 1),
-(N'Bàn lầu 1_1', 1, 2),
-(N'Bàn lầu 1_2', 1, 2),
-(N'Bàn lầu 1_3', 1, 2),
-(N'Bàn lầu 1_4', 4, 2),
-(N'Bàn lầu 1_5', 4, 2),
-(N'Bàn lầu 1_6', 5, 2),
-(N'Bàn lầu 1_7', 6, 2),
-(N'Bàn lầu 1_8', 6, 2),
-(N'Bàn trời lầu 1_1', 2, 3),
-(N'Bàn trời lầu 1_2', 2, 3),
-(N'Bàn phòng VIP 1', 3, 4),
-(N'Bàn phòng VIP 2', 5, 5)
+(N'Bàn trệt 1', 1, 1),			--1
+(N'Bàn trệt 2', 1, 1),			--2
+(N'Bàn trệt 3', 1, 1),			--3
+(N'Bàn trệt 4', 1, 1),			--4
+(N'Bàn trệt 5', 1, 1),			--5
+(N'Bàn trệt 6', 2, 1),			--6
+(N'Bàn trệt 7', 2, 1),			--7
+(N'Bàn trệt 8', 3, 1),			--8
+(N'Bàn lầu 1_1', 1, 2),			--9
+(N'Bàn lầu 1_2', 1, 2),			--10
+(N'Bàn lầu 1_3', 1, 2),			--11
+(N'Bàn lầu 1_4', 4, 2),			--12
+(N'Bàn lầu 1_5', 4, 2),			--13
+(N'Bàn lầu 1_6', 5, 2),			--14
+(N'Bàn lầu 1_7', 6, 2),			--15
+(N'Bàn lầu 1_8', 6, 2),			--16
+(N'Bàn trời lầu 1_1', 2, 3),	--17
+(N'Bàn trời lầu 1_2', 2, 3),	--18
+(N'Bàn phòng VIP 1', 3, 4),		--19
+(N'Bàn phòng VIP 2', 5, 5)		--20
 
 INSERT INTO STAFFTYPE VALUES 
 (N'Quản lý'),
@@ -235,3 +235,18 @@ INSERT INTO STAFF (NAME, PASSWORD_HASH, CITIZENID, PHONE, EMAIL, GENDER, BIRTHDA
 (N'Ngô Thị Thu Hiền',	'e10adc3949ba59abbe56e057f20f883e', '036198018901', '0912345696', 'ngo.hien@email.com', 0,		'1989-08-22', N'23 Xô Viết Nghệ Tĩnh, Q.Bình Thạnh, TP.HCM', '2019-04-05', 38000, 1, 7),
 -- Lễ tân (1 người)
 (N'Hoàng Thị Ngọc Hân', 'e10adc3949ba59abbe56e057f20f883e', '036198019012', '0912345697', 'hoang.han@email.com', 0,		'1995-02-28', N'56 Nguyễn Văn Cừ, Q.1, TP.HCM', '2020-07-15', 45000, 1, 8);
+
+INSERT INTO RESERVATIONSTATUS VALUES 
+(N'Chờ xác nhận'),
+(N'Đã chấp nhận'),
+(N'Đã từ chối'),
+(N'Đã hoàn thành'),
+(N'Đã hủy')
+
+INSERT INTO RESERVATION (PHONE, EMAIL, RESERVATIONDATE, RESERVATIONTIME, PARTYSIZE, NOTE, ID_RESERVATIONSTATUS, ID_CUSTOMER, ID_DINETABLE) VALUES 
+('0987654321', NULL,				'2025-04-24',	'20:00:00', 2, NULL, 4, 8, 1),
+('0923999445', 'hoang.k@example.com', '2025-05-18', '11:30:00', 4, NULL, 4, NULL, 1),
+('0987654321', NULL,				'2025-05-28',	'19:00:00', 2, NULL, 4, 8, 4),
+(NULL, 'ly.k@example.com',			'2025-06-03',	'16:30:00', 2, NULL, 4, 11, 12),
+('0336664321', NULL,				'2025-06-06',	'22:00:00', 2, NULL, 3, NULL, 1),
+(NULL, 'ly.k@example.com',			'2025-06-15',	'17:30:00', 10, N'Có thể trễ 10p', 2, 11, 8)
