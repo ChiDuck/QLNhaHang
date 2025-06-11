@@ -1,53 +1,53 @@
 ﻿@{
-    ViewData["Title"] = "Khách hàng";
+	ViewData["Title"] = "Khách hàng";
 }
 
-    <h1 class="mb-4">Danh sách khách hàng</h1>
+<h2 class="mb-4">Danh sách khách hàng</h2>
 
-    <table class="table table-bordered">
-        <thead class="table-dark">
-            <tr>
-                <th>ID</th>
-                <th>Họ tên</th>
-                <th>Điện thoại</th>
-                <th>Email</th>
-                <th>Ngày sinh</th>
-                <th>Địa chỉ</th>
-                <th>Ảnh</th>
-                <th>Thao tác</th>
-            </tr>
-        </thead>
-        <tbody id="customerTableBody">
-            <!-- dữ liệu sẽ render ở đây -->
-        </tbody>
-    </table>
-    <script src="~/js/customer.js"></script>
-    <script>
-        // Hàm render danh sách khách hàng
-        async function loadCustomers() {
-            const customers = await getAllCustomers();
-            const tableBody = document.getElementById("customerTableBody");
-            tableBody.innerHTML = ""; // clear table
+<table class="table table-bordered table-striped">
+	<thead class="table-dark">
+		<tr>
+			<th>ID</th>
+			<th>Họ tên</th>
+			<th>Điện thoại</th>
+			<th>Email</th>
+			<th>Ngày sinh</th>
+			<th>Địa chỉ</th>
+			<th>Ảnh</th>
+			<th>Thao tác</th>
+		</tr>
+	</thead>
+	<tbody id="customerTableBody">
+		<!-- dữ liệu sẽ render ở đây -->
+	</tbody>
+</table>
+<script src="~/js/customer.js"></script>
+<script>
+	// Hàm render danh sách khách hàng
+	async function loadCustomers() {
+		const customers = await getAllCustomers();
+		const tableBody = document.getElementById("customerTableBody");
+		tableBody.innerHTML = ""; // clear table
 
-            customers.forEach(c => {
-                const row = document.createElement("tr");
+		customers.forEach(c => {
+			const row = document.createElement("tr");
 
-                row.innerHTML = `
-                            <td>${c.idCustomer}</td>
-                            <td>${c.name}</td>
-                            <td>${c.phone ?? ""}</td>
-                            <td>${c.email ?? ""}</td>
-                            <td>${c.birthday ? new Date(c.birthday).toLocaleDateString() : ""}</td>
-                            <td>${c.address ?? ""}</td>
-                            <td>${c.photo ? `<img src="${c.photo}" width="50">` : ""}</td>
-                            <td>
-                                <button class="btn btn-sm btn-danger" onclick="deleteCustomer(${c.idCustomer})">Xóa</button>
-                            </td>
-                        `;
-                tableBody.appendChild(row);
-            });
-        }
+			row.innerHTML = `
+								<td>${c.idCustomer}</td>
+								<td>${c.name}</td>
+								<td>${c.phone ?? ""}</td>
+								<td>${c.email ?? ""}</td>
+								<td>${c.birthday ? new Date(c.birthday).toLocaleDateString() : ""}</td>
+								<td>${c.address ?? ""}</td>
+								<td>${c.photo ? `<img src="${c.photo}" width="50">` : ""}</td>
+								<td class="text-center">
+										<button class="btn btn-sm btn-danger" onclick="deleteCustomer(${c.idCustomer})">Xóa</button>
+								</td>
+							`;
+			tableBody.appendChild(row);
+		});
+	}
 
-        // Gọi hàm load khi trang load
-        window.onload = loadCustomers;
-    </script>
+	// Gọi hàm load khi trang load
+	window.onload = loadCustomers;
+</script>

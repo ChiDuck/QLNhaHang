@@ -21,8 +21,10 @@ async function loadDishes() {
             <td>${d.issoldout ? "✔️" : ""}</td>
             <td>${d.dishcategoryName ?? ""}</td>
             <td>${d.photo ? `<img src="${d.photo}" width="120">` : ""}</td>
-            <td>
-                <button class="btn btn-sm btn-primary" onclick="showDishDetail(${d.idDish})">Chi tiết</button>
+            <td class="text-center">
+                <button class="btn btn-sm btn-info view-btn" onclick="showDishDetail(${d.idDish})">
+                    <i class="fas fa-eye"></i>
+                </button>
             </td>
         `;
         tableBody.appendChild(row);

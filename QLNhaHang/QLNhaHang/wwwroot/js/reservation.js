@@ -33,7 +33,7 @@ function renderReservations(reservations) {
             <td>${reservation.partysize}</td>
             <td>${reservation.tableName}</td>
             <td><span class="badge ${getStatusBadgeClass(reservation.idReservationstatus)}">${reservation.status}</span></td>
-            <td>
+            <td class="text-center">
                 <button class="btn btn-sm btn-info view-btn" data-id="${reservation.idReservation}">
                     <i class="fas fa-eye"></i>
                 </button>
