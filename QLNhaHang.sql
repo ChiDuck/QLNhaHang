@@ -298,6 +298,19 @@ CREATE TABLE SHIPORDER
 );
 
 /*==============================================================*/
+/* Table: ORDERITEM												*/
+/*==============================================================*/
+CREATE TABLE ORDERITEM 
+(
+	ID_SHIPORDER		INT				FOREIGN KEY(ID_SHIPORDER) REFERENCES SHIPORDER(ID_SHIPORDER),
+	ID_DISH				INT				FOREIGN KEY(ID_DISH) REFERENCES DISH(ID_DISH),
+	QUANTITY			INT				NOT NULL,
+	SUBTOTAL			FLOAT			NOT NULL,
+	PRIMARY KEY(ID_SHIPORDER, ID_DISH)
+);
+
+
+/*==============================================================*/
 /* Table: STAFFTYPE												*/
 /*==============================================================*/
 CREATE TABLE STAFFTYPE

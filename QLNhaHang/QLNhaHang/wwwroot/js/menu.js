@@ -277,7 +277,7 @@ function checkout() {
     localStorage.setItem('cart', JSON.stringify(cart));
 
     // Chuyển đến trang thanh toán
-    alert('Chuyển đến trang thanh toán');
+    //alert('Chuyển đến trang thanh toán');
     // window.location.href = '/checkout';
 }
 
