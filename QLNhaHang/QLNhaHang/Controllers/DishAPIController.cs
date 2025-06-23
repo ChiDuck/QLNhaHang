@@ -29,8 +29,21 @@ namespace QLNhaHang.Controllers
                     d.Issoldout,
                     d.Photo,
                     d.Description,
+                    d.IdDishcategory,
                     DishcategoryName = d.IdDishcategoryNavigation.Name
                 })
+                .ToListAsync();
+
+            return Ok(dishes);
+        }
+
+        // Thêm endpoint để lấy danh sách món ăn có sẵn
+        [HttpGet("available")]
+        public async Task<IActionResult> GetAvailableDishes()
+        {
+            var dishes = await db.Dishes
+                .Where(d => !d.Issoldout) // Chỉ lấy món còn bán
+                .OrderBy(d => d.IdDishcategory) // Sắp xếp theo danh mục
                 .ToListAsync();
 
             return Ok(dishes);

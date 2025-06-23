@@ -18,16 +18,43 @@ namespace QLNhaHang.Controllers
         }
 
         // GET: api/Reservations
+        //[HttpGet]
+        //public async Task<ActionResult<IEnumerable<object>>> GetAllReservations()
+        //{
+        //    return await db.Reservations
+        //        .Include(r => r.IdReservationstatusNavigation)
+        //        .Include(r => r.IdDinetableNavigation)
+        //        .Include(r => r.IdCustomerNavigation)
+        //        .OrderByDescending(r => r.IdReservationstatus == 1)
+        //        .ThenByDescending(r => r.Reservationdate)
+        //        .ThenByDescending(r => r.Reservationtime)
+        //        .Select(r => new
+        //        {
+        //            r.IdReservation,
+        //            r.Phone,
+        //            r.Email,
+        //            r.Reservationdate,
+        //            r.Reservationtime,
+        //            r.Partysize,
+        //            r.Note,
+        //            r.IdReservationstatus,
+        //            Status = r.IdReservationstatusNavigation.Name,
+        //            CustomerName = r.IdCustomerNavigation != null ? r.IdCustomerNavigation.Name : "Khách vãng lai",
+        //            TableName = r.IdDinetableNavigation != null ? r.IdDinetableNavigation.Name : "Chưa chọn bàn",
+        //        })
+        //        .ToListAsync();
+        //}
+
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<object>>> GetAllReservations()
+        public async Task<ActionResult<IEnumerable<object>>> GetAllActiveReservations()
         {
             return await db.Reservations
+                .Where(r => r.IdReservationstatus == 2 || r.IdReservationstatus == 1)
                 .Include(r => r.IdReservationstatusNavigation)
                 .Include(r => r.IdDinetableNavigation)
                 .Include(r => r.IdCustomerNavigation)
-                .OrderByDescending(r => r.IdReservationstatus == 1)
-                .ThenByDescending(r => r.Reservationdate)
-                .ThenByDescending(r => r.Reservationtime)
+                .OrderBy(r => r.Reservationdate)
+                .ThenBy(r => r.Reservationtime)
                 .Select(r => new
                 {
                     r.IdReservation,
@@ -84,20 +111,20 @@ namespace QLNhaHang.Controllers
             return dto;
         }
 
-		[HttpPut("{id}/status")]
-		public async Task<IActionResult> UpdateStatus(int id, [FromBody] int newStatus)
-		{
-			var reservation = await db.Reservations.FindAsync(id);
-			if (reservation == null) return NotFound();
+        [HttpPut("{id}/status")]
+        public async Task<IActionResult> UpdateStatus(int id, [FromBody] int newStatus)
+        {
+            var reservation = await db.Reservations.FindAsync(id);
+            if (reservation == null) return NotFound();
 
-			var status = await db.Reservationstatuses.FirstOrDefaultAsync(s => s.IdReservationstatus == newStatus);
-			if (status == null) return BadRequest("Invalid status");
+            var status = await db.Reservationstatuses.FirstOrDefaultAsync(s => s.IdReservationstatus == newStatus);
+            if (status == null) return BadRequest("Invalid status");
 
-			reservation.IdReservationstatus = status.IdReservationstatus;
-			await db.SaveChangesAsync();
+            reservation.IdReservationstatus = status.IdReservationstatus;
+            await db.SaveChangesAsync();
 
-			return Ok();
-		}
+            return Ok();
+        }
 
         [HttpPost]
         public async Task<ActionResult<ReservationResultDto>> CreateReservation([FromBody] CreateReservationDto dto)
@@ -122,7 +149,7 @@ namespace QLNhaHang.Controllers
                     .Where(r => r.Reservationdate == reservationDate &&
                                r.Reservationtime >= startTime &&
                                r.Reservationtime <= endTime &&
-                               r.IdReservationstatus != 3 && 
+                               r.IdReservationstatus != 3 &&
                                r.IdReservationstatus != 5)
                     .Select(r => r.IdDinetable)
                     .ToListAsync();
@@ -162,7 +189,7 @@ namespace QLNhaHang.Controllers
                 {
                     ReservationId = reservation.IdReservation,
                     ReservationCode = reservationCode,
-                  //  TableName = availableTable.Name
+                    //  TableName = availableTable.Name
                 });
             }
             catch (Exception ex)
@@ -196,6 +223,41 @@ namespace QLNhaHang.Controllers
 
             return customer.IdCustomer;
         }
+
+        // Cập nhật endpoint tạo reservation để xử lý món đi kèm
+        [HttpPost]
+        public async Task<IActionResult> CreateReservation([FromBody] ReservationWithDishesDto reservationDto)
+        {
+            // Tạo reservation như bình thường
+            var reservation = new Reservation
+            {
+                // ... các thông tin reservation
+            };
+
+            db.Reservations.Add(reservation);
+            await db.SaveChangesAsync();
+
+            // Thêm các món đi kèm nếu có
+            if (reservationDto.SelectedDishes != null && reservationDto.SelectedDishes.Any())
+            {
+                foreach (var dish in reservationDto.SelectedDishes)
+                {
+                    var reservationOrder = new Reservationorder
+                    {
+                        IdReservation = reservation.IdReservation,
+                        IdDish = dish.IdDish,
+                        Quantity = dish.Quantity,
+                        Total = dish.Price * dish.Quantity
+                    };
+
+                    db.Reservationorders.Add(reservationOrder);
+                }
+
+                await db.SaveChangesAsync();
+            }
+
+            return Ok(new { reservationId = reservation.IdReservation });
+        }
     }
 
     public class CreateReservationDto
@@ -215,6 +277,22 @@ namespace QLNhaHang.Controllers
     {
         public int ReservationId { get; set; }
         public string ReservationCode { get; set; }
+    }
+
+    // DTO cho reservation kèm món
+    public class ReservationWithDishesDto
+    {
+        // Các thông tin reservation
+        // ...
+
+        public List<SelectedDishDto> SelectedDishes { get; set; }
+    }
+
+    public class SelectedDishDto
+    {
+        public int IdDish { get; set; }
+        public int Quantity { get; set; }
+        public double Price { get; set; }
     }
 }
 

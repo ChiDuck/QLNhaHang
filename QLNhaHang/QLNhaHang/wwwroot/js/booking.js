@@ -4,6 +4,15 @@
     const step2Modal = new bootstrap.Modal('#bookingStep2Modal');
     const step3Modal = new bootstrap.Modal('#bookingStep3Modal');
     const successModal = new bootstrap.Modal('#bookingSuccessModal');
+    // Lấy tham chiếu đến modal
+    const dishModal = new bootstrap.Modal('#dishModal');
+
+    // Gắn sự kiện cho các nút
+    document.getElementById('skipDishesBtn').addEventListener('click', skipDishSelection);
+    document.getElementById('confirmDishesBtn').addEventListener('click', confirmDishSelection);
+
+    // Nếu có nút nào đó mở modal chọn món
+    // document.getElementById('openDishModalBtn').addEventListener('click', openDishSelectionModal);
 
     // Dữ liệu tạm
     let bookingData = {
@@ -89,12 +98,14 @@
 
         // Chuyển modal
         step1Modal.hide();
-        step2Modal.show();
+        //b.show();
+
+        openDishSelectionModal();
     });
 
     // Quay lại bước 1
     document.getElementById('backToStep1').addEventListener('click', function () {
-        step2Modal.hide();
+        dishModal.hide();
         step1Modal.show();
     });
 
@@ -154,7 +165,7 @@
             alert('Có lỗi khi tải danh sách loại bàn trống');
         }
     }
-    
+
     // Chuyển sang bước 3
     document.getElementById('nextToStep3').addEventListener('click', function () {
         if (!bookingData.tableTypeId) {
@@ -255,5 +266,210 @@
             customerEmail: '',
             note: ''
         };
+    }
+
+    // Biến toàn cục
+    let availableDishes = [];
+    let selectedDishes = {};
+
+    // Hàm mở modal chọn món
+    function openDishSelectionModal() {
+        fetchAvailableDishes()
+            .then(() => {
+                renderDishList();
+                dishModal.show();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Có lỗi khi tải danh sách món ăn');
+            });
+    }
+
+    // Lấy danh sách món ăn từ server
+    function fetchAvailableDishes() {
+        return fetch('/api/dishapi/available')
+            .then(response => {
+                if (!response.ok) throw new Error('Network response was not ok');
+                return response.json();
+            })
+            .then(dishes => {
+                availableDishes = dishes;
+                // Khởi tạo selectedDishes với quantity = 0
+                selectedDishes = {};
+                dishes.forEach(dish => {
+                    selectedDishes[dish.idDish] = 0;
+                });
+            });
+    }
+
+    // Hiển thị danh sách món ăn
+    function renderDishList() {
+        const dishListElement = document.getElementById('dishList');
+        dishListElement.innerHTML = '';
+
+        availableDishes.forEach(dish => {
+            const dishElement = document.createElement('div');
+            dishElement.className = 'card mb-3 dish-item';
+            dishElement.innerHTML = `
+      <div class="row g-0">
+        <div class="col-md-4">
+          <img src="${dish.photo || 'default-dish.jpg'}" class="img-fluid rounded-start" alt="${dish.name}">
+        </div>
+        <div class="col-md-8">
+          <div class="card-body">
+            <h5 class="card-title">${dish.name}</h5>
+            <p class="card-text">${dish.description || ''}</p>
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <span class="text-danger fw-bold">${formatPrice(dish.price - dish.price * dish.discount / 100)}</span>
+                ${dish.discount ? `<span class="text-decoration-line-through ms-2 text-muted">${formatPrice(dish.price)}</span>` : ''}
+              </div>
+              <div class="input-group" style="width: 120px;">
+                <button class="btn btn-outline-secondary decrease-btn" type="button" data-dish-id="${dish.idDish}">-</button>
+                <input type="number" class="form-control text-center dish-quantity" 
+                       data-dish-id="${dish.idDish}" value="${selectedDishes[dish.idDish]}" min="0">
+                <button class="btn btn-outline-secondary increase-btn" type="button" data-dish-id="${dish.idDish}">+</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+
+            dishListElement.appendChild(dishElement);
+        });
+
+        // Gắn sự kiện cho các nút +/-
+        document.querySelectorAll('.increase-btn').forEach(btn => {
+            btn.addEventListener('click', function () {
+                const dishId = parseInt(this.getAttribute('data-dish-id'));
+                increaseQuantity(dishId);
+            });
+        });
+
+        document.querySelectorAll('.decrease-btn').forEach(btn => {
+            btn.addEventListener('click', function () {
+                const dishId = parseInt(this.getAttribute('data-dish-id'));
+                decreaseQuantity(dishId);
+            });
+        });
+
+        // Gắn sự kiện thay đổi số lượng trực tiếp
+        document.querySelectorAll('.dish-quantity').forEach(input => {
+            input.addEventListener('change', function () {
+                const dishId = parseInt(this.getAttribute('data-dish-id'));
+                const quantity = parseInt(this.value) || 0;
+                updateQuantity(dishId, quantity);
+            });
+        });
+
+        // Cập nhật danh sách món đã chọn
+        updateSelectedDishesList();
+    }
+
+    // Các hàm xử lý số lượng
+    function increaseQuantity(dishId) {
+        selectedDishes[dishId]++;
+        updateQuantityInput(dishId);
+        updateSelectedDishesList();
+    }
+
+    function decreaseQuantity(dishId) {
+        if (selectedDishes[dishId] > 0) {
+            selectedDishes[dishId]--;
+            updateQuantityInput(dishId);
+            updateSelectedDishesList();
+        }
+    }
+
+    function updateQuantity(dishId, quantity) {
+        selectedDishes[dishId] = Math.max(0, quantity);
+        updateSelectedDishesList();
+    }
+
+    function updateQuantityInput(dishId) {
+        const input = document.querySelector(`.dish-quantity[data-dish-id="${dishId}"]`);
+        if (input) {
+            input.value = selectedDishes[dishId];
+        }
+    }
+
+    // Cập nhật danh sách món đã chọn
+    function updateSelectedDishesList() {
+        const selectedDishesList = document.getElementById('selectedDishesList');
+        const noDishesSelected = document.getElementById('noDishesSelected');
+        const selectedItems = getSelectedDishes();
+
+        if (selectedItems.length > 0) {
+            noDishesSelected.style.display = 'none';
+            selectedDishesList.style.display = 'block';
+
+            // Cập nhật danh sách
+            selectedDishesList.innerHTML = '';
+            selectedItems.forEach(item => {
+                const li = document.createElement('li');
+                li.className = 'list-group-item d-flex justify-content-between align-items-center';
+                li.innerHTML = `
+        ${item.name}
+        <span class="badge bg-primary rounded-pill">${selectedDishes[item.idDish]}</span>
+      `;
+                selectedDishesList.appendChild(li);
+            });
+        } else {
+            noDishesSelected.style.display = 'block';
+            selectedDishesList.style.display = 'none';
+        }
+    }
+
+    // Lấy danh sách món đã chọn (quantity > 0)
+    function getSelectedDishes() {
+        return availableDishes.filter(dish => selectedDishes[dish.idDish] > 0);
+    }
+
+    // Bỏ qua bước chọn món
+    function skipDishSelection() {
+        dishModal.hide();
+        proceedToNextStep(); // Chuyển đến bước tiếp theo
+    }
+
+    // Xác nhận chọn món
+    function confirmDishSelection() {
+        saveSelectedDishes();
+        dishModal.hide();
+        proceedToNextStep(); // Chuyển đến bước tiếp theo
+    }
+
+    // Lưu món đã chọn (có thể lưu vào biến global hoặc form)
+    function saveSelectedDishes() {
+        const selectedItems = getSelectedDishes().map(dish => ({
+            idDish: dish.idDish,
+            name: dish.name,
+            quantity: selectedDishes[dish.idDish],
+            price: dish.price,
+            total: dish.price * selectedDishes[dish.idDish]
+        }));
+
+        // Lưu vào biến global hoặc form ẩn
+        window.selectedDishesData = selectedItems;
+
+        // Hoặc thêm vào form đặt bàn
+        const form = document.getElementById('reservationForm');
+        const dishesInput = document.createElement('input');
+        dishesInput.type = 'hidden';
+        dishesInput.name = 'selectedDishes';
+        dishesInput.value = JSON.stringify(selectedItems);
+        form.appendChild(dishesInput);
+    }
+
+    // Hàm định dạng giá
+    function formatPrice(price) {
+        return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(price);
+    }
+
+    // Hàm chuyển đến bước tiếp theo (tùy thuộc vào flow của bạn)
+    function proceedToNextStep() {
+        // Ví dụ: mở modal xác nhận đặt bàn
+        // const confirmModal = new bootstrap.Modal(document.getElementById('confirmModal'));
+        // confirmModal.show();
     }
 });

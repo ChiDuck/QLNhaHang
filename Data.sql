@@ -250,3 +250,5 @@ INSERT INTO RESERVATION (PHONE, EMAIL, RESERVATIONDATE, RESERVATIONTIME, PARTYSI
 (NULL, 'ly.k@example.com',			'2025-06-03',	'16:30:00', 2, NULL, 4, 11, 12),
 ('0336664321', NULL,				'2025-06-06',	'22:00:00', 2, NULL, 3, NULL, 1),
 (NULL, 'ly.k@example.com',			'2025-06-15',	'17:30:00', 10, N'Có thể trễ 10p', 2, 11, 8)
+
+select * from CUSTOMER
