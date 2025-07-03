@@ -86,6 +86,9 @@ function submitShiporder() {
     const shipAddress = document.getElementById('shipAddress').value.trim();
     const note = document.getElementById('note').value.trim();
     const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
+    const bankCode = paymentMethod === 'vnpay'
+        ? document.querySelector('input[name="bankCode"]:checked')?.value
+        : null;
 
     if (!customerName) {
         alert('Vui lòng nhập họ tên');
@@ -119,6 +122,7 @@ function submitShiporder() {
         orderprice: totalPrice,
         note: note || null,
         paymentMethod: paymentMethod,
+        bankCode: bankCode,
         items: cart.map(item => ({
             dishId: item.id,
             quantity: item.quantity,
@@ -126,8 +130,19 @@ function submitShiporder() {
         }))
     };
 
-    // Gửi đơn hàng lên server
-    placeShiporder(shiporder);
+    try {
+        // Nếu thanh toán điện tử
+        if (paymentMethod === 'momo' || paymentMethod === 'vnpay') {
+            await processElectronicPayment(shiporder);
+        } else {
+            // Thanh toán tiền mặt
+            await placeShiporder(shiporder);
+        }
+    } catch (error) {
+        console.error('Payment error:', error);
+        alert('Có lỗi xảy ra: ' + error.message);
+    }
+
 }
 
 // Gửi đơn hàng lên server
@@ -151,7 +166,7 @@ function placeShiporder(shiporder) {
         })
         .then(data => {
             // Xử lý khi đặt hàng thành công
-            alert('Đặt hàng thành công! Mã đơn hàng: ' + data.idShipoder);
+            alert('Đặt hàng thành công! Mã đơn hàng: ' + data.idShiporder);
 
             // Reset form và giỏ hàng
             document.getElementById('checkoutForm').reset();
@@ -160,7 +175,7 @@ function placeShiporder(shiporder) {
             checkoutModal.hide();
 
             // Có thể chuyển hướng đến trang xác nhận đơn hàng
-            // window.location.href = `/shiporder-confirmation?id=${data.idShipoder}`;
+            // window.location.href = `/shiporder-confirmation?id=${data.idShiporder}`;
         })
         .catch(error => {
             console.error('Error:', error);
@@ -170,4 +185,58 @@ function placeShiporder(shiporder) {
             submitBtn.disabled = false;
             submitBtn.textContent = 'Đặt hàng';
         });
+}
+
+// Thêm vào phần DOMContentLoaded
+document.querySelectorAll('input[name="paymentMethod"]').forEach(radio => {
+    radio.addEventListener('change', function () {
+        const bankOptions = document.getElementById('bankOptions');
+        if (this.value === 'vnpay') {
+            bankOptions.style.display = 'block';
+        } else {
+            bankOptions.style.display = 'none';
+        }
+    });
+});
+
+
+// Xử lý thanh toán điện tử
+async function processElectronicPayment(shiporder) {
+    // Hiển thị loading
+    const submitBtn = document.getElementById('submitOrderBtn');
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Đang kết nối...';
+
+    try {
+        // Gọi API để tạo yêu cầu thanh toán
+        const response = await fetch('/api/paymentapi/create', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                amount: shiporder.orderPrice,
+                shiporderId: 'ORD-' + Date.now(), // Tạm thời, sẽ thay bằng orderId thực từ server
+                orderInfo: 'Thanh toán đơn hàng ẩm thực',
+                paymentMethod: shiporder.paymentMethod,
+                bankCode: shiporder.bankCode,
+                customerName: shiporder.customerName,
+                customerEmail: shiporder.email
+            })
+        });
+
+        if (!response.ok) throw new Error('Không thể kết nối cổng thanh toán');
+
+        const paymentData = await response.json();
+
+        // Chuyển hướng đến cổng thanh toán
+        if (paymentData.paymentUrl) {
+            window.location.href = paymentData.paymentUrl;
+        } else {
+            throw new Error('Không nhận được link thanh toán');
+        }
+    } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Đặt hàng';
+    }
 }

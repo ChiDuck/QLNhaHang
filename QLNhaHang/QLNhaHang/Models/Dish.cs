@@ -9,6 +9,7 @@ namespace QLNhaHang.Models
         {
             Cartdetails = new HashSet<Cartdetail>();
             Dishingredients = new HashSet<Dishingredient>();
+            Orderitems = new HashSet<Orderitem>();
             Reservationorders = new HashSet<Reservationorder>();
         }
 
@@ -24,6 +25,7 @@ namespace QLNhaHang.Models
         public virtual Dishcategory? IdDishcategoryNavigation { get; set; }
         public virtual ICollection<Cartdetail> Cartdetails { get; set; }
         public virtual ICollection<Dishingredient> Dishingredients { get; set; }
+        public virtual ICollection<Orderitem> Orderitems { get; set; }
         public virtual ICollection<Reservationorder> Reservationorders { get; set; }
     }
 }

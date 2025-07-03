@@ -5,6 +5,11 @@ namespace QLNhaHang.Models
 {
     public partial class Shiporder
     {
+        public Shiporder()
+        {
+            Orderitems = new HashSet<Orderitem>();
+        }
+
         public int IdShiporder { get; set; }
         public DateTime Orderdate { get; set; }
         public string Customername { get; set; } = null!;
@@ -22,5 +27,6 @@ namespace QLNhaHang.Models
         public virtual Cart? IdCartNavigation { get; set; }
         public virtual Orderstatus? IdOrderstatusNavigation { get; set; }
         public virtual Payment? IdPaymentNavigation { get; set; }
+        public virtual ICollection<Orderitem> Orderitems { get; set; }
     }
 }

@@ -141,7 +141,7 @@
 								</div>
 							</div>
 
-							<div class="mt-4">
+							@* 	<div class="mt-4">
 								<h5 class="mb-3">Phương thức thanh toán</h5>
 								<div class="form-check mb-2">
 									<input class="form-check-input" type="radio" name="paymentMethod" id="cashPayment" value="cash" checked>
@@ -154,6 +154,48 @@
 									<label class="form-check-label" for="momoPayment">
 										Thanh toán qua ví MoMo
 									</label>
+								</div>
+							</div> *@
+							<div class="mt-4">
+								<h5 class="mb-3">Phương thức thanh toán</h5>
+								<div class="form-check mb-2">
+									<input class="form-check-input" type="radio" name="paymentMethod" id="cashPayment" value="cash" checked>
+									<label class="form-check-label" for="cashPayment">
+										Thanh toán tiền mặt khi nhận hàng
+									</label>
+								</div>
+
+								<!-- MoMo Payment -->
+								<div class="form-check mb-2">
+									<input class="form-check-input" type="radio" name="paymentMethod" id="momoPayment" value="momo">
+									<label class="form-check-label" for="momoPayment">
+										<img src="https://via.placeholder.com/80x30?text=MoMo" alt="MoMo" style="height: 20px; margin-left: 5px;">
+									</label>
+								</div>
+
+								<!-- VNPay Payment -->
+								<div class="form-check mb-2">
+									<input class="form-check-input" type="radio" name="paymentMethod" id="vnpayPayment" value="vnpay">
+									<label class="form-check-label" for="vnpayPayment">
+										<img src="https://via.placeholder.com/80x30?text=VNPay" alt="VNPay" style="height: 20px; margin-left: 5px;">
+									</label>
+								</div>
+
+								<!-- Ngân hàng -->
+								<div id="bankOptions" style="display: none; margin-top: 10px; padding-left: 25px;">
+									<div class="form-check mb-2">
+										<input class="form-check-input" type="radio" name="bankCode" id="vcbBank" value="VCB">
+										<label class="form-check-label" for="vcbBank">
+											<img src="https://via.placeholder.com/80x30?text=Vietcombank" alt="Vietcombank" style="height: 20px; margin-left: 5px;">
+										</label>
+									</div>
+									<div class="form-check mb-2">
+										<input class="form-check-input" type="radio" name="bankCode" id="tcbBank" value="TCB">
+										<label class="form-check-label" for="tcbBank">
+											<img src="https://via.placeholder.com/80x30?text=Techcombank" alt="Techcombank" style="height: 20px; margin-left: 5px;">
+										</label>
+									</div>
+									<!-- Thêm ngân hàng khác nếu cần -->
 								</div>
 							</div>
 						</div>

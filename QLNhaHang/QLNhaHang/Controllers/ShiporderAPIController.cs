@@ -66,7 +66,7 @@ namespace QLNhaHang.Controllers
 				Orderprice = shiporderDto.OrderPrice,
 				Note = shiporderDto.Note,
 				IdOrderstatus = 1, // Trạng thái mặc định (ví dụ: 1 = Chờ xác nhận)
-				IdPayment = shiporderDto.PaymentMethod == "momo" ? 2 : 1 // 1 = Tiền mặt, 2 = MoMo
+				//IdPayment = shiporderDto.PaymentMethod == "momo" ? 2 : 1 // 1 = Tiền mặt, 2 = MoMo
 			};
 
 			// Thêm vào database
@@ -74,17 +74,17 @@ namespace QLNhaHang.Controllers
 			await db.SaveChangesAsync();
 
 			// Tạo các món trong đơn hàng
-			//foreach (var item in shiporderDto.Items)
-			//{
-			//	var orderItem = new Orderitem
-			//	{
-			//		IdOrder = shiporder.IdShiporder,
-			//		IdDish = item.DishId,
-			//		Quantity = item.Quantity,
-			//		Subtotal = item.Subtotal
-			//	};
-			//	db.Orderitems.Add(orderItem);
-			//}
+			foreach (var item in shiporderDto.Items)
+			{
+				var orderItem = new Orderitem
+				{
+					IdShiporder = shiporder.IdShiporder,
+					IdDish = item.DishId,
+					Quantity = item.Quantity,
+					Subtotal = item.Subtotal
+				};
+				db.Orderitems.Add(orderItem);
+			}
 
 			await db.SaveChangesAsync();
 
@@ -111,6 +111,6 @@ namespace QLNhaHang.Controllers
 	{
 		public int DishId { get; set; }
 		public int Quantity { get; set; }
-		public double Price { get; set; }
+		public double Subtotal { get; set; }
 	}
 }
