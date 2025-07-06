@@ -58,7 +58,7 @@ namespace QLNhaHang.Models
             modelBuilder.Entity<Area>(entity =>
             {
                 entity.HasKey(e => e.IdArea)
-                    .HasName("PK__AREA__6E15A1AA8C2651F5");
+                    .HasName("PK__AREA__6E15A1AA4003F98A");
 
                 entity.ToTable("AREA");
 
@@ -72,11 +72,11 @@ namespace QLNhaHang.Models
             modelBuilder.Entity<Cart>(entity =>
             {
                 entity.HasKey(e => e.IdCart)
-                    .HasName("PK__CART__7A1680A52DA1343D");
+                    .HasName("PK__CART__7A1680A590E7BA70");
 
                 entity.ToTable("CART");
 
-                entity.HasIndex(e => e.IdCustomer, "UQ__CART__7F6B0B8B5BC7816E")
+                entity.HasIndex(e => e.IdCustomer, "UQ__CART__7F6B0B8B2363FA6A")
                     .IsUnique();
 
                 entity.Property(e => e.IdCart).HasColumnName("ID_CART");
@@ -95,7 +95,7 @@ namespace QLNhaHang.Models
             modelBuilder.Entity<Cartdetail>(entity =>
             {
                 entity.HasKey(e => new { e.IdCart, e.IdDish })
-                    .HasName("PK__CARTDETA__0FD258358D179B02");
+                    .HasName("PK__CARTDETA__0FD25835CE46C9F0");
 
                 entity.ToTable("CARTDETAIL");
 
@@ -123,7 +123,7 @@ namespace QLNhaHang.Models
             modelBuilder.Entity<Customer>(entity =>
             {
                 entity.HasKey(e => e.IdCustomer)
-                    .HasName("PK__CUSTOMER__7F6B0B8A4A544338");
+                    .HasName("PK__CUSTOMER__7F6B0B8A5C9A81CC");
 
                 entity.ToTable("CUSTOMER");
 
@@ -172,11 +172,11 @@ namespace QLNhaHang.Models
             modelBuilder.Entity<Dinetable>(entity =>
             {
                 entity.HasKey(e => e.IdDinetable)
-                    .HasName("PK__DINETABL__9C6E10995ED78D8A");
+                    .HasName("PK__DINETABL__9C6E1099444BF151");
 
                 entity.ToTable("DINETABLE");
 
-                entity.HasIndex(e => e.Name, "UQ__DINETABL__D9C1FA0036465FDC")
+                entity.HasIndex(e => e.Name, "UQ__DINETABL__D9C1FA00D97B248E")
                     .IsUnique();
 
                 entity.Property(e => e.IdDinetable).HasColumnName("ID_DINETABLE");
@@ -203,7 +203,7 @@ namespace QLNhaHang.Models
             modelBuilder.Entity<Dish>(entity =>
             {
                 entity.HasKey(e => e.IdDish)
-                    .HasName("PK__DISH__5C4D8906E2F4AA29");
+                    .HasName("PK__DISH__5C4D8906BAF4D6D3");
 
                 entity.ToTable("DISH");
 
@@ -238,7 +238,7 @@ namespace QLNhaHang.Models
             modelBuilder.Entity<Dishcategory>(entity =>
             {
                 entity.HasKey(e => e.IdDishcategory)
-                    .HasName("PK__DISHCATE__F7727DD819D8A21B");
+                    .HasName("PK__DISHCATE__F7727DD8B5253243");
 
                 entity.ToTable("DISHCATEGORY");
 
@@ -252,7 +252,7 @@ namespace QLNhaHang.Models
             modelBuilder.Entity<Dishingredient>(entity =>
             {
                 entity.HasKey(e => new { e.IdInventoryitem, e.IdDish })
-                    .HasName("PK__DISHINGR__CF955B20C8E83644");
+                    .HasName("PK__DISHINGR__CF955B201A4E661C");
 
                 entity.ToTable("DISHINGREDIENT");
 
@@ -278,7 +278,7 @@ namespace QLNhaHang.Models
             modelBuilder.Entity<Importticket>(entity =>
             {
                 entity.HasKey(e => e.IdImportticket)
-                    .HasName("PK__IMPORTTI__6DDBAD97E8B5D85E");
+                    .HasName("PK__IMPORTTI__6DDBAD97AEF2643A");
 
                 entity.ToTable("IMPORTTICKET");
 
@@ -303,7 +303,7 @@ namespace QLNhaHang.Models
             modelBuilder.Entity<Importticketdetail>(entity =>
             {
                 entity.HasKey(e => new { e.IdInventoryitem, e.IdImportticket })
-                    .HasName("PK__IMPORTTI__DC8C3969FDB99088");
+                    .HasName("PK__IMPORTTI__DC8C3969E4F6C0C8");
 
                 entity.ToTable("IMPORTTICKETDETAIL");
 
@@ -331,7 +331,7 @@ namespace QLNhaHang.Models
             modelBuilder.Entity<Inventoryitem>(entity =>
             {
                 entity.HasKey(e => e.IdInventoryitem)
-                    .HasName("PK__INVENTOR__BA5183B025630D7A");
+                    .HasName("PK__INVENTOR__BA5183B07BBB16A0");
 
                 entity.ToTable("INVENTORYITEM");
 
@@ -358,7 +358,7 @@ namespace QLNhaHang.Models
             modelBuilder.Entity<Inventoryitemtype>(entity =>
             {
                 entity.HasKey(e => e.IdInventoryitemtype)
-                    .HasName("PK__INVENTOR__06C9E7EBCF49BD29");
+                    .HasName("PK__INVENTOR__06C9E7EB88E2D69A");
 
                 entity.ToTable("INVENTORYITEMTYPE");
 
@@ -372,7 +372,7 @@ namespace QLNhaHang.Models
             modelBuilder.Entity<Orderitem>(entity =>
             {
                 entity.HasKey(e => new { e.IdShiporder, e.IdDish })
-                    .HasName("PK__ORDERITE__FC77A3C66EFEA163");
+                    .HasName("PK__ORDERITE__FC77A3C66DE58960");
 
                 entity.ToTable("ORDERITEM");
 
@@ -400,7 +400,7 @@ namespace QLNhaHang.Models
             modelBuilder.Entity<Orderstatus>(entity =>
             {
                 entity.HasKey(e => e.IdOrderstatus)
-                    .HasName("PK__ORDERSTA__9CAE67D975951587");
+                    .HasName("PK__ORDERSTA__9CAE67D9E28466C0");
 
                 entity.ToTable("ORDERSTATUS");
 
@@ -414,7 +414,7 @@ namespace QLNhaHang.Models
             modelBuilder.Entity<Payment>(entity =>
             {
                 entity.HasKey(e => e.IdPayment)
-                    .HasName("PK__PAYMENT__1EFCED2BEBC72B8B");
+                    .HasName("PK__PAYMENT__1EFCED2B1778D8EE");
 
                 entity.ToTable("PAYMENT");
 
@@ -436,7 +436,7 @@ namespace QLNhaHang.Models
             modelBuilder.Entity<Payroll>(entity =>
             {
                 entity.HasKey(e => e.IdPayroll)
-                    .HasName("PK__PAYROLL__73C8C769F8782DCC");
+                    .HasName("PK__PAYROLL__73C8C76957472875");
 
                 entity.ToTable("PAYROLL");
 
@@ -450,7 +450,7 @@ namespace QLNhaHang.Models
             modelBuilder.Entity<Payrolldetail>(entity =>
             {
                 entity.HasKey(e => new { e.IdStaff, e.IdPayroll })
-                    .HasName("PK__PAYROLLD__60652F07F99C3716");
+                    .HasName("PK__PAYROLLD__60652F07D379CBB9");
 
                 entity.ToTable("PAYROLLDETAIL");
 
@@ -492,7 +492,7 @@ namespace QLNhaHang.Models
             modelBuilder.Entity<Reservation>(entity =>
             {
                 entity.HasKey(e => e.IdReservation)
-                    .HasName("PK__RESERVAT__3CB7398BE6F86E8F");
+                    .HasName("PK__RESERVAT__3CB7398B481607BB");
 
                 entity.ToTable("RESERVATION");
 
@@ -546,7 +546,7 @@ namespace QLNhaHang.Models
             modelBuilder.Entity<Reservationorder>(entity =>
             {
                 entity.HasKey(e => new { e.IdReservation, e.IdDish })
-                    .HasName("PK__RESERVAT__4973E11B0B65D47D");
+                    .HasName("PK__RESERVAT__4973E11B48D36BD0");
 
                 entity.ToTable("RESERVATIONORDER");
 
@@ -574,7 +574,7 @@ namespace QLNhaHang.Models
             modelBuilder.Entity<Reservationstatus>(entity =>
             {
                 entity.HasKey(e => e.IdReservationstatus)
-                    .HasName("PK__RESERVAT__4B5D56B129B28F0F");
+                    .HasName("PK__RESERVAT__4B5D56B10ADB5601");
 
                 entity.ToTable("RESERVATIONSTATUS");
 
@@ -588,7 +588,7 @@ namespace QLNhaHang.Models
             modelBuilder.Entity<Shiporder>(entity =>
             {
                 entity.HasKey(e => e.IdShiporder)
-                    .HasName("PK__SHIPORDE__89B37B5634BDBEA1");
+                    .HasName("PK__SHIPORDE__89B37B56E98D3A65");
 
                 entity.ToTable("SHIPORDER");
 
@@ -634,6 +634,11 @@ namespace QLNhaHang.Models
 
                 entity.Property(e => e.Shipfee).HasColumnName("SHIPFEE");
 
+                entity.Property(e => e.Transactionid)
+                    .HasMaxLength(100)
+                    .IsUnicode(false)
+                    .HasColumnName("TRANSACTIONID");
+
                 entity.HasOne(d => d.IdCartNavigation)
                     .WithMany(p => p.Shiporders)
                     .HasForeignKey(d => d.IdCart)
@@ -653,11 +658,11 @@ namespace QLNhaHang.Models
             modelBuilder.Entity<Staff>(entity =>
             {
                 entity.HasKey(e => e.IdStaff)
-                    .HasName("PK__STAFF__E759A3718A52D009");
+                    .HasName("PK__STAFF__E759A371079AF089");
 
                 entity.ToTable("STAFF");
 
-                entity.HasIndex(e => e.Citizenid, "UQ__STAFF__1FD9B7325C8653BC")
+                entity.HasIndex(e => e.Citizenid, "UQ__STAFF__1FD9B7327A010AB7")
                     .IsUnique();
 
                 entity.Property(e => e.IdStaff).HasColumnName("ID_STAFF");
@@ -721,7 +726,7 @@ namespace QLNhaHang.Models
             modelBuilder.Entity<Stafftype>(entity =>
             {
                 entity.HasKey(e => e.IdStafftype)
-                    .HasName("PK__STAFFTYP__702D805BF2FEB4F8");
+                    .HasName("PK__STAFFTYP__702D805B6BA2243C");
 
                 entity.ToTable("STAFFTYPE");
 
@@ -735,7 +740,7 @@ namespace QLNhaHang.Models
             modelBuilder.Entity<Tabletype>(entity =>
             {
                 entity.HasKey(e => e.IdTabletype)
-                    .HasName("PK__TABLETYP__A1F1FC574D0F6F80");
+                    .HasName("PK__TABLETYP__A1F1FC57BDF135CB");
 
                 entity.ToTable("TABLETYPE");
 
@@ -751,7 +756,7 @@ namespace QLNhaHang.Models
             modelBuilder.Entity<Weeklyshift>(entity =>
             {
                 entity.HasKey(e => new { e.IdWorkshift, e.IdWorkday, e.IdStaff })
-                    .HasName("PK__WEEKLYSH__97A56D26F01B1C93");
+                    .HasName("PK__WEEKLYSH__97A56D26E3617ADD");
 
                 entity.ToTable("WEEKLYSHIFT");
 
@@ -789,7 +794,7 @@ namespace QLNhaHang.Models
             modelBuilder.Entity<Workday>(entity =>
             {
                 entity.HasKey(e => e.IdWorkday)
-                    .HasName("PK__WORKDAY__D06DB5ADE5E57500");
+                    .HasName("PK__WORKDAY__D06DB5ADD226F54A");
 
                 entity.ToTable("WORKDAY");
 
@@ -803,7 +808,7 @@ namespace QLNhaHang.Models
             modelBuilder.Entity<Workshift>(entity =>
             {
                 entity.HasKey(e => e.IdWorkshift)
-                    .HasName("PK__WORKSHIF__2A44EFDF216370CC");
+                    .HasName("PK__WORKSHIF__2A44EFDF2F236487");
 
                 entity.ToTable("WORKSHIFT");
 

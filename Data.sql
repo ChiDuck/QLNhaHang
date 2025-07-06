@@ -252,5 +252,9 @@ INSERT INTO RESERVATION (PHONE, EMAIL, RESERVATIONDATE, RESERVATIONTIME, PARTYSI
 ('0336664321', NULL,				'2025-06-06',	'22:00:00', 2, NULL, 3, NULL, 1),
 (NULL, 'ly.k@example.com',			'2025-06-15',	'17:30:00', 10, N'Có thể trễ 10p', 2, 11, 8)
 
+INSERT INTO ORDERSTATUS VALUES
+(N'Chờ xác nhận'),
+(N'Chấp nhận')
+
 select * from CUSTOMER
 select * from SHIPORDER

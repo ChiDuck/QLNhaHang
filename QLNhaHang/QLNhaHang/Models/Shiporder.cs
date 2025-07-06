@@ -20,6 +20,7 @@ namespace QLNhaHang.Models
         public double? Shipfee { get; set; }
         public double Orderprice { get; set; }
         public string? Note { get; set; }
+        public string? Transactionid { get; set; }
         public int? IdOrderstatus { get; set; }
         public int? IdCart { get; set; }
         public int? IdPayment { get; set; }

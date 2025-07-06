@@ -76,7 +76,7 @@
 </div>
 
 <!-- Modal Thanh Toán -->
-<div class="modal fade" id="checkoutModal" tabindex="-1" aria-hidden="true">
+@* <div class="modal fade" id="checkoutModal" tabindex="-1" aria-hidden="true">
 	<div class="modal-dialog modal-lg">
 		<div class="modal-content">
 			<div class="modal-header">
@@ -141,7 +141,7 @@
 								</div>
 							</div>
 
-							@* 	<div class="mt-4">
+							<div class="mt-4">
 								<h5 class="mb-3">Phương thức thanh toán</h5>
 								<div class="form-check mb-2">
 									<input class="form-check-input" type="radio" name="paymentMethod" id="cashPayment" value="cash" checked>
@@ -155,48 +155,6 @@
 										Thanh toán qua ví MoMo
 									</label>
 								</div>
-							</div> *@
-							<div class="mt-4">
-								<h5 class="mb-3">Phương thức thanh toán</h5>
-								<div class="form-check mb-2">
-									<input class="form-check-input" type="radio" name="paymentMethod" id="cashPayment" value="cash" checked>
-									<label class="form-check-label" for="cashPayment">
-										Thanh toán tiền mặt khi nhận hàng
-									</label>
-								</div>
-
-								<!-- MoMo Payment -->
-								<div class="form-check mb-2">
-									<input class="form-check-input" type="radio" name="paymentMethod" id="momoPayment" value="momo">
-									<label class="form-check-label" for="momoPayment">
-										<img src="https://via.placeholder.com/80x30?text=MoMo" alt="MoMo" style="height: 20px; margin-left: 5px;">
-									</label>
-								</div>
-
-								<!-- VNPay Payment -->
-								<div class="form-check mb-2">
-									<input class="form-check-input" type="radio" name="paymentMethod" id="vnpayPayment" value="vnpay">
-									<label class="form-check-label" for="vnpayPayment">
-										<img src="https://via.placeholder.com/80x30?text=VNPay" alt="VNPay" style="height: 20px; margin-left: 5px;">
-									</label>
-								</div>
-
-								<!-- Ngân hàng -->
-								<div id="bankOptions" style="display: none; margin-top: 10px; padding-left: 25px;">
-									<div class="form-check mb-2">
-										<input class="form-check-input" type="radio" name="bankCode" id="vcbBank" value="VCB">
-										<label class="form-check-label" for="vcbBank">
-											<img src="https://via.placeholder.com/80x30?text=Vietcombank" alt="Vietcombank" style="height: 20px; margin-left: 5px;">
-										</label>
-									</div>
-									<div class="form-check mb-2">
-										<input class="form-check-input" type="radio" name="bankCode" id="tcbBank" value="TCB">
-										<label class="form-check-label" for="tcbBank">
-											<img src="https://via.placeholder.com/80x30?text=Techcombank" alt="Techcombank" style="height: 20px; margin-left: 5px;">
-										</label>
-									</div>
-									<!-- Thêm ngân hàng khác nếu cần -->
-								</div>
 							</div>
 						</div>
 					</div>
@@ -209,7 +167,99 @@
 		</div>
 	</div>
 </div>
+ *@
+<!-- Modal Thanh Toán -->
+<div class="modal fade" id="checkoutModal" tabindex="-1" aria-hidden="true">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Thông Tin Thanh Toán</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<form id="checkoutForm">
+					<div class="row">
+						<!-- Thông tin khách hàng -->
+						<div class="col-md-6">
+							<div class="mb-3">
+								<label for="customerName" class="form-label">Họ và tên <span class="text-danger">*</span></label>
+								<input type="text" class="form-control" id="customerName" required>
+							</div>
 
+							<div class="mb-3">
+								<label class="form-label">Liên hệ <span class="text-danger">*</span></label>
+								<div class="input-group mb-2">
+									<input type="tel" class="form-control" id="phone" placeholder="Số điện thoại">
+									<span class="input-group-text">hoặc</span>
+									<input type="email" class="form-control" id="email" placeholder="Email">
+								</div>
+								<small class="text-muted">Nhập ít nhất một trong hai thông tin</small>
+							</div>
+
+							<div class="mb-3 form-check">
+								<input type="checkbox" class="form-check-input" id="isShipping">
+								<label class="form-check-label" for="isShipping">Giao hàng tận nơi</label>
+							</div>
+
+							<div id="shippingAddressGroup" class="mb-3" style="display: none;">
+								<label for="shipAddress" class="form-label">Địa chỉ giao hàng <span class="text-danger">*</span></label>
+								<input type="text" class="form-control" id="shipAddress">
+							</div>
+
+							<div class="mb-3">
+								<label for="note" class="form-label">Ghi chú</label>
+								<textarea class="form-control" id="note" rows="2"></textarea>
+							</div>
+						</div>
+
+						<!-- Thông tin đơn hàng -->
+						<div class="col-md-6">
+							<h5 class="mb-3">Chi tiết đơn hàng</h5>
+							<div id="orderSummary" class="mb-3">
+								<!-- Danh sách món sẽ được thêm bằng JS -->
+							</div>
+
+							<div class="border-top pt-2">
+								<div class="d-flex justify-content-between mb-2">
+									<span>Tạm tính:</span>
+									<span id="subtotal">0 ₫</span>
+								</div>
+								<div class="d-flex justify-content-between mb-2">
+									<span>Phí vận chuyển:</span>
+									<span id="shippingFee">15,000 ₫</span>
+								</div>
+								<div class="d-flex justify-content-between fw-bold fs-5">
+									<span>Tổng cộng:</span>
+									<span id="totalPrice">0 ₫</span>
+								</div>
+							</div>
+
+							<div class="mt-4">
+								<h5 class="mb-3">Phương thức thanh toán</h5>
+								<div class="form-check mb-2">
+									<input class="form-check-input" type="radio" name="paymentMethod" id="cashPayment" value="cash" checked>
+									<label class="form-check-label" for="cashPayment">
+										Thanh toán tiền mặt khi nhận hàng
+									</label>
+								</div>
+								<div class="form-check">
+									<input class="form-check-input" type="radio" name="paymentMethod" id="vnpayPayment" value="vnpay">
+									<label class="form-check-label" for="vnpayPayment">
+										<img src="https://sandbox.vnpayment.vn/apis/assets/images/logo.svg" alt="VNPay" style="height: 20px; margin-left: 5px;">
+									</label>
+								</div>
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Quay lại</button>
+				<button type="button" id="submitOrderBtn" class="btn btn-primary">Đặt hàng</button>
+			</div>
+		</div>
+	</div>
+</div>
 @section Scripts {
 	<script src="~/js/menu.js"></script>
 	<script src="~/js/ordering.js"></script>
