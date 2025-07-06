@@ -1,4 +1,4 @@
-﻿namespace QLNhaHang.Models
+﻿namespace QLNhaHang.MyModels
 {
 	public class PaymentResponseModel
 	{

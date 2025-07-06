@@ -10,6 +10,8 @@ builder.Services.AddDbContext<QLNhaHangContext>(options =>
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddHostedService<PendingOrderCleanupService>();
+builder.Services.AddRazorPages();
 
 var app = builder.Build();
 
@@ -29,5 +31,7 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+app.MapRazorPages();
 
 app.Run();

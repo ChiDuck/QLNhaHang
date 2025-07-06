@@ -72,7 +72,7 @@ namespace QLNhaHang.Controllers
 				Shipfee = orderDto.IsShipping ? orderDto.ShipFee : null,
 				Orderprice = orderDto.OrderPrice,
 				Note = orderDto.Note,
-				IdOrderstatus = 1, // Trạng thái mặc định (ví dụ: 1 = Chờ xác nhận)
+				IdOrderstatus = 1, // Chờ thanh toán
 			};
 
 			db.Shiporders.Add(shipOrder);
@@ -99,14 +99,39 @@ namespace QLNhaHang.Controllers
 		[HttpPost("vnpay")]
 		public async Task<IActionResult> CreateVNPayOrder([FromBody] ShipOrderCreateDto orderDto)
 		{
-			// Validate
 			if (orderDto.PaymentMethod != "vnpay")
-			{
 				return BadRequest("Invalid payment method");
-			}
 
-			// Tạo transactionId tạm thời để truyền sang VNPay (chưa lưu vào DB)
 			var transactionId = "PENDING_" + Guid.NewGuid().ToString();
+
+			// Tạo đơn hàng với trạng thái "Chờ thanh toán"
+			var shipOrder = new Shiporder
+			{
+				Orderdate = DateTime.Now,
+				Customername = orderDto.CustomerName,
+				Phone = orderDto.Phone,
+				Email = orderDto.Email,
+				Isshipping = orderDto.IsShipping,
+				Shipaddress = orderDto.ShipAddress,
+				Shipfee = orderDto.IsShipping ? orderDto.ShipFee : null,
+				Orderprice = orderDto.OrderPrice,
+				Note = orderDto.Note,
+				Transactionid = transactionId
+			};
+			db.Shiporders.Add(shipOrder);
+			await db.SaveChangesAsync();
+
+			foreach (var item in orderDto.Items)
+			{
+				db.Orderitems.Add(new Orderitem
+				{
+					IdShiporder = shipOrder.IdShiporder,
+					IdDish = item.DishId,
+					Quantity = item.Quantity,
+					Subtotal = item.Subtotal
+				});
+			}
+			await db.SaveChangesAsync();
 
 			// Tạo URL thanh toán VNPay
 			var vnp_Returnurl = _config["VNPay:ReturnUrl"];
@@ -122,11 +147,10 @@ namespace QLNhaHang.Controllers
 			var pay = new VnPayLibrary();
 
 			// Tạo query string
-			//var queryString = HttpUtility.ParseQueryString(string.Empty);
 			pay.AddRequestData("vnp_Version", "2.1.0");
 			pay.AddRequestData("vnp_Command", "pay");
 			pay.AddRequestData("vnp_TmnCode", vnp_TmnCode);
-			pay.AddRequestData("vnp_Amount", ((int)(amountInVND*100)).ToString());
+			pay.AddRequestData("vnp_Amount", ((int)(amountInVND * 100)).ToString());
 			pay.AddRequestData("vnp_CreateDate", DateTime.Now.ToString("yyyyMMddHHmmss"));
 			pay.AddRequestData("vnp_CurrCode", "VND");
 			pay.AddRequestData("vnp_IpAddr", "127.0.0.1");
@@ -151,46 +175,20 @@ namespace QLNhaHang.Controllers
 		public async Task<IActionResult> VNPayReturn()
 		{
 			var query = HttpContext.Request.Query;
-
+			var vnp_TxnRef = query["vnp_TxnRef"].ToString();
+			var id = 0;
 			if (query["vnp_ResponseCode"] == "00")
 			{
-				Console.WriteLine("Payment successful");
+				var shipOrder = await db.Shiporders.FirstOrDefaultAsync(o => o.Transactionid == vnp_TxnRef);
+				if (shipOrder != null)
+				{
+					shipOrder.IdOrderstatus = 1; // Chờ xác nhậny
+					shipOrder.Transactionid = query["vnp_TransactionNo"];
+					await db.SaveChangesAsync();
+					id = shipOrder.IdShiporder;
+				}
 			}
-				//// Tạo đơn hàng
-				//var shipOrder = new Shiporder
-				//{
-				//	Orderdate = DateTime.Now,
-				//	Customername = orderDto.CustomerName,
-				//	Phone = orderDto.Phone,
-				//	Email = orderDto.Email,
-				//	Isshipping = orderDto.IsShipping,
-				//	Shipaddress = orderDto.ShipAddress,
-				//	Shipfee = orderDto.IsShipping ? orderDto.ShipFee : null,
-				//	Orderprice = orderDto.OrderPrice,
-				//	Note = orderDto.Note,
-				//	IdOrderstatus = 1, // Đã thanh toán
-				//	Transactionid = query["vnp_TransactionNo"]
-				//};
-
-				//db.Shiporders.Add(shipOrder);
-				//await db.SaveChangesAsync();
-
-				//foreach (var item in orderDto.Items)
-				//{
-				//	db.Orderitems.Add(new Orderitem
-				//	{
-				//		IdShiporder = shipOrder.IdShiporder,
-				//		IdDish = item.DishId,
-				//		Quantity = item.Quantity,
-				//		Subtotal = item.Subtotal
-				//	});
-				//}
-				//await db.SaveChangesAsync();
-
-			//	return Redirect($"{_config["ClientUrl"]}/order-confirmation?id={shipOrder.IdShiporder}");
-			//}
-
-			return Redirect($"{_config["ClientUrl"]}/payment-failed");
+			return Redirect($"{_config["ClientUrl"]}/orderconfirmation?id={id}");
 		}
 	}
 

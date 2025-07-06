@@ -254,7 +254,11 @@ INSERT INTO RESERVATION (PHONE, EMAIL, RESERVATIONDATE, RESERVATIONTIME, PARTYSI
 
 INSERT INTO ORDERSTATUS VALUES
 (N'Chờ xác nhận'),
-(N'Chấp nhận')
+(N'Chấp nhận'),
+(N'Từ chối'),
+(N'Đang thực hiện'),
+(N'Đang giao'),
+(N'Đã hoàn thành')
 
 select * from CUSTOMER
 select * from SHIPORDER

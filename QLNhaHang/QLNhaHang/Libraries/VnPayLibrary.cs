@@ -3,7 +3,7 @@ using System.Net;
 using System.Text;
 using System.Security.Cryptography;
 using System.Globalization;
-using QLNhaHang.Models;
+using QLNhaHang.MyModels;
 
 namespace QLNhaHang.Libraries
 {

@@ -1,0 +1,103 @@
+﻿@page "/orderconfirmation"
+@model OrderConfirmationModel
+@{
+	ViewData["Title"] = "Xác nhận đơn hàng";
+}
+
+<style>
+	.order-confirmation-container {
+		max-width: 700px;
+		margin: 40px auto;
+		background: #fff;
+		border-radius: 10px;
+		box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+		padding: 32px 24px;
+	}
+
+		.order-confirmation-container h2 {
+			text-align: center;
+			color: #2d7a2d;
+			margin-bottom: 24px;
+		}
+
+	.order-info-list {
+		list-style: none;
+		padding: 0;
+		margin-bottom: 24px;
+	}
+
+		.order-info-list li {
+			margin-bottom: 8px;
+			font-size: 1.05rem;
+		}
+
+	.table-order-details th, .table-order-details td {
+		text-align: center;
+		vertical-align: middle;
+	}
+
+	.table-order-details th {
+		background: #f0f0f0;
+	}
+
+	.btn-back-home {
+		display: block;
+		margin: 32px auto 0 auto;
+		width: 200px;
+		font-size: 1.1rem;
+	}
+
+	.alert-success {
+		text-align: center;
+		font-size: 1.1rem;
+	}
+</style>
+
+<div class="order-confirmation-container">
+	@if (Model.ShipOrder != null)
+	{
+		<div class="alert alert-success">
+			<strong>Đặt hàng thành công!</strong><br />
+			Đơn hàng của bạn đã được ghi nhận. Vui lòng chờ nhà hàng xác nhận và liên hệ lại.
+		</div>
+		<h4>Thông tin đơn hàng</h4>
+		<ul class="order-info-list">
+			<li><strong>Mã đơn hàng:</strong> @Model.ShipOrder.IdShiporder</li>
+			<li><strong>Khách hàng:</strong> @Model.ShipOrder.Customername</li>
+			<li><strong>Số điện thoại:</strong> @Model.ShipOrder.Phone</li>
+			<li><strong>Email:</strong> @Model.ShipOrder.Email</li>
+			<li><strong>Ngày đặt:</strong> @Model.ShipOrder.Orderdate.ToString("g")</li>
+			@if (Model.ShipOrder.Shipaddress != null)
+			{
+				<li><strong>Địa chỉ giao hàng:</strong> @Model.ShipOrder.Shipaddress</li>
+			}
+			<li><strong>Ghi chú:</strong> @Model.ShipOrder.Note</li>
+			<li><strong>Trạng thái:</strong> @Model.ShipOrder.IdOrderstatusNavigation?.Name</li>
+		</ul>
+		<h4>Chi tiết đơn hàng</h4>
+		<table class="table table-bordered table-order-details">
+			<thead>
+				<tr>
+					<th>Món ăn</th>
+					<th>Số lượng</th>
+					<th>Thành tiền</th>
+				</tr>
+			</thead>
+			<tbody>
+				@foreach (var item in Model.OrderItems)
+				{
+					<tr>
+						<td>@item.IdDishNavigation?.Name</td>
+						<td>@item.Quantity</td>
+						<td>@item.Subtotal.ToString("N0") VNĐ</td>
+					</tr>
+				}
+			</tbody>
+		</table>
+		<a class="btn btn-success btn-back-home" href="/">Quay về trang chủ</a>
+	}
+	else
+	{
+		<div class="alert alert-danger text-center">Không tìm thấy đơn hàng.</div>
+	}
+</div>
