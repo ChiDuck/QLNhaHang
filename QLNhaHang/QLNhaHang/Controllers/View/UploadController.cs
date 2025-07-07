@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace QLNhaHang.Controllers
+namespace QLNhaHang.Controllers.View
 {
     [Route("api/[controller]")]
     [ApiController]

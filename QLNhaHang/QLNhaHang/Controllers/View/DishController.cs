@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using QLNhaHang.Models;
 
-namespace QLNhaHang.Controllers
+namespace QLNhaHang.Controllers.View
 {
     public class DishController : Controller
     {

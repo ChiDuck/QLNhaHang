@@ -78,7 +78,7 @@
 			<div class="modal-body">
 				<div class="row">
 					<!-- Danh sách món ăn -->
-					<div class="col-md-8 overflow-auto" style="max-height: 550px;">
+					<div class="col-md-8 overflow-auto" style="max-height: 470px;">
 						<div id="dishList" class="dish-list">
 							<!-- Món ăn sẽ được thêm bằng JavaScript -->
 						</div>
@@ -94,9 +94,10 @@
 								<div id="noDishesSelected">
 									<p class="text-muted">Chưa có món nào được chọn</p>
 								</div>
-								<ul id="selectedDishesList" class="list-group list-group-flush" style="display: none;">
+								<ul id="selectedDishesList" class="list-group list-group-flush overflow-auto" style="display: none;max-height: 370px;">
 									<!-- Các món đã chọn sẽ được thêm vào đây -->
 								</ul>
+								<p id="selectedDishesTotal" class="mt-2 text-end fw-bold text-success" style="display:none;"></p>
 							</div>
 						</div>
 					</div>
@@ -167,6 +168,13 @@
 						<p class="mb-1"><strong>Ngày:</strong> <span id="displaySelectedDate"></span></p>
 						<p class="mb-1"><strong>Giờ:</strong> <span id="displaySelectedTime"></span></p>
 						<p class="mb-1"><strong>Số người:</strong> <span id="displaySelectedPartySize"></span></p>
+					</div>
+				</div>
+				<div class="card mb-3">
+					<div class="card-body">
+						<h6 class="card-title">Món đã chọn</h6>
+						<ul id="selectedDishesSummary" class="list-group mb-2"></ul>
+						<p id="selectedDishesSummaryTotal" class="text-end fw-bold text-success"></p>
 					</div>
 				</div>
 			</div>

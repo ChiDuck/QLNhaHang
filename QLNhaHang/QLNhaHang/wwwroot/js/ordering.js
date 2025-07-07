@@ -198,7 +198,7 @@ async function createCashOrder(orderData) {
         // Reset form và giỏ hàng
         checkoutModal.hide();
        // clearCart();
-        window.location.href = `/order-confirmation?id=${result.shipOrderId}`;
+        window.location.href = `/orderconfirmation?id=${result.shipOrderId}`;
     } catch (error) {
         console.error('Error:', error);
         alert('Có lỗi xảy ra khi đặt hàng: ' + error.message);

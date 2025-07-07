@@ -1,0 +1,65 @@
+﻿@page "/reservationconfirmation"
+@model ReservationConfirmationModel
+@{
+	ViewData["Title"] = "Xác nhận đặt bàn";
+	var r = Model.Reservation;
+}
+
+<h2 class="text-success">🎉 Đặt bàn thành công!</h2>
+
+@if (r != null)
+{
+	<div class="card mt-3">
+		<div class="card-body">
+			<h5 class="card-title">Thông tin đặt bàn</h5>
+			<p><strong>Mã đặt bàn:</strong> @r.IdReservation</p>
+			<p><strong>Ngày tạo đơn:</strong> @r.Bookdate</p>
+			<p><strong>Số điện thoại:</strong> @r.Phone</p>
+			<p><strong>Email:</strong> @r.Email</p>
+			<p><strong>Bàn:</strong> @r.IdDinetableNavigation?.Name</p>
+			<p><strong>Ngày đặt:</strong> @r.Reservationdate.ToString("dd/MM/yyyy")</p>
+			<p><strong>Giờ:</strong> @r.Reservationtime.ToString(@"hh\:mm")</p>
+			<p><strong>Số người:</strong> @r.Partysize</p>
+			<p><strong>Trạng thái:</strong> @r.IdReservationstatusNavigation?.Name</p>
+		</div>
+	</div>
+
+	@if (Model.ReservationOrders.Count > 0)
+	{
+		<div class="card mt-4">
+			<div class="card-body">
+				<h5 class="card-title">Món đã đặt kèm</h5>
+				<table class="table table-striped">
+					<thead>
+						<tr>
+							<th>Món</th>
+							<th>Số lượng</th>
+							<th>Đơn giá</th>
+							<th>Thành tiền</th>
+						</tr>
+					</thead>
+					<tbody>
+						@foreach (var item in Model.ReservationOrders)
+						{
+							<tr>
+								<td>@item.IdDishNavigation?.Name</td>
+								<td>@item.Quantity</td>
+								<td>@((item.Total / item.Quantity).ToString("N0")) ₫</td>
+								<td>@item.Total.ToString("N0") ₫</td>
+							</tr>
+						}
+					</tbody>
+				</table>
+				<p class="fw-bold text-end">
+					Tổng cộng: @Model.Reservation.Reservationprice?.ToString("N0") ₫
+				</p>
+			</div>
+		</div>
+	}
+
+}
+else
+{
+	<div class="alert alert-danger">Không tìm thấy thông tin đặt bàn.</div>
+}
+<a class="btn btn-success btn-back-home" href="/">Quay về trang chủ</a>

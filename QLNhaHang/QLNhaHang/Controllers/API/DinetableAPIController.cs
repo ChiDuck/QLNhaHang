@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using QLNhaHang.Models;
 
-namespace QLNhaHang.Controllers
+namespace QLNhaHang.Controllers.API
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -114,7 +114,7 @@ namespace QLNhaHang.Controllers
 
                 // Lấy tất cả loại bàn có sức chứa >= số người
                 var suitableTableTypes = await db.Tabletypes
-                    .Where(t => (t.Seats <= 4 && partySize < 4) || (partySize >= 4 && t.Seats < partySize*2 && t.Seats >= partySize))
+                    .Where(t => t.Seats <= 4 && partySize < 4 || partySize >= 4 && t.Seats < partySize*2 && t.Seats >= partySize)
                     .ToListAsync();
 
                 // Lấy các đặt bàn trùng khung giờ (+- 1 tiếng)

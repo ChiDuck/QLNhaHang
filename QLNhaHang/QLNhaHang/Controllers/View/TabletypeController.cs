@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace QLNhaHang.Controllers
+namespace QLNhaHang.Controllers.View
 {
-    public class ReservationController : Controller
+    public class TabletypeController : Controller
     {
         public IActionResult Index()
         {

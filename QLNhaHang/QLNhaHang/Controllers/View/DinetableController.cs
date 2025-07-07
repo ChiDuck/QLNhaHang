@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace QLNhaHang.Controllers
+namespace QLNhaHang.Controllers.View
 {
-    public class CustomerController : Controller
+    public class DinetableController : Controller
     {
         public IActionResult Index()
         {

@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace QLNhaHang.Controllers
+namespace QLNhaHang.Controllers.View
 {
-    public class InventoryitemController : Controller
+    public class CustomerController : Controller
     {
         public IActionResult Index()
         {

@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using QLNhaHang.Models;
 
-namespace QLNhaHang.Controllers
+namespace QLNhaHang.Controllers.API
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -55,7 +55,7 @@ namespace QLNhaHang.Controllers
                     s.Startdate,
                     s.Hourlysalary,
                     s.Isactive,
-                    IdStafftype = s.IdStafftype,
+                    s.IdStafftype,
                     IdStafftypeNavigation = s.IdStafftypeNavigation != null ? new
                     {
                         s.IdStafftypeNavigation.IdStafftype,

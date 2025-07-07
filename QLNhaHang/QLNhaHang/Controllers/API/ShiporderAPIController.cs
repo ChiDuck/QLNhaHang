@@ -8,7 +8,7 @@ using System.Security.Cryptography;
 using System.Text.Json;
 using System.Web;
 
-namespace QLNhaHang.Controllers
+namespace QLNhaHang.Controllers.API
 {
 	[Route("api/[controller]")]
 	[ApiController]
@@ -133,62 +133,30 @@ namespace QLNhaHang.Controllers
 			}
 			await db.SaveChangesAsync();
 
-			// Tạo URL thanh toán VNPay
-			var vnp_Returnurl = _config["VNPay:ReturnUrl"];
-			var vnp_TmnCode = _config["VNPay:TmnCode"];
-			var vnp_HashSecret = _config["VNPay:HashSecret"];
-
-			var amountInVND = (long)(orderDto.OrderPrice);
-			var vnp_TxnRef = transactionId;
-			var vnp_OrderInfo = JsonSerializer.Serialize(orderDto);
-			var vnp_OrderType = "food";
-			var vnp_Locale = "vn";
-
+			// Tạo URL thanh toán VNPay (query string)
 			var pay = new VnPayLibrary();
-
-			// Tạo query string
 			pay.AddRequestData("vnp_Version", "2.1.0");
 			pay.AddRequestData("vnp_Command", "pay");
-			pay.AddRequestData("vnp_TmnCode", vnp_TmnCode);
-			pay.AddRequestData("vnp_Amount", ((int)(amountInVND * 100)).ToString());
+			pay.AddRequestData("vnp_TmnCode", _config["VNPay:TmnCode"]);
+			pay.AddRequestData("vnp_Amount", ((int)(orderDto.OrderPrice * 100)).ToString());
 			pay.AddRequestData("vnp_CreateDate", DateTime.Now.ToString("yyyyMMddHHmmss"));
 			pay.AddRequestData("vnp_CurrCode", "VND");
 			pay.AddRequestData("vnp_IpAddr", "127.0.0.1");
-			pay.AddRequestData("vnp_Locale", vnp_Locale);
+			pay.AddRequestData("vnp_Locale", "vn");
 			pay.AddRequestData("vnp_OrderInfo", "Thanh toán đơn hàng");
-			pay.AddRequestData("vnp_OrderType", vnp_OrderType);
-			pay.AddRequestData("vnp_ReturnUrl", vnp_Returnurl);
-			pay.AddRequestData("vnp_TxnRef", vnp_TxnRef);
+			pay.AddRequestData("vnp_OrderType", "food");
+			pay.AddRequestData("vnp_ReturnUrl", _config["VNPay:ReturnUrl"]);
+			pay.AddRequestData("vnp_TxnRef", transactionId);
 
 			var paymentUrl = pay.CreateRequestUrl(_config["Vnpay:BaseUrl"], _config["Vnpay:HashSecret"]);
 
 			// Trả về transactionId để lưu tạm ở client, khi callback sẽ gửi lại
 			return Ok(new
 			{
-				paymentUrl = paymentUrl,
-				transactionId = transactionId,
+				paymentUrl,
+				transactionId,
 				orderData = orderDto // client cần gửi lại khi callback
 			});
-		}
-
-		[HttpGet("vnpay-return")]
-		public async Task<IActionResult> VNPayReturn()
-		{
-			var query = HttpContext.Request.Query;
-			var vnp_TxnRef = query["vnp_TxnRef"].ToString();
-			var id = 0;
-			if (query["vnp_ResponseCode"] == "00")
-			{
-				var shipOrder = await db.Shiporders.FirstOrDefaultAsync(o => o.Transactionid == vnp_TxnRef);
-				if (shipOrder != null)
-				{
-					shipOrder.IdOrderstatus = 1; // Chờ xác nhậny
-					shipOrder.Transactionid = query["vnp_TransactionNo"];
-					await db.SaveChangesAsync();
-					id = shipOrder.IdShiporder;
-				}
-			}
-			return Redirect($"{_config["ClientUrl"]}/orderconfirmation?id={id}");
 		}
 	}
 

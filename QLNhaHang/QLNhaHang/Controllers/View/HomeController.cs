@@ -2,7 +2,7 @@
 using QLNhaHang.Models;
 using System.Diagnostics;
 
-namespace QLNhaHang.Controllers
+namespace QLNhaHang.Controllers.View
 {
     public class HomeController : Controller
     {

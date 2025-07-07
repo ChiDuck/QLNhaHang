@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace QLNhaHang.Controllers
+namespace QLNhaHang.Controllers.View
 {
-    public class AreaController : Controller
+    public class StaffController : Controller
     {
         public IActionResult Index()
         {

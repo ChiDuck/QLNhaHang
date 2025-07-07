@@ -11,12 +11,15 @@ namespace QLNhaHang.Models
         }
 
         public int IdReservation { get; set; }
+        public DateTime Bookdate { get; set; }
         public string? Phone { get; set; }
         public string? Email { get; set; }
         public DateTime Reservationdate { get; set; }
         public TimeSpan Reservationtime { get; set; }
         public byte Partysize { get; set; }
+        public double? Reservationprice { get; set; }
         public string? Note { get; set; }
+        public string? Transactionid { get; set; }
         public int? IdReservationstatus { get; set; }
         public int? IdCustomer { get; set; }
         public int? IdDinetable { get; set; }
