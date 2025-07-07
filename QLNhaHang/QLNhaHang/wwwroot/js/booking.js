@@ -236,7 +236,7 @@
                 const result = await response.json();
 
                 // Hiển thị modal thành công
-                document.getElementById('bookingCode').textContent = result.reservationCode;
+                document.getElementById('bookingCode').textContent = result.reservationId;
                 step3Modal.hide();
                 successModal.show();
 

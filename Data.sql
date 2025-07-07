@@ -255,7 +255,6 @@ NOTE, TRANSACTIONID, ID_RESERVATIONSTATUS, ID_CUSTOMER, ID_DINETABLE) VALUES
 
 INSERT INTO ORDERSTATUS VALUES
 (N'Chờ xác nhận'),
-(N'Chấp nhận'),
 (N'Từ chối'),
 (N'Đang thực hiện'),
 (N'Đang giao'),
@@ -264,4 +263,4 @@ INSERT INTO ORDERSTATUS VALUES
 select * from CUSTOMER
 select * from SHIPORDER
 select * from RESERVATION
-select * from RESERVATIONORDER r Where r.ID_RESERVATION = 7
+select * from RESERVATIONORDER r Where r.ID_RESERVATION = 10

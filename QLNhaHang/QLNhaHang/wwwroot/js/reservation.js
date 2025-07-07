@@ -24,14 +24,23 @@ function renderReservations(reservations) {
 
     reservations.forEach(reservation => {
         const row = document.createElement('tr');
+        const bookDate = new Date(reservation.bookdate);
+        const formattedDate = bookDate.toLocaleString("vi-VN", {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit"
+        });
         row.innerHTML = `
             <td>${reservation.idReservation}</td>
-            <td>${formatDate(reservation.reservationdate)} ${formatTime(reservation.reservationtime)}</td>
+            <td>${formattedDate}</td>
             <td>${reservation.customerName}</td>
             <td>${reservation.phone}</td>
             <td>${reservation.email}</td>
             <td>${reservation.partysize}</td>
             <td>${reservation.tableName}</td>
+            <td>${formatDate(reservation.reservationdate)} ${formatTime(reservation.reservationtime)}</td>
             <td><span class="badge ${getStatusBadgeClass(reservation.idReservationstatus)}">${reservation.status}</span></td>
             <td class="text-center">
                 <button class="btn btn-sm btn-info view-btn" data-id="${reservation.idReservation}">
@@ -89,19 +98,34 @@ async function showReservationDetail(id) {
     const data = await res.json();
 
     document.getElementById("res-id").innerText = data.idReservation;
-    document.getElementById("res-datetime").innerText = formatDate(data.reservationDate) + ' ' + formatTime(data.reservationTime);
-    document.getElementById("res-party").innerText = data.partySize;
+    const bookDate = new Date(data.bookdate);
+    const formattedDate = bookDate.toLocaleString("vi-VN", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit"
+    });
+    document.getElementById("res-bookdate").innerText = formattedDate;
+    document.getElementById("res-datetime").innerText = formatDate(data.reservationdate) + ' - ' + formatTime(data.reservationtime);
+    document.getElementById("res-party").innerText = data.partysize;
     document.getElementById("res-note").innerText = data.note || "-";
     document.getElementById("res-customer").innerText = data.customerName || "Khách vãng lai";
     document.getElementById("res-phone").innerText = data.phone || "-";
     document.getElementById("res-email").innerText = data.email || "-";
     document.getElementById("res-status").innerText = data.status || "-";
+    const formattedprice = data.reservationprice.toLocaleString('vi-VN', {
+        style: 'currency',
+        currency: 'VND'
+    });
+    document.getElementById("res-price").innerText = formattedprice;
+    document.getElementById("res-transid").innerText = data.transactionid || "-";
     document.getElementById("res-table").innerText = data.tableName || "-";
 
     const tbody = document.getElementById("res-orders");
     tbody.innerHTML = "";
     console.log(data.orders);
-    if (data.orders === []) {
+    if (data.orders !== []) {
         document.getElementById("res-order-section").hidden = false;
         data.orders.forEach(order => {
             tbody.innerHTML += `
@@ -109,7 +133,7 @@ async function showReservationDetail(id) {
                 <td><img src="${order.dishPhoto}" width="50"/></td>
                 <td>${order.dishName}</td>
                 <td>${order.quantity}</td>
-                <td>${order.total.toFixed(2)}</td>
+                <td>${order.total}</td>
             </tr>
         `;
         });

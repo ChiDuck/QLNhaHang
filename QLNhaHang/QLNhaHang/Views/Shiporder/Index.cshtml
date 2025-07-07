@@ -1,0 +1,61 @@
+﻿@{
+    ViewData["Title"] = "Đơn giao hàng";
+}
+
+<h2>Đơn giao hàng</h2>
+<table class="table table-bordered" id="ordersTable">
+    <thead>
+        <tr>
+            <th>Mã đơn</th>
+            <th>Khách</th>
+            <th>Đặt lúc</th>
+            <th>Giá</th>
+            <th>Trạng thái</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+
+<!-- Modal chi tiết -->
+<div class="modal fade" id="orderDetailModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5>Chi tiết đơn hàng</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p><strong>Mã đơn:</strong> <span id="detailId"></span></p>
+                <p><strong>Khách hàng:</strong> <span id="detailCustomer"></span></p>
+                <p><strong>Số điện thoại:</strong> <span id="detailPhone"></span></p>
+                <p><strong>Email:</strong> <span id="detailEmail"></span></p>
+                <p><strong>Thời gian đặt:</strong> <span id="detailDate"></span></p>
+                <p><strong>Hình thức nhận hàng:</strong> <span id="detailShippingType"></span></p>
+                <p id="detailAddressRow"><strong>Địa chỉ giao hàng:</strong> <span id="detailAddress"></span></p>
+                <p><strong>Ghi chú:</strong> <span id="detailNote"></span></p>
+                <p><strong>Hình thức thanh toán:</strong> <span id="detailPaymentMethod"></span></p>
+                <p id="detailTransidRow"><strong>Mã giao dịch:</strong> <span id="detailTransid"></span></p>
+
+                <h6 class="mt-3">Danh sách món:</h6>
+                <ul id="detailItems" class="list-group mb-3"></ul>
+
+                <div class="text-end">
+                    <p><strong>Phí giao hàng:</strong> <span id="detailShipFee"></span></p>
+                    <p class="fw-bold">Tổng cộng: <span id="detailTotal"></span></p>
+                </div>
+                <h6 class="mt-4">Nguyên liệu cần dùng:</h6>
+                <ul id="ingredientList" class="list-group mb-2"></ul>
+                <div id="ingredientWarning" class="alert alert-danger" style="display:none;">
+                    ⚠️ Không đủ nguyên liệu để thực hiện đơn hàng!
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button id="btnAccept" class="btn btn-success">Chấp nhận</button>
+                <button id="btnReject" class="btn btn-danger">Từ chối</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="~/js/shiporder.js"></script>

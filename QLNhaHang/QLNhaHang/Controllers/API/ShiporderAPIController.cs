@@ -14,7 +14,7 @@ namespace QLNhaHang.Controllers.API
 	[ApiController]
 	public class ShiporderAPIController : ControllerBase
 	{
-		private readonly QLNhaHangContext db = new QLNhaHangContext();
+		private readonly QLNhaHangContext db = new();
 		private readonly IConfiguration _config;
 
 		public ShiporderAPIController(QLNhaHangContext db, IConfiguration config)
@@ -49,6 +49,138 @@ namespace QLNhaHang.Controllers.API
 				})
 				.ToListAsync();
 			return Ok(shiporders);
+		}
+
+		[HttpGet("{id}")]
+		public async Task<IActionResult> GetShipOrderDetail(int id)
+		{
+			var order = await db.Shiporders
+				.Include(o => o.Orderitems)
+					.ThenInclude(i => i.IdDishNavigation)
+				.Include(o => o.IdOrderstatusNavigation)
+				.FirstOrDefaultAsync(o => o.IdShiporder == id);
+
+			if (order == null) return NotFound();
+
+			var ingredientMap = new Dictionary<int, (string Name, string Unit, double Required, double Available, bool Sufficient)>();
+
+			foreach (var item in order.Orderitems)
+			{
+				var dishIngredients = await db.Dishingredients
+					.Include(di => di.IdInventoryitemNavigation)
+					.Where(di => di.IdDish == item.IdDish)
+					.ToListAsync();
+
+				foreach (var ing in dishIngredients)
+				{
+					double totalNeeded = ing.Amount * item.Quantity;
+					if (ingredientMap.ContainsKey(ing.IdInventoryitem))
+					{
+						ingredientMap[ing.IdInventoryitem] = (
+							ing.IdInventoryitemNavigation.Name,
+							ing.IdInventoryitemNavigation.Unit,
+							ingredientMap[ing.IdInventoryitem].Required + totalNeeded,
+							ing.IdInventoryitemNavigation.Amount,
+							true
+						);
+					}
+					else
+					{
+						ingredientMap[ing.IdInventoryitem] = (
+							ing.IdInventoryitemNavigation.Name,
+							ing.IdInventoryitemNavigation.Unit,
+							totalNeeded,
+							ing.IdInventoryitemNavigation.Amount,
+							true
+						);
+					}
+				}
+			}
+
+			// Kiểm tra đủ không
+			var ingredients = ingredientMap.Select(kvp => new
+			{
+				IdInventoryitem = kvp.Key,
+				Name = kvp.Value.Name,
+				Unit = kvp.Value.Unit,
+				Required = kvp.Value.Required,
+				Available = kvp.Value.Available,
+				Sufficient = kvp.Value.Available >= kvp.Value.Required
+			}).ToList();
+
+			return Ok(new
+			{
+				order.IdShiporder,
+				order.Customername,
+				order.Phone,
+				order.Email,
+				order.Orderdate,
+				order.Isshipping,
+				order.Shipaddress,
+				order.Orderprice,
+				order.Shipfee,
+				order.Note,
+				order.Transactionid,
+				order.IdOrderstatus,
+				Status = order.IdOrderstatusNavigation?.Name,
+				Items = order.Orderitems.Select(i => new
+				{
+					DishName = i.IdDishNavigation.Name,
+					Quantity = i.Quantity,
+					Price = i.Subtotal
+				}),
+				Ingredients = ingredients
+			});
+		}
+
+		[HttpPut("{id}/status")]
+		public async Task<IActionResult> UpdateOrderStatus(int id, [FromBody] int statusId)
+		{
+			var order = await db.Shiporders
+				.Include(o => o.Orderitems)
+				.FirstOrDefaultAsync(o => o.IdShiporder == id);
+
+			if (order == null) return NotFound();
+
+			order.IdOrderstatus = statusId;
+
+			// Nếu chấp nhận đơn hàng => kiểm tra và trừ kho
+			if (statusId == 3)
+			{
+				var ingredientMap = new Dictionary<int, double>(); // IdInventoryitem -> total needed
+
+				foreach (var item in order.Orderitems)
+				{
+					var ingredients = await db.Dishingredients
+						.Where(di => di.IdDish == item.IdDish)
+						.ToListAsync();
+
+					foreach (var ing in ingredients)
+					{
+						double totalNeeded = ing.Amount * item.Quantity;
+
+						if (ingredientMap.ContainsKey(ing.IdInventoryitem))
+							ingredientMap[ing.IdInventoryitem] += totalNeeded;
+						else
+							ingredientMap[ing.IdInventoryitem] = totalNeeded;
+					}
+				}
+
+				// Trừ nguyên liệu trong kho
+				var ingredientIds = ingredientMap.Keys.ToList();
+				var inventoryItems = await db.Inventoryitems
+					.Where(i => ingredientIds.Contains(i.IdInventoryitem))
+					.ToListAsync();
+
+				foreach (var item in inventoryItems)
+				{
+					var used = ingredientMap[item.IdInventoryitem];
+					item.Amount -= used;
+					if (item.Amount < 0) item.Amount = 0;
+				}
+			}
+			await db.SaveChangesAsync();
+			return Ok();
 		}
 
 		[HttpPost("cash")]
