@@ -1,0 +1,53 @@
+﻿<h4>Chi tiết bảng lương tháng <span id="payrollMonth"></span>/<span id="payrollYear"></span></h4>
+<table class="table">
+    <thead>
+        <tr><th>Nhân viên</th><th>Chức vụ</th><th></th></tr>
+    </thead>
+    <tbody id="payrollDetails"></tbody>
+</table>
+
+<!-- Modal xem chi tiết -->
+<div class="modal fade" id="staffPayrollModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header"><h5>Chi tiết bảng lương</h5></div>
+            <div class="modal-body" id="modalContent"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const id = urlParams.get('id');
+
+    async function loadDetails() {
+        const res = await fetch(`/api/payrollapi/${id}`);
+        const data = await res.json();
+        document.getElementById('payrollMonth').textContent = data.month;
+        document.getElementById('payrollYear').textContent = data.year;
+        const tbody = document.getElementById('payrollDetails');
+        tbody.innerHTML = data.details.map(d => `
+            <tr>
+                <td>${d.name}</td>
+                <td>${d.type}</td>
+                <td><button class="btn btn-sm btn-info" onclick="showDetail(${d.id})">Xem</button></td>
+            </tr>
+        `).join('');
+    }
+
+    async function showDetail(staffId) {
+        const res = await fetch(`/api/payroll/${id}/staff/${staffId}`);
+        const d = await res.json();
+        const content = `
+            <p><strong>Tên:</strong> ${d.name}</p>
+            <p><strong>Giờ làm:</strong> ${d.hours}</p>
+            <p><strong>Số lần vắng:</strong> ${d.absences}</p>
+            <p><strong>Số lần đi trễ:</strong> ${d.lates}</p>
+            <p><strong>Lương:</strong> ${d.totalsalary.toLocaleString()} đ</p>
+        `;
+        document.getElementById('modalContent').innerHTML = content;
+        new bootstrap.Modal(document.getElementById('staffPayrollModal')).show();
+    }
+
+    loadDetails();
+</script>

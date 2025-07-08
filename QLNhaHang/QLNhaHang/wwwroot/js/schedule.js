@@ -88,15 +88,6 @@ async function showShiftDetail(day, shift, isNew) {
         selectedStaffIds = [];     // reset
         updateStaffSearchResults(); // hiển thị tất cả ban đầu
 
-        //const sel = document.getElementById('staffSelect');
-        //sel.innerHTML = '';
-        //options.forEach(opt => {
-        //    const o = document.createElement('option');
-        //    o.value = opt.id;
-        //    o.textContent = opt.name;
-        //    sel.appendChild(o);
-        //});
-
         if (isNew) {
             new bootstrap.Modal(document.getElementById('shiftDetailModal')).show();
         }
@@ -241,5 +232,41 @@ async function toggleLate(idStaff, checked) {
     }
 }
 
+async function checkIn() {
+    const messageBox = document.getElementById("checkinMessage");
+    const token = localStorage.getItem("token");
+    if (!token) {
+        messageBox.textContent = "Bạn chưa đăng nhập.";
+        messageBox.className = "text-danger";
+        return;
+    }
 
-document.addEventListener('DOMContentLoaded', loadSchedule);
+    try {
+        const res = await fetch("/api/scheduleapi/checkin", {
+            method: "POST",
+            headers: {
+                "Authorization": "Bearer " + token
+            }
+        });
+
+        const text = await res.text();
+
+        if (res.ok) {
+            messageBox.textContent = "✅ " + text;
+            messageBox.className = "text-success";
+            // Tải lại thời gian biểu để cập nhật trạng thái nếu cần
+            if (typeof loadSchedule === "function") loadSchedule();
+        } else {
+            messageBox.textContent = "❌ " + text;
+            messageBox.className = "text-danger";
+        }
+    } catch (err) {
+        messageBox.textContent = "Lỗi kết nối đến máy chủ.";
+        messageBox.className = "text-danger";
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    loadSchedule();
+    document.getElementById("checkinButton").addEventListener("click", checkIn);
+});

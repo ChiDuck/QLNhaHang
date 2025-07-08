@@ -268,7 +268,11 @@ INSERT INTO WORKSHIFT VALUES
 (2, '13:00', '18:00', 5),	-- 13 - 18
 (3, '18:00', '22:00', 4)  -- 18 - 22
 
+INSERT INTO PAYROLL VALUES 
+(7, 2025)
+
 select * from CUSTOMER
+select * from staff
 select * from WORKDAY
 select * from WORKSHIFT
 select * from weeklySHIFT

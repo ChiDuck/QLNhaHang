@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using QLNhaHang.Models;
+using System.Security.Claims;
 
 namespace QLNhaHang.Controllers.API
 {
@@ -21,7 +23,6 @@ namespace QLNhaHang.Controllers.API
 		{
 			var data = await _context.Weeklyshifts
 				.Include(w => w.IdStaffNavigation)
-				.Where(w => w.Isassigned)
 				.Select(w => new
 				{
 					idWorkday = w.IdWorkday,
@@ -36,7 +37,7 @@ namespace QLNhaHang.Controllers.API
 		public async Task<IActionResult> GetShiftDetail(byte day, byte shift)
 		{
 			var staff = await _context.Weeklyshifts
-				.Where(w => w.IdWorkday == day-1 && w.IdWorkshift == shift && w.Isassigned)
+				.Where(w => w.IdWorkday == day-1 && w.IdWorkshift == shift)
 				.Include(w => w.IdStaffNavigation)
 				.Select(w => new
 				{
@@ -49,28 +50,8 @@ namespace QLNhaHang.Controllers.API
 
 			var now = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow,
 						 TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time"));
-			// Tìm workday và workshift
-			//var workday = await _context.Workdays.FindAsync(day);
-			//var workshift = await _context.Workshifts.FindAsync(shift);
-
-			//// Tính ngày tương ứng trong tuần gần nhất (tính từ thứ hiện tại)
-			//int currentWeekday = (int)now.DayOfWeek; // Chủ nhật = 0
-			//int targetWeekday = workday.Weekday == 8 ? 0 : workday.Weekday; // Chủ nhật = 8 => 0
-
-			//var daysToTarget = (targetWeekday - currentWeekday + 7) % 7;
-			//var shiftDate = now.Date.AddDays(daysToTarget);
-
-			//var shiftStartDateTime = shiftDate + workshift.Shiftstart; // DateTime
-			//var shiftEndDateTime = shiftDate + workshift.Shiftend;
 
 			string shiftStatus;
-			//if (now < shiftStartDateTime)
-			//	shiftStatus = "future";
-			//else if (now >= shiftStartDateTime && now < shiftEndDateTime)
-			//	shiftStatus = "ongoing";
-			//else
-			//	shiftStatus = "past";
-
 			var workshift = await _context.Workshifts.FindAsync(shift);
 
 			if ((day < (int)now.DayOfWeek+1) || (day == (int)now.DayOfWeek+1 && workshift.Shiftend < now.TimeOfDay))
@@ -128,12 +109,7 @@ namespace QLNhaHang.Controllers.API
 						IdStaff = id,
 						IdWorkday = (byte)(day - 1),
 						IdWorkshift = shift,
-						Isassigned = true
 					});
-				}
-				else
-				{
-					exist.Isassigned = true;
 				}
 			}
 
@@ -179,6 +155,63 @@ namespace QLNhaHang.Controllers.API
 			await _context.SaveChangesAsync();
 			return Ok();
 		}
+
+		[Authorize]
+		[HttpPost("checkin")]
+		public async Task<IActionResult> Checkin()
+		{
+			var staffId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+			var now = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow,
+				TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time"));
+
+			var day = (byte)(((int)now.DayOfWeek + 6) % 7 + 1); // Thứ 2 = 2 ... CN = 8
+			var currentShift = await _context.Workshifts
+				.FirstOrDefaultAsync(s => now.TimeOfDay >= s.Shiftstart && now.TimeOfDay <= s.Shiftend);
+
+			if (currentShift == null)
+				return BadRequest("Không có ca làm hiện tại.");
+
+			var shift = await _context.Weeklyshifts
+				.FirstOrDefaultAsync(w => w.IdStaff == staffId && w.IdWorkday == day && w.IdWorkshift == currentShift.IdWorkshift);
+
+			if (shift == null)
+				return NotFound("Bạn không có ca làm hôm nay.");
+
+			if (shift.Attended == true)
+				return BadRequest("Bạn đã chấm công rồi.");
+
+			shift.Attended = true;
+			if (now.TimeOfDay > currentShift.Shiftstart.Add(TimeSpan.FromMinutes(10)))
+				shift.Islate = true;
+
+			// Cập nhật bảng lương
+			var month = (short)now.Month;
+			var year = (short)now.Year;
+			var payroll = await _context.Payrolls.FirstOrDefaultAsync(p => p.Month == month && p.Year == year);
+			if (payroll == null)
+			{
+				payroll = new Payroll { Month = month, Year = year };
+				_context.Payrolls.Add(payroll);
+				await _context.SaveChangesAsync();
+			}
+
+			var detail = await _context.Payrolldetails.FirstOrDefaultAsync(p => p.IdPayroll == payroll.IdPayroll && p.IdStaff == staffId);
+			if (detail == null)
+			{
+				detail = new Payrolldetail { IdPayroll = payroll.IdPayroll, IdStaff = staffId };
+				_context.Payrolldetails.Add(detail);
+			}
+
+			detail.Days++;
+			detail.Hours += currentShift.Shifthour;
+			if (shift.Islate == true) detail.Latetimes++;
+
+			detail.Totalsalary = (detail.Hours * (_context.Staff.First(s => s.IdStaff == staffId).Hourlysalary ?? 0));
+
+			await _context.SaveChangesAsync();
+			return Ok("Chấm công thành công.");
+		}
+
 	}
 
 	public class AttendanceDto
