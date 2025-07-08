@@ -246,12 +246,12 @@ INSERT INTO RESERVATIONSTATUS VALUES
 
 INSERT INTO RESERVATION (BOOKDATE, PHONE, EMAIL, RESERVATIONDATE, RESERVATIONTIME, PARTYSIZE, RESERVATIONPRICE,
 NOTE, TRANSACTIONID, ID_RESERVATIONSTATUS, ID_CUSTOMER, ID_DINETABLE) VALUES 
-('2025-04-20', '0987654321', NULL,					'2025-04-24', '20:00:00', 2, 0, NULL, NULL, 4, 8, 1),
-('2025-05-12', '0923999445', 'hoang.k@example.com',	'2025-05-18', '11:30:00', 4, 0, NULL, NULL, 4, NULL, 1),
-('2025-05-12', '0987654321', NULL,					'2025-05-28', '19:00:00', 2, 0, NULL, NULL, 4, 8, 4),
-('2025-06-01', NULL, 'ly.k@example.com',			'2025-06-03', '16:30:00', 2, 0, NULL, NULL, 4, 11, 12),
-('2025-06-03', '0336664321', NULL,					'2025-06-06', '22:00:00', 2, 0, NULL, NULL, 3, NULL, 1),
-('2025-06-13', NULL, 'ly.k@example.com',			'2025-06-15', '17:30:00', 10, 0, N'Có thể trễ 10p', NULL, 2, 11, 8)
+('2025-04-20', '0987654321', NULL,					'2025-04-24', '20:00', 2, 0, NULL, NULL, 4, 8, 1),
+('2025-05-12', '0923999445', 'hoang.k@example.com',	'2025-05-18', '11:30', 4, 0, NULL, NULL, 4, NULL, 1),
+('2025-05-12', '0987654321', NULL,					'2025-05-28', '19:00', 2, 0, NULL, NULL, 4, 8, 4),
+('2025-06-01', NULL, 'ly.k@example.com',			'2025-06-03', '16:30', 2, 0, NULL, NULL, 4, 11, 12),
+('2025-06-03', '0336664321', NULL,					'2025-06-06', '22:00', 2, 0, NULL, NULL, 3, NULL, 1),
+('2025-06-13', NULL, 'ly.k@example.com',			'2025-06-15', '17:30', 10, 0, N'Có thể trễ 10p', NULL, 2, 11, 8)
 
 INSERT INTO ORDERSTATUS VALUES
 (N'Chờ xác nhận'),
@@ -260,7 +260,21 @@ INSERT INTO ORDERSTATUS VALUES
 (N'Đang giao'),
 (N'Đã hoàn thành')
 
+INSERT INTO WORKDAY VALUES 
+(2),(3),(4),(5),(6),(7),(8)
+
+INSERT INTO WORKSHIFT VALUES 
+(1, '9:00', '13:00', 4),	-- 9 - 13
+(2, '13:00', '18:00', 5),	-- 13 - 18
+(3, '18:00', '22:00', 4)  -- 18 - 22
+
 select * from CUSTOMER
+select * from WORKDAY
+select * from WORKSHIFT
+select * from weeklySHIFT
+select * from INVENTORYITEM
 select * from SHIPORDER
 select * from RESERVATION
 select * from RESERVATIONORDER r Where r.ID_RESERVATION = 10
+SELECT * FROM Weeklyshift
+WHERE ID_WORKDAY = 2 AND ID_WORKSHIFT = 2

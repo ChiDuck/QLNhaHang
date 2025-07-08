@@ -168,6 +168,19 @@ namespace QLNhaHang.Controllers.API
                 return StatusCode(500, $"Đã xảy ra lỗi khi xóa nhân viên: {ex.Message}");
             }
         }
-    }
+
+        [HttpGet("shift")]
+		public async Task<IActionResult> GetStaff([FromQuery] string? exclude = "")
+		{
+			var excludedIds = exclude?.Split(',').Select(int.Parse).ToList() ?? new();
+			var staff = await db.Staff
+				.Where(s => !excludedIds.Contains(s.IdStaff))
+				.Select(s => new { id = s.IdStaff, name = s.Name , type = s.IdStafftypeNavigation.Name })
+				.ToListAsync();
+
+			return Ok(staff);
+		}
+
+	}
 
 }

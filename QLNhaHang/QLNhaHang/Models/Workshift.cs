@@ -12,6 +12,8 @@ namespace QLNhaHang.Models
 
         public byte IdWorkshift { get; set; }
         public byte Shift { get; set; }
+        public TimeSpan Shiftstart { get; set; }
+        public TimeSpan Shiftend { get; set; }
         public double Shifthour { get; set; }
 
         public virtual ICollection<Weeklyshift> Weeklyshifts { get; set; }
