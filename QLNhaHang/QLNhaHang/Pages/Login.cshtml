@@ -1,0 +1,60 @@
+﻿@page
+@model QLNhaHang.Pages.LoginModel
+@{
+	Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<title>Đăng nhập nhân viên</title>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+</head>
+<body class="bg-light d-flex justify-content-center align-items-center vh-100">
+	<div class="card shadow p-4" style="min-width: 320px; max-width: 400px;">
+		<h4 class="text-center mb-3">Đăng nhập</h4>
+		<div class="mb-3">
+			<input type="text" class="form-control" id="identity" placeholder="Email hoặc SĐT">
+		</div>
+		<div class="mb-3">
+			<input type="password" class="form-control" id="password" placeholder="Mật khẩu">
+		</div>
+		<button class="btn btn-primary w-100" onclick="login()">Đăng nhập</button>
+		<div class="text-danger mt-2" id="loginError"></div>
+	</div>
+
+	<script>
+		async function login() {
+			const identity = document.getElementById('identity').value.trim();
+			const password = document.getElementById('password').value.trim();
+			const errorDiv = document.getElementById('loginError');
+
+			if (!identity || !password) {
+				errorDiv.textContent = 'Vui lòng nhập đầy đủ thông tin';
+				return;
+			}
+
+			try {
+				const res = await fetch('/api/authapi/login', {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({ identity, password })
+				});
+
+				if (!res.ok) {
+					const msg = await res.text();
+					errorDiv.textContent = msg || 'Đăng nhập thất bại';
+					return;
+				}
+
+				const data = await res.json();
+				localStorage.setItem('token', data.token);
+				localStorage.setItem('staff', JSON.stringify(data));
+				window.location.href = '/Home/AdminIndex'; // chuyển sang trang quản lý
+			} catch (err) {
+				errorDiv.textContent = 'Lỗi kết nối đến máy chủ';
+			}
+		}
+	</script>
+</body>
+</html>

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using QLNhaHang.Models;
 using System.Diagnostics;
 
@@ -13,12 +14,18 @@ namespace QLNhaHang.Controllers.View
             _logger = logger;
         }
 
+        [Authorize]
+        public IActionResult AdminIndex()
+        {
+            return View();
+		}
+
         public IActionResult Index()
         {
             return View();
         }
 
-        public IActionResult Menu()
+		public IActionResult Menu()
         {
             return View();
         }

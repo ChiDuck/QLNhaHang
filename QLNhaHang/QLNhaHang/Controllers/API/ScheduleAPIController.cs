@@ -72,12 +72,7 @@ namespace QLNhaHang.Controllers.API
 			//	shiftStatus = "past";
 
 			var workshift = await _context.Workshifts.FindAsync(shift);
-			Console.WriteLine("Current Time: " + now);
-			Console.WriteLine("Workshift Start: " + workshift.Shiftstart);
-			Console.WriteLine("Workshift End: " + workshift.Shiftend);
-			Console.WriteLine("Day of Week: " + now.DayOfWeek);
-			Console.WriteLine("Day: " + day);
-			Console.WriteLine("Time of Day: " + now.TimeOfDay);
+
 			if ((day < (int)now.DayOfWeek+1) || (day == (int)now.DayOfWeek+1 && workshift.Shiftend < now.TimeOfDay))
 			{
 				shiftStatus = "past";

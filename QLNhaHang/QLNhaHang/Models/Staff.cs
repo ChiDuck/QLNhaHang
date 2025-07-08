@@ -14,7 +14,7 @@ namespace QLNhaHang.Models
 
         public int IdStaff { get; set; }
         public string Name { get; set; } = null!;
-        public string PasswordHash { get; set; } = null!;
+        public string? PasswordHash { get; set; } = null!;
         public string Citizenid { get; set; } = null!;
         public string Phone { get; set; } = null!;
         public string Email { get; set; } = null!;

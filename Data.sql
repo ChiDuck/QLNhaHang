@@ -209,7 +209,7 @@ INSERT INTO STAFFTYPE VALUES
 -- Chèn dữ liệu nhân viên
 INSERT INTO STAFF (NAME, PASSWORD_HASH, CITIZENID, PHONE, EMAIL, GENDER, BIRTHDAY, ADDRESS, STARTDATE, HOURLYSALARY, ISACTIVE, ID_STAFFTYPE) VALUES
 -- Quản lý (1 người)
-(N'Lê Thị Thanh Hương', 'e10adc3949ba59abbe56e057f20f883e', '036198000123', '0912345678', 'lethihuong.ql@email.com', 0, '1985-11-15', N'12 Nguyễn Huệ, Q.1, TP.HCM', '2018-06-10', 50000, 1, 1),
+(N'Lê Thị Thanh Hương', '123123', '036198000123', '0912345678', 'breadwithginger@gmail.com', 0, '1985-11-15', N'12 Nguyễn Huệ, Q.1, TP.HCM', '2018-06-10', 50000, 1, 1),
 -- Nhân viên phục vụ (10 người)
 (N'Nguyễn Văn Minh',	'e10adc3949ba59abbe56e057f20f883e', '036198001234', '0912345679', 'nguyenminh.nv@email.com', 1, '1995-03-22', N'45 Lê Lợi, Q.1, TP.HCM', '2021-01-15', 30000, 1, 5),
 (N'Trần Thị Ngọc Ánh',	'e10adc3949ba59abbe56e057f20f883e', '036198002345', '0912345680', 'trananh.nv@email.com', 0,	'1996-07-18', N'78 Trần Hưng Đạo, Q.5, TP.HCM', '2021-02-20', 30000, 1, 5),

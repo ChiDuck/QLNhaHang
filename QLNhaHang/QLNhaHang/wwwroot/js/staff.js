@@ -66,7 +66,6 @@ async function showStaffDetails(staffId) {
         document.getElementById('staffCitizenId').textContent = staff.citizenid;
         document.getElementById('staffPhone').textContent = staff.phone;
         document.getElementById('staffEmail').textContent = staff.email;
-        document.getElementById('staffPasswordHash').textContent = staff.passwordHash;
         document.getElementById('staffGender').textContent = staff.gender ? 'Nam' : 'Nữ';
         document.getElementById('staffBirthday').textContent = staff.birthday ? new Date(staff.birthday).toLocaleDateString('vi-VN') : 'Không có';
         document.getElementById('staffPhoto').innerHTML = staff.photo ? `<img src="${staff.photo}" alt="Ảnh nhân viên" class="img-fluid">` : 'Không có ảnh';
@@ -74,7 +73,7 @@ async function showStaffDetails(staffId) {
         document.getElementById('staffStartDate').textContent = staff.startdate ? new Date(staff.startdate).toLocaleDateString('vi-VN') : 'Không có';
         document.getElementById('staffHourlySalary').textContent = staff.hourlysalary ? staff.hourlysalary.toLocaleString('vi-VN') + ' VNĐ' : 'Không có';
         document.getElementById('staffStatus').textContent = staff.isactive ? 'Đang làm việc' : 'Đã nghỉ việc';
-        document.getElementById('staffType').textContent = staff.idStaffTypeNavigation?.name || 'Không có';
+        document.getElementById('staffType').textContent = staff.staffType || 'Không có';
 
         // Hiển thị modal chi tiết
         currentDetailModal = new bootstrap.Modal(document.getElementById('staffModal'));
@@ -110,7 +109,7 @@ async function showStaffForm(staffId = null) {
             document.getElementById('editCitizenId').value = staff.citizenid;
             document.getElementById('editPhone').value = staff.phone;
             document.getElementById('editEmail').value = staff.email;
-            document.getElementById('editPasswordHash').value = staff.passwordHash;
+            document.getElementById('editPasswordHash').value = '';
             document.getElementById('staffPhotoInput').value = staff.photo;
             document.getElementById('editGender').value = staff.gender ? 'true' : 'false';
             document.getElementById('editBirthday').value = staff.birthday ? staff.birthday.split('T')[0] : '';
