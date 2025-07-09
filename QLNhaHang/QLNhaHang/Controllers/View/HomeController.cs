@@ -14,7 +14,6 @@ namespace QLNhaHang.Controllers.View
             _logger = logger;
         }
 
-        [Authorize]
         public IActionResult AdminIndex()
         {
             return View();
