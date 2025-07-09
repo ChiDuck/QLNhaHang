@@ -67,7 +67,7 @@ INSERT INTO CUSTOMER (NAME, PASSWORD_HASH, PHONE, EMAIL, BIRTHDAY, PHOTO, ADDRES
 (N'Tăng Thị Minh',	'lmn234hashed', NULL, 'tang.m@example.com', '1988-02-14', NULL, N'21 Cách Mạng Tháng 8, Q10', NULL),	--13
 (N'Bùi Văn Nam',	'mno345hashed', '0933222111', NULL, NULL, NULL, N'60 An Dương Vương, Q5', NULL),						--14
 (N'Đoàn Thị Hồng',	'nop456hashed', NULL, 'doan.o@example.com', '1997-10-10', NULL, N'73 Hồng Bàng, Q6', NULL),				--15
-(N'La Văn Phượng',	'opq567hashed', '0911222333', NULL, '2000-01-01', NULL, N'85 Nguyễn Thị Minh Khai, Q3', NULL)			--16
+(N'La Văn Phượng',	'$2a$11$RaiCpE6N5i/z2a.GtOqRNOocBVx/RKLlDyIS4Wxf7OGy3XMyTBLOW', '123', NULL, '2000-01-01', NULL, N'85 Nguyễn Thị Minh Khai, Q3', NULL)			--16
 
 INSERT INTO INVENTORYITEMTYPE VALUES
 (N'Nguyên liệu'),
@@ -209,7 +209,7 @@ INSERT INTO STAFFTYPE VALUES
 -- Chèn dữ liệu nhân viên
 INSERT INTO STAFF (NAME, PASSWORD_HASH, CITIZENID, PHONE, EMAIL, GENDER, BIRTHDAY, ADDRESS, STARTDATE, HOURLYSALARY, ISACTIVE, ID_STAFFTYPE) VALUES
 -- Quản lý (1 người)
-(N'Lê Thị Thanh Hương', '123123', '036198000123', '0912345678', 'breadwithginger@gmail.com', 0, '1985-11-15', N'12 Nguyễn Huệ, Q.1, TP.HCM', '2018-06-10', 50000, 1, 1),
+(N'Lê Thị Thanh Hương', '$2a$11$tuxya.c8cSpTtlkqyWz8xOSEst6lDm4HRlHZ5z02074eduE4pIsSO', '036198000123', '0912345678', 'breadwithginger@gmail.com', 0, '1985-11-15', N'12 Nguyễn Huệ, Q.1, TP.HCM', '2018-06-10', 50000, 1, 1),
 -- Nhân viên phục vụ (10 người)
 (N'Nguyễn Văn Minh',	'e10adc3949ba59abbe56e057f20f883e', '036198001234', '0912345679', 'nguyenminh.nv@email.com', 1, '1995-03-22', N'45 Lê Lợi, Q.1, TP.HCM', '2021-01-15', 30000, 1, 5),
 (N'Trần Thị Ngọc Ánh',	'e10adc3949ba59abbe56e057f20f883e', '036198002345', '0912345680', 'trananh.nv@email.com', 0,	'1996-07-18', N'78 Trần Hưng Đạo, Q.5, TP.HCM', '2021-02-20', 30000, 1, 5),
@@ -272,6 +272,7 @@ INSERT INTO PAYROLL VALUES
 (7, 2025)
 
 select * from CUSTOMER
+select * from cart
 select * from staff
 select * from WORKDAY
 select * from WORKSHIFT
@@ -279,6 +280,8 @@ select * from weeklySHIFT
 select * from INVENTORYITEM
 select * from SHIPORDER
 select * from RESERVATION
+select * from RESERVATION re where re.ID_CUSTOMER = 17
 select * from RESERVATIONORDER r Where r.ID_RESERVATION = 10
 SELECT * FROM Weeklyshift
 WHERE ID_WORKDAY = 2 AND ID_WORKSHIFT = 2
+SELECT * FROM payrolldetail

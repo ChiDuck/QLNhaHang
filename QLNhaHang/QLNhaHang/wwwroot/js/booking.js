@@ -1,4 +1,6 @@
-﻿document.addEventListener('DOMContentLoaded', function () {
+﻿const token = localStorage.getItem("token");
+
+document.addEventListener('DOMContentLoaded', function () {
     // Khởi tạo modal
     const step1Modal = new bootstrap.Modal('#bookingStep1Modal');
     const step2Modal = new bootstrap.Modal('#bookingStep2Modal');
@@ -168,11 +170,30 @@
         }
     }
 
+    async function loadCustomerProfile() {
+        try {
+            const res = await fetch(`/api/customerapi/profile`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            const customerData = await res.json();
+            document.getElementById('customerName').value = customerData.name || '';
+            document.getElementById('customerPhone').value = customerData.phone || '';
+            document.getElementById('customerEmail').value = customerData.email || '';
+        }
+        catch (error) {
+            console.error('Error loading customer profile:', error);
+        }
+    }
+
     // Chuyển sang bước 3
-    document.getElementById('nextToStep3').addEventListener('click', function () {
+    document.getElementById('nextToStep3').addEventListener('click', async function () {
         if (!bookingData.tableTypeId) {
             alert('Vui lòng chọn bàn');
             return;
+        }
+
+        if (token) {
+            await loadCustomerProfile(); // Tải thông tin khách hàng nếu đã đăng nhập
         }
 
         // Hiển thị thông tin đã chọn
@@ -181,7 +202,7 @@
         document.getElementById('displaySelectedTime').textContent = bookingData.reservationTime;
         document.getElementById('displaySelectedPartySize').textContent = bookingData.partySize;
 
-        // Chuyển modal
+        // Chuyển tới bước 3
         step2Modal.hide();
         renderSelectedDishesSummary();
         step3Modal.show();
@@ -193,7 +214,7 @@
         step2Modal.show();
     });
 
-    // Quay lại bước 2
+    // Quay lại bước chọn món
     document.getElementById('backToStepDish').addEventListener('click', function () {
         step2Modal.hide();
         dishModal.show();
@@ -205,7 +226,7 @@
         const customerPhone = document.getElementById("customerPhone").value;
         const customerEmail = document.getElementById("customerEmail").value;
         const bookingNote = document.getElementById("bookingNote").value;
-        const paymentMethod = window.selectedDishesData === [] ? '' : 'vnpay';
+        const paymentMethod = window.selectedDishesData.length === 0 ? '' : 'vnpay';
         console.log("Payment method:", paymentMethod);
         bookingData.customerName = customerName;
         bookingData.phone = customerPhone;
@@ -223,11 +244,16 @@
 
     async function createReservation(data) {
         try {
+            const headers = {
+                'Content-Type': 'application/json'
+            };
+            if (token) {
+                headers['Authorization'] = 'Bearer ' + token;
+            }
+
             const response = await fetch("/api/reservationapi/noorder", {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
+                headers: headers,
                 body: JSON.stringify(data)
             });
 
@@ -253,13 +279,19 @@
 
     async function createVNPayReservation(data) {
         try {
+            const headers = {
+                'Content-Type': 'application/json'
+            };
+            if (token) {
+                headers['Authorization'] = 'Bearer ' + token;
+            }
+
             const response = await fetch("/api/reservationapi/vnpay", {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
+                headers: headers,
                 body: JSON.stringify(data)
             });
+
             if (response.ok) {
                 const paymentData = await response.json();
                 window.location.href = paymentData.paymentUrl; // Chuyển hướng đến VNPay
@@ -499,6 +531,7 @@
 
     // Bỏ qua bước chọn món
     function skipDishSelection() {
+        window.selectedDishesData = []; // Không có món nào được chọn
         dishModal.hide();
         step2Modal.show(); // Tiếp bước 2 mà không chọn món
     }
@@ -522,14 +555,6 @@
 
         // Lưu vào biến global hoặc form ẩn
         window.selectedDishesData = selectedItems;
-
-        //// Hoặc thêm vào form đặt bàn
-        //const form = document.getElementById('reservationForm');
-        //const dishesInput = document.createElement('input');
-        //dishesInput.type = 'hidden';
-        //dishesInput.name = 'selectedDishes';
-        //dishesInput.value = JSON.stringify(selectedItems);
-        //form.appendChild(dishesInput);
     }
 
     // Hàm định dạng giá

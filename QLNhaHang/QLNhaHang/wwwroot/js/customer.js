@@ -1,9 +1,7 @@
-﻿const apiUrl = "/api/customerapi";
-
-// GET ALL customers
+﻿// GET ALL customers
 async function getAllCustomers() {
     try {
-        const response = await fetch(apiUrl);
+        const response = await fetch('/api/customerapi');
         if (!response.ok) throw new Error("Lấy danh sách khách hàng thất bại.");
         const customers = await response.json();
         return customers;
@@ -12,10 +10,37 @@ async function getAllCustomers() {
     }
 }
 
+async function loadCustomers() {
+    const customers = await getAllCustomers();
+    const tableBody = document.getElementById("customerTableBody");
+    tableBody.innerHTML = ""; // clear table
+
+    customers.forEach(c => {
+        const row = document.createElement("tr");
+
+        row.innerHTML = `
+								<td>${c.idCustomer}</td>
+								<td>${c.name}</td>
+								<td>${c.phone ?? ""}</td>
+								<td>${c.email ?? ""}</td>
+								<td>${c.birthday ? new Date(c.birthday).toLocaleDateString() : ""}</td>
+								<td>${c.address ?? ""}</td>
+								<td>${c.photo ? `<img src="${c.photo}" width="50">` : ""}</td>
+								<td class="text-center">
+										<button class="btn btn-sm btn-danger" onclick="deleteCustomer(${c.idCustomer})">Xóa</button>
+								</td>
+							`;
+        tableBody.appendChild(row);
+    });
+}
+
+// Gọi hàm load khi trang load
+window.onload = loadCustomers;
+
 // GET customer by ID
 async function getCustomerById(id) {
     try {
-        const response = await fetch(`${apiUrl}/${id}`);
+        const response = await fetch(`/api/customerapi/${id}`);
         if (!response.ok) throw new Error(`Không tìm thấy khách hàng với ID là ${id}.`);
         const customer = await response.json();
         console.log(customer);
@@ -28,7 +53,7 @@ async function getCustomerById(id) {
 // ADD new customer
 async function addCustomer(customer) {
     try {
-        const response = await fetch(apiUrl, {
+        const response = await fetch('/api/customerapi', {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(customer)
@@ -45,7 +70,7 @@ async function addCustomer(customer) {
 // UPDATE customer
 async function updateCustomer(id, customer) {
     try {
-        const response = await fetch(`${apiUrl}/${id}`, {
+        const response = await fetch(`/api/customerapi/${id}`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(customer)
@@ -59,7 +84,7 @@ async function updateCustomer(id, customer) {
 
 function confirmDeleteCustomer(id) {
     if (confirm("Bạn có chắc chắn muốn xóa khách hàng này không?")) {
-        deleteCustomer(id).then(loadCustomers);
+        deleteCustomer(id).then(window.reload);
     }
 }
 
@@ -67,9 +92,12 @@ function confirmDeleteCustomer(id) {
 async function deleteCustomer(id) {
     if (confirm("Bạn có chắc chắn muốn xóa khách hàng này không?")) {
         try {
-            const response = await fetch(`${apiUrl}/${id}`, { method: "DELETE" });
-            //if (!response.ok) throw new Error("Failed to delete customer");
-            console.log(`Customer ${id} deleted`);
+            const response = await fetch(`/api/customerapi/${id}`, { method: "DELETE" });
+            if (!response.ok) throw new Error("Failed to delete customer")
+            else {
+                alert("Xóa khách hàng thành công.");
+                loadCustomers(); // Tải lại danh sách khách hàng
+            }
         } catch (error) {
             console.error("Error:", error);
         }

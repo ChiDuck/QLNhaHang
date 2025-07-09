@@ -101,9 +101,10 @@ function renderAccountDropdown() {
     } else {
         nameSpan.textContent = customer.name || "Khách hàng";
         menu.innerHTML = `
-            <li><a class="dropdown-item" href="/profile">Thông tin cá nhân</a></li>
+            <li><a class="dropdown-item" href="/Home/Profile">Thông tin cá nhân</a></li>
             <li><a class="dropdown-item" href="/reservations">Hẹn đặt bàn của bạn</a></li>
             <li><a class="dropdown-item" href="/orders">Đơn hàng của bạn</a></li>
+            <li><a class="dropdown-item" href="/change-password">Đổi mật khẩu</a></li>
             <li><hr class="dropdown-divider"></li>
             <li><a class="dropdown-item text-danger" href="#" onclick="logoutCustomer()">Đăng xuất</a></li>
         `;

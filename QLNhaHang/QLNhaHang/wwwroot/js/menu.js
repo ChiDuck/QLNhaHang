@@ -1,26 +1,4 @@
-﻿// Dữ liệu mẫu - Thay thế bằng API thực tế
-//let menuData = {
-//    categories: [
-//        { id: 1, name: "Khai vị" },
-//        { id: 2, name: "Món chính" },
-//        { id: 3, name: "Tráng miệng" },
-//        { id: 4, name: "Đồ uống" }
-//    ],
-//    dishes: [
-//        { id: 1, name: "Gỏi cuốn", price: 35000, discount: 0, idDishcategory: 1, photo: "https://via.placeholder.com/300x200?text=Gỏi+cuốn", description: "Gỏi cuốn tôm thịt đậu phộng", issoldout: false },
-//        { id: 2, name: "Phở bò", price: 50000, discount: 45000, idDishcategory: 2, photo: "https://via.placeholder.com/300x200?text=Phở+bò", description: "Phở bò chín tái", issoldout: false },
-//        { id: 3, name: "Bánh flan", price: 25000, discount: 0, idDishcategory: 3, photo: "https://via.placeholder.com/300x200?text=Bánh+flan", description: "Bánh flan caramel", issoldout: false },
-//        { id: 4, name: "Nước cam", price: 30000, discount: 0, idDishcategory: 4, photo: "https://via.placeholder.com/300x200?text=Nước+cam", description: "Nước cam ép tươi", issoldout: false },
-//        { id: 5, name: "Nem rán", price: 40000, discount: 35000, idDishcategory: 1, photo: "https://via.placeholder.com/300x200?text=Nem+rán", description: "Nem rán giòn thơm", issoldout: true },
-//        { id: 6, name: "Bún chả", price: 45000, discount: 0, idDishcategory: 2, photo: "https://via.placeholder.com/300x200?text=Bún+chả", description: "Bún chả Hà Nội", issoldout: false }
-//    ]
-//};
-
-//let menuData = {
-//    categories: { id = null, name },
-//    dishes: { id, name, price, discount, idDishcategory, photo, description, issoldout }
-//}
-let menuData = {
+﻿let menuData = {
     categories: [],
     dishes: []
 }
@@ -149,7 +127,6 @@ function addToCart(dish) {
 // Mở modal giỏ hàng
 function openCartModal() {
     const cartModal = new bootstrap.Modal(document.getElementById('cartModal'));
-    console.log("231");
     updateCartModal();
     cartModal.show();
 }

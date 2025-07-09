@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using QLNhaHang.Libraries;
 using QLNhaHang.Models;
 using System.Net;
+using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text.Json;
 using System.Web;
@@ -204,6 +205,7 @@ namespace QLNhaHang.Controllers.API
 				Shipfee = orderDto.IsShipping ? orderDto.ShipFee : null,
 				Orderprice = orderDto.OrderPrice,
 				Note = orderDto.Note,
+				IdCart = GetCartIdFromClaim(),
 				IdOrderstatus = 1, // Chờ thanh toán
 			};
 
@@ -248,7 +250,8 @@ namespace QLNhaHang.Controllers.API
 				Shipfee = orderDto.IsShipping ? orderDto.ShipFee : null,
 				Orderprice = orderDto.OrderPrice,
 				Note = orderDto.Note,
-				Transactionid = transactionId
+				Transactionid = transactionId,
+				IdCart = GetCartIdFromClaim()
 			};
 			db.Shiporders.Add(shipOrder);
 			await db.SaveChangesAsync();
@@ -289,6 +292,14 @@ namespace QLNhaHang.Controllers.API
 				transactionId,
 				orderData = orderDto // client cần gửi lại khi callback
 			});
+		}
+
+		private int? GetCartIdFromClaim()
+		{
+			var idClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+			if (idClaim == null) return null;
+			var cart = db.Carts.FirstOrDefault(c => c.IdCustomer == int.Parse(idClaim.Value));
+			return cart?.IdCart ?? null;
 		}
 	}
 

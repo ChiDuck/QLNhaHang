@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using QLNhaHang.DTO;
 using QLNhaHang.Libraries;
 using QLNhaHang.Models;
+using System.Security.Claims;
 
 namespace QLNhaHang.Controllers.API
 {
@@ -54,7 +55,7 @@ namespace QLNhaHang.Controllers.API
 		//[HttpGet]
 		//public async Task<ActionResult<IEnumerable<object>>> GetAllActiveReservations()
 		//{
-		//	return await db.Reservations
+		//	return await _context.Reservations
 		//		.Where(r => r.IdReservationstatus == 2 || r.IdReservationstatus == 1)
 		//		.Include(r => r.IdReservationstatusNavigation)
 		//		.Include(r => r.IdDinetableNavigation)
@@ -168,6 +169,14 @@ namespace QLNhaHang.Controllers.API
 					return BadRequest("Đã hết bàn loại này. Vui lòng chọn loại bàn khác.");
 				}
 
+				var idClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+				int? idCustomer = null;
+
+				if (idClaim != null)
+				{
+					idCustomer = int.Parse(idClaim.Value);
+				}
+
 				// Tạo reservation mới
 				var reservation = new Reservation
 				{
@@ -181,7 +190,7 @@ namespace QLNhaHang.Controllers.API
 					Note = dto.Note,
 					IdDinetable = availableTable.IdDinetable,
 					IdReservationstatus = 1,
-					IdCustomer = await GetOrCreateCustomer(dto)
+					IdCustomer = idCustomer
 				};
 				//Console.WriteLine(reservation);
 				db.Reservations.Add(reservation);
@@ -259,6 +268,14 @@ namespace QLNhaHang.Controllers.API
 
 			var transactionId = "PENDING_" + Guid.NewGuid().ToString();
 
+			var idClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+			int? idCustomer = null;
+
+			if (idClaim != null)
+			{
+				idCustomer = int.Parse(idClaim.Value);
+			}
+
 			// Tạo reservation mới
 			var reservation = new Reservation
 			{
@@ -272,7 +289,7 @@ namespace QLNhaHang.Controllers.API
 				Note = dto.Note,
 				Transactionid = transactionId,
 				IdDinetable = availableTable.IdDinetable,
-				IdCustomer = await GetOrCreateCustomer(dto)
+				IdCustomer = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value)
 			};
 			//Console.WriteLine(reservation);
 			db.Reservations.Add(reservation);
@@ -319,32 +336,6 @@ namespace QLNhaHang.Controllers.API
 				transactionId,
 				bookData = dto // client cần gửi lại khi callback
 			});
-		}
-
-		private async Task<int?> GetOrCreateCustomer(CreateReservationDto dto)
-		{
-			if (string.IsNullOrEmpty(dto.CustomerName)) return null;
-
-			// Tìm khách hàng theo số điện thoại
-			var customer = await db.Customers
-				.FirstOrDefaultAsync(c => c.Phone == dto.Phone);
-
-			if (customer == null)
-			{
-				// Tạo khách hàng mới
-				customer = new Customer
-				{
-					Name = dto.CustomerName,
-					Phone = dto.Phone,
-					Email = dto.Email,
-					PasswordHash = "temp" // Có thể tạo password ngẫu nhiên
-				};
-
-				db.Customers.Add(customer);
-				await db.SaveChangesAsync();
-			}
-
-			return customer.IdCustomer;
 		}
 	}
 

@@ -22,32 +22,3 @@
 	</tbody>
 </table>
 <script src="~/js/customer.js"></script>
-<script>
-	// Hàm render danh sách khách hàng
-	async function loadCustomers() {
-		const customers = await getAllCustomers();
-		const tableBody = document.getElementById("customerTableBody");
-		tableBody.innerHTML = ""; // clear table
-
-		customers.forEach(c => {
-			const row = document.createElement("tr");
-
-			row.innerHTML = `
-								<td>${c.idCustomer}</td>
-								<td>${c.name}</td>
-								<td>${c.phone ?? ""}</td>
-								<td>${c.email ?? ""}</td>
-								<td>${c.birthday ? new Date(c.birthday).toLocaleDateString() : ""}</td>
-								<td>${c.address ?? ""}</td>
-								<td>${c.photo ? `<img src="${c.photo}" width="50">` : ""}</td>
-								<td class="text-center">
-										<button class="btn btn-sm btn-danger" onclick="deleteCustomer(${c.idCustomer})">Xóa</button>
-								</td>
-							`;
-			tableBody.appendChild(row);
-		});
-	}
-
-	// Gọi hàm load khi trang load
-	window.onload = loadCustomers;
-</script>

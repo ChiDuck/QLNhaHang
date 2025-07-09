@@ -8,5 +8,5 @@ namespace QLNhaHang.Controllers.View
         {
             return View();
         }
-    }
+	}
 }

@@ -2,16 +2,7 @@
 let checkoutModal = null;
 const DEFAULT_SHIPPING_FEE = 15000;
 
-// Mở modal thanh toán
-function openCheckoutModal() {
-    if (cart.length === 0) {
-        alert('Giỏ hàng của bạn đang trống');
-        return;
-    }
-
-    updateOrderSummary();
-    checkoutModal.show();
-}
+const token = localStorage.getItem("token");
 
 // Cập nhật thông tin đơn hàng
 function updateOrderSummary() {
@@ -47,7 +38,7 @@ function updateOrderSummary() {
 // Khai báo biến toàn cục
 
 // Khởi tạo khi trang tải xong
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', async function () {
     checkoutModal = new bootstrap.Modal(document.getElementById('checkoutModal'));
 
     // Xử lý nút thanh toán trong modal giỏ hàng
@@ -61,10 +52,26 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 // Mở modal thanh toán
-function openCheckoutModal() {
-    if (cart.length === 0) {
-        alert('Giỏ hàng của bạn đang trống');
-        return;
+async function openCheckoutModal() {
+    //if (cart.length === 0) {
+    //    alert('Giỏ hàng của bạn đang trống');
+    //    return;
+    //}
+    console.log(token);
+    if (token) {
+        try {
+            const res = await fetch(`/api/customerapi/profile`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            const customerData = await res.json();
+            document.getElementById('customerName').value = customerData.name || '';
+            document.getElementById('phone').value = customerData.phone || '';
+            document.getElementById('email').value = customerData.email || '';
+            document.getElementById('shipAddress').value = customerData.address || '';
+        }
+        catch (error) {
+            console.error('Error loading customer profile:', error);
+        }
     }
 
     updateOrderSummary();
@@ -155,7 +162,7 @@ async function submitOrder() {
         shipAddress: isShipping ? shipAddress : null,
         note: note || null,
         paymentMethod: paymentMethod,
-       // cartId: currentCartId, // Giả sử có biến lưu ID giỏ hàng hiện tại
+        // cartId: currentCartId, // Giả sử có biến lưu ID giỏ hàng hiện tại
         items: cart.map(item => ({
             dishId: item.id,
             quantity: item.quantity,
@@ -182,11 +189,16 @@ async function submitOrder() {
 // Tạo đơn hàng tiền mặt
 async function createCashOrder(orderData) {
     try {
+        const headers = {
+            'Content-Type': 'application/json'
+        };
+        if (token) {
+            headers['Authorization'] = 'Bearer ' + token;
+        }
+
         const response = await fetch('/api/shiporderapi/cash', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
+            headers: headers,
             body: JSON.stringify(orderData)
         });
 
@@ -197,7 +209,7 @@ async function createCashOrder(orderData) {
 
         // Reset form và giỏ hàng
         checkoutModal.hide();
-       // clearCart();
+        // clearCart();
         window.location.href = `/orderconfirmation?id=${result.shipOrderId}`;
     } catch (error) {
         console.error('Error:', error);
@@ -212,12 +224,17 @@ async function processVNPayPayment(orderData) {
     submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Đang kết nối VNPay...';
 
     try {
+        const headers = {
+            'Content-Type': 'application/json'
+        };
+        if (token) {
+            headers['Authorization'] = 'Bearer ' + token;
+        }
+
         // Gọi API để tạo yêu cầu thanh toán VNPay
         const response = await fetch('/api/shiporderapi/vnpay', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
+            headers: headers,
             body: JSON.stringify(orderData)
         });
 
@@ -242,8 +259,6 @@ async function processVNPayPayment(orderData) {
         submitBtn.textContent = 'Đặt hàng';
     }
 }
-
-
 
 // Hàm định dạng giá
 function formatPrice(price) {
