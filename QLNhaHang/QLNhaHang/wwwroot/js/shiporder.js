@@ -1,31 +1,70 @@
 ﻿let currentOrderId = null;
+var shiporderlist = [];
 
 function formatCurrency(n) {
     return n.toLocaleString('vi-VN') + ' đ';
 }
+document.addEventListener("DOMContentLoaded", loadOrders);
 
 async function loadOrders() {
     try {
         const res = await fetch('/api/shiporderapi');
-        const data = await res.json();
+        if (!res.ok) {
+            throw new Error('Network response was not ok');
+        }
+        shiporderlist = await res.json();
+        renderShiporderList();
+    } catch (err) {
+        console.error("Error loading orders:", err);
+    }
+}
 
-        const tbody = document.querySelector('#ordersTable tbody');
-        tbody.innerHTML = '';
+function renderShiporderList() {
+    const tbody = document.querySelector('#ordersTable tbody');
+    tbody.innerHTML = '';
 
-        data.forEach(o => {
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
+    shiporderlist.forEach(o => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
                 <td>${o.idShiporder}</td>
-                <td>${o.customername}</td>
                 <td>${new Date(o.orderdate).toLocaleString('vi-VN')}</td>
+                <td>${o.customername}</td>
+                <td>${o.phone ?? ''}</td>
+                <td>${o.email ?? ''}</td>
                 <td>${formatCurrency(o.orderprice)}</td>
                 <td>${o.orderstatusName}</td>
                 <td><button class="btn btn-sm btn-primary" onclick="showDetail(${o.idShiporder})">Xem</button></td>
             `;
-            tbody.appendChild(tr);
-        });
+        tbody.appendChild(tr);
+    });
+}
+
+async function searchShipOrders() {
+    const keyword = document.getElementById("shiporderSearchInput").value.trim();
+    const tbody = document.getElementById("shiporderTableBody");
+    tbody.innerHTML = "";
+
+    if (!keyword) return;
+
+    try {
+        const res = await fetch(`/api/shiporderapi/search?keyword=${encodeURIComponent(keyword)}`);
+        const data = await res.json();
+
+        if (!res.ok) {
+            alert(data.message || "Lỗi tìm kiếm.");
+            return;
+        }
+
+        if (data.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="7">Không tìm thấy đơn giao hàng nào.</td></tr>`;
+            return;
+        }
+        shiporderlist = data; // Cập nhật danh sách đơn giao hàng
+        renderShiporderList();
+
     } catch (err) {
-        console.error("Error loading orders:", err);
+        console.error("Lỗi kết nối:", err);
+        alert("Không thể kết nối đến máy chủ.");
     }
 }
 
@@ -134,5 +173,3 @@ async function updateStatus(id, status) {
         alert("Không thể cập nhật đơn hàng.");
     }
 }
-
-document.addEventListener("DOMContentLoaded", loadOrders);

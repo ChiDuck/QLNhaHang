@@ -48,8 +48,40 @@ namespace QLNhaHang.Controllers.API
 					s.IdCart,
 					s.IdPayment
 				})
+				.OrderByDescending(s => s.Orderdate)
 				.ToListAsync();
 			return Ok(shiporders);
+		}
+
+		[HttpGet("search")]
+		public async Task<IActionResult> SearchShipOrders([FromQuery] string keyword)
+		{
+			if (string.IsNullOrWhiteSpace(keyword))
+				return BadRequest("Từ khóa không hợp lệ.");
+
+			var result = await db.Shiporders
+				.Where(s => s.Phone.Contains(keyword) || s.Email.Contains(keyword))
+				.Select(s => new
+				{
+					s.IdShiporder,
+					s.Orderdate,
+					s.Customername,
+					s.Phone,
+					s.Email,
+					s.Isshipping,
+					s.Shipaddress,
+					s.Shipfee,
+					s.Orderprice,
+					s.Note,
+					s.IdOrderstatus,
+					OrderstatusName = s.IdOrderstatusNavigation.Name,
+					s.IdCart,
+					s.IdPayment
+				})
+				.OrderByDescending(s => s.Orderdate)
+				.ToListAsync();
+
+			return Ok(result);
 		}
 
 		[HttpGet("{id}")]

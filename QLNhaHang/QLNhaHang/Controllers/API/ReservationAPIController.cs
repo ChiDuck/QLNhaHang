@@ -121,6 +121,38 @@ namespace QLNhaHang.Controllers.API
 			return dto;
 		}
 
+		[HttpGet("search")]
+		public async Task<IActionResult> SearchReservations([FromQuery] string keyword)
+		{
+			if (string.IsNullOrWhiteSpace(keyword))
+				return BadRequest("Từ khóa không hợp lệ.");
+
+			var result = await db.Reservations
+				.Where(r => r.Phone.Contains(keyword) || r.Email.Contains(keyword))
+				.Select(r => new
+				{
+					r.IdReservation,
+					r.Bookdate,
+					r.Phone,
+					r.Email,
+					r.Reservationdate,
+					r.Reservationtime,
+					r.Partysize,
+					r.Reservationprice,
+					r.Note,
+					r.Transactionid,
+					r.IdReservationstatus,
+					Status = r.IdReservationstatusNavigation.Name,
+					CustomerName = r.IdCustomerNavigation != null ? r.IdCustomerNavigation.Name : "Khách vãng lai",
+					TableName = r.IdDinetableNavigation != null ? r.IdDinetableNavigation.Name : "Chưa chọn bàn",
+				})
+				.OrderByDescending(r => r.Reservationdate)
+				.ThenByDescending(r => r.Reservationtime)
+				.ToListAsync();
+
+			return Ok(result);
+		}
+
 		[HttpPut("{id}/status")]
 		public async Task<IActionResult> UpdateStatus(int id, [FromBody] int newStatus)
 		{

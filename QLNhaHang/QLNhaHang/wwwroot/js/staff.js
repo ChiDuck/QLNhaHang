@@ -3,6 +3,7 @@
 // Biến lưu trạng thái
 let currentDetailModal = null;
 let currentStaffId = null;
+var stafflist = [];
 
 async function loadStaffList() {
     try {
@@ -10,15 +11,15 @@ async function loadStaffList() {
         if (!response.ok) {
             throw new Error('Network response was not ok');
         }
-        const staffList = await response.json();
-        renderStaffList(staffList);
+        staffList = await response.json();
+        renderStaffList();
     } catch (error) {
         console.error('Error loading staff list:', error);
         alert('Có lỗi xảy ra khi tải danh sách nhân viên');
     }
 }
 
-function renderStaffList(staffList) {
+function renderStaffList() {
     const tableBody = document.querySelector('#staffTable tbody');
     tableBody.innerHTML = '';
 
@@ -39,6 +40,35 @@ function renderStaffList(staffList) {
         row.addEventListener('click', () => showStaffDetails(staff.idStaff));
         tableBody.appendChild(row);
     });
+}
+
+async function searchStaff() {
+    const keyword = document.getElementById("staffSearchInput").value.trim();
+    const tbody = document.getElementById("staffTableBody");
+    tbody.innerHTML = "";
+
+    if (!keyword) return;
+
+    try {
+        const res = await fetch(`/api/staffapi/search?keyword=${encodeURIComponent(keyword)}`);
+        const data = await res.json();
+
+        if (!res.ok) {
+            alert(data.message || "Lỗi khi tìm kiếm nhân viên.");
+            return;
+        }
+
+        if (data.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="6">Không tìm thấy nhân viên phù hợp.</td></tr>`;
+            return;
+        }
+
+        staffList = data; // Cập nhật danh sách nhân viên
+        renderStaffList(); // Hàm render danh sách nhân viên
+    } catch (err) {
+        console.error("Lỗi:", err);
+        alert("Không thể kết nối đến máy chủ.");
+    }
 }
 
 // Load danh sách loại nhân viên

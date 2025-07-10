@@ -1,17 +1,25 @@
 ﻿const apiUrl = "/api/dishapi";
+var dishlist = [];
+
+document.addEventListener("DOMContentLoaded", getAllDishes);
 
 async function getAllDishes() {
-    const res = await fetch(apiUrl);
-    if (!res.ok) throw new Error("Lỗi khi tải danh sách món ăn");
-    return await res.json();
+    try {
+        const res = await fetch(apiUrl);
+        if (!res.ok) throw new Error("Lỗi khi tải danh sách món ăn");
+        dishlist = await res.json();
+        loadDishes(); // Hàm load danh sách món ăn
+    }
+    catch (error) {
+        console.error("Lỗi khi lấy danh sách món ăn:", error);
+    }
 }
 
 async function loadDishes() {
-    const dishes = await getAllDishes();
     const tableBody = document.getElementById("dishTableBody");
     tableBody.innerHTML = ""; // clear
 
-    dishes.forEach(d => {
+    dishlist.forEach(d => {
         const row = document.createElement("tr");
         row.innerHTML = `
             <td>${d.idDish}</td>
@@ -31,7 +39,34 @@ async function loadDishes() {
     });
 }
 
-window.onload = loadDishes;
+async function searchDishes() {
+    const keyword = document.getElementById("dishSearchInput").value.trim();
+    const tbody = document.getElementById("dishTableBody");
+    tbody.innerHTML = "";
+
+    if (!keyword) return;
+
+    try {
+        const res = await fetch(`/api/dishapi/search?keyword=${encodeURIComponent(keyword)}`);
+        const data = await res.json();
+
+        if (!res.ok) {
+            alert(data.message || "Lỗi tìm kiếm.");
+            return;
+        }
+
+        if (data.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="4">Không tìm thấy món ăn nào.</td></tr>`;
+            return;
+        }
+        dishlist = data; // Cập nhật danh sách món ăn
+        loadDishes(); // Hàm reload danh sách
+            
+    } catch (err) {
+        console.error("Lỗi:", err);
+        alert("Không thể kết nối đến máy chủ.");
+    }
+}
 
 async function deleteDish(id) {
     if (!confirm("Bạn có chắc muốn xóa món ăn này không?")) return;
@@ -41,7 +76,7 @@ async function deleteDish(id) {
         alert("Đã xóa món ăn.");
         const modal = bootstrap.Modal.getInstance(document.getElementById('dishDetailModal'));
         modal.hide();
-        loadDishes(); // Hàm reload danh sách
+        getAllDishes(); // Hàm reload danh sách
     } else {
         const err = await res.text();
         alert("Không thể xóa: " + err);
@@ -185,7 +220,7 @@ async function submitDish() {
     if (res.ok) {
         alert(id > 0 ? "Đã cập nhật!" : "Đã tạo món mới!");
         bootstrap.Modal.getInstance('#editDishModal').hide();
-        loadDishes();     // refresh danh sách
+        getAllDishes();     // refresh danh sách
     } else {
         alert("Lỗi: " + await res.text());
     }

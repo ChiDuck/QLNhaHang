@@ -1,25 +1,30 @@
 ﻿const apiUrl = "/api/inventoryitemapi";
-
+var inventoryitemlist = [];
 var valName = document.getElementById("validateName");
 var valUnit = document.getElementById("validateUnit");
 
+document.addEventListener("DOMContentLoaded", getAllInventoryitems);
 // Gọi API lấy danh sách nguyên liệu
 async function getAllInventoryitems() {
-    const response = await fetch(apiUrl);
-    
-    if (!response.ok) {
-        alert("Không thể tải danh sách nguyên liệu");
-        return [];
+    try {
+        const response = await fetch(apiUrl);
+
+        if (!response.ok) {
+            alert("Không thể tải danh sách nguyên liệu");
+        }
+        inventoryitemlist = await response.json();
+        loadInventoryitems(); // Hàm load danh sách nguyên liệu
     }
-    return await response.json();
+    catch (error) {
+        console.error("Lỗi khi gọi API:", error);
+    }
 }
 
 async function loadInventoryitems() {
-    const items = await getAllInventoryitems();
     const tableBody = document.getElementById("inventoryTableBody");
     tableBody.innerHTML = "";
 
-    items.forEach(item => {
+    inventoryitemlist.forEach(item => {
         const row = document.createElement("tr");
         row.innerHTML = `
                     <td>${item.idInventoryitem}</td>
@@ -36,14 +41,51 @@ async function loadInventoryitems() {
     });
 }
 
-window.onload = loadInventoryitems;
+async function searchInventoryItems() {
+    const keyword = document.getElementById("inventorySearchInput").value.trim();
+    const tbody = document.getElementById("inventoryTableBody");
+    tbody.innerHTML = "";
+
+    if (!keyword) return;
+
+    try {
+        const res = await fetch(`/api/inventoryitemapi/search?keyword=${encodeURIComponent(keyword)}`);
+        const data = await res.json();
+
+        if (!res.ok) {
+            alert(data.message || "Lỗi tìm kiếm.");
+            return;
+        }
+
+        if (data.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="4">Không tìm thấy nguyên liệu nào.</td></tr>`;
+            return;
+        }
+        inventoryitemlist = data; // Cập nhật danh sách nguyên liệu
+        loadInventoryitems(); // Hàm load danh sách nguyên liệu
+
+    } catch (err) {
+        console.error("Lỗi:", err);
+        alert("Không thể kết nối đến máy chủ.");
+    }
+}
 
 async function addInventoryitem(item) {
-    await fetch(apiUrl, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(item)
-    });
+    try {
+        const res = await fetch(apiUrl, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(item)
+        });
+        if (res.ok) {
+            alert("Thêm nguyên liệu thành công!");
+            bootstrap.Modal.getInstance(document.getElementById("editModal")).hide();
+            getAllInventoryitems(); // Cập nhật lại danh sách
+        }
+    } catch (err) {
+        alert("Đã xảy ra lỗi khi kết nối tới server.");
+        console.error(err);
+    }
 }
 
 async function deleteInventoryitem(id) {
@@ -55,7 +97,7 @@ async function deleteInventoryitem(id) {
 
             if (response.ok) {
                 alert("Xoá thành công!");
-                await loadInventoryitems(); // Cập nhật lại danh sách
+                getAllInventoryitems(); // Cập nhật lại danh sách
             } else {
                 const errorText = await response.text();
                 alert(`${errorText}`);
@@ -140,7 +182,7 @@ async function updateInventoryitem() {
     if (res.ok) {
         alert("Lưu thành công!");
         bootstrap.Modal.getInstance(document.getElementById("editModal")).hide();
-        loadInventoryitems();
+        getAllInventoryitems();
     } else {
         const error = await res.text();
         alert("Lỗi: " + error);

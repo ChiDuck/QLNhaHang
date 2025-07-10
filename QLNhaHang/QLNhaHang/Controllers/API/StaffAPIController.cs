@@ -68,6 +68,40 @@ namespace QLNhaHang.Controllers.API
 			return staff;
 		}
 
+		[HttpGet("search")]
+		public async Task<IActionResult> SearchStaff([FromQuery] string keyword)
+		{
+			if (string.IsNullOrWhiteSpace(keyword))
+				return BadRequest("Từ khóa không hợp lệ.");
+
+			var result = await db.Staff
+				.Where(s =>
+					s.Name.Contains(keyword) ||
+					s.Phone.Contains(keyword) ||
+					s.Email.Contains(keyword) ||
+					s.Citizenid.Contains(keyword))
+				.Select(s => new
+				{
+					s.IdStaff,
+					s.Name,
+					s.Citizenid,
+					s.Phone,
+					s.Email,
+					s.Gender,
+					s.Birthday,
+					s.Photo,
+					s.Address,
+					s.Startdate,
+					s.Hourlysalary,
+					s.Isactive,
+					s.IdStafftype,
+					StaffType = s.IdStafftypeNavigation != null ? s.IdStafftypeNavigation.Name : null
+				})
+				.ToListAsync();
+
+			return Ok(result);
+		}
+
 		// POST: api/Staff
 		[HttpPost]
 		public async Task<ActionResult<Staff>> CreateStaff([FromBody] Staff staff)

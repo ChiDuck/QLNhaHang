@@ -21,7 +21,7 @@ function showSection(id) {
 let originalProfile = {};
 
 async function loadUserInfo() {
-    const token = localStorage.getItem("token");
+    if (!token) return;
     const res = await fetch("/api/customerapi/profile", {
         headers: { Authorization: `Bearer ${token}` }
     });

@@ -1,8 +1,6 @@
 ﻿const apiUrl = "/api/reservationapi";
-
-document.addEventListener('DOMContentLoaded', function () {
-    loadReservations();
-});
+var reservationlist = [];
+document.addEventListener('DOMContentLoaded',  loadReservations);
 
 async function loadReservations() {
     try {
@@ -10,21 +8,21 @@ async function loadReservations() {
         if (!response.ok) {
             throw new Error('Network response was not ok');
         }
-        const reservations = await response.json();
-        renderReservations(reservations);
+        reservationlist = await response.json();
+        renderReservations();
     } catch (error) {
         console.error('Error loading reservations:', error);
         alert('Có lỗi xảy ra khi tải danh sách đặt bàn');
     }
 }
 
-function renderReservations(reservations) {
+function renderReservations() {
     const tableBody = document.querySelector('#reservationsTable tbody');
     tableBody.innerHTML = '';
 
-    reservations.forEach(reservation => {
+    reservationlist.forEach(re => {
         const row = document.createElement('tr');
-        const bookDate = new Date(reservation.bookdate);
+        const bookDate = new Date(re.bookdate);
         const formattedDate = bookDate.toLocaleString("vi-VN", {
             day: "2-digit",
             month: "2-digit",
@@ -33,17 +31,17 @@ function renderReservations(reservations) {
             minute: "2-digit"
         });
         row.innerHTML = `
-            <td>${reservation.idReservation}</td>
+            <td>${re.idReservation}</td>
             <td>${formattedDate}</td>
-            <td>${reservation.customerName}</td>
-            <td>${reservation.phone}</td>
-            <td>${reservation.email}</td>
-            <td>${reservation.partysize}</td>
-            <td>${reservation.tableName}</td>
-            <td>${formatDate(reservation.reservationdate)} ${formatTime(reservation.reservationtime)}</td>
-            <td><span class="badge ${getStatusBadgeClass(reservation.idReservationstatus)}">${reservation.status}</span></td>
+            <td>${re.customerName}</td>
+            <td>${re.phone ?? ''}</td>
+            <td>${re.email ?? ''}</td>
+            <td>${re.partysize}</td>
+            <td>${re.tableName}</td>
+            <td>${formatDate(re.reservationdate)} ${formatTime(re.reservationtime)}</td>
+            <td><span class="badge ${getStatusBadgeClass(re.idReservationstatus)}">${re.status}</span></td>
             <td class="text-center">
-                <button class="btn btn-sm btn-info view-btn" data-id="${reservation.idReservation}">
+                <button class="btn btn-sm btn-info view-btn" data-id="${re.idReservation}">
                     <i class="fas fa-eye"></i>
                 </button>
             </td>
@@ -55,6 +53,35 @@ function renderReservations(reservations) {
     document.querySelectorAll('.view-btn').forEach(btn => {
         btn.addEventListener('click', () => showReservationDetail(btn.dataset.id));
     });
+}
+
+async function searchReservations() {
+    const keyword = document.getElementById("reservationSearchInput").value.trim();
+    const tbody = document.getElementById("reservationTableBody");
+    tbody.innerHTML = "";
+
+    if (!keyword) return;
+
+    try {
+        const res = await fetch(`/api/reservationapi/search?keyword=${encodeURIComponent(keyword)}`);
+        const data = await res.json();
+
+        if (!res.ok) {
+            alert(data.message || "Lỗi tìm kiếm.");
+            return;
+        }
+
+        if (data.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="6">Không tìm thấy đặt bàn nào.</td></tr>`;
+            return;
+        }
+        reservationlist = data; // Cập nhật danh sách đặt bàn
+        renderReservations(); 
+
+    } catch (err) {
+        console.error("Lỗi khi gọi API:", err);
+        alert("Không thể kết nối đến máy chủ.");
+    }
 }
 
 function formatDate(dateString) {

@@ -2,6 +2,17 @@
 
 let allStaffOptions = [];
 let selectedStaffIds = [];
+let scheduleData = [];
+
+const token = localStorage.getItem("token");
+
+document.addEventListener('DOMContentLoaded', () => {
+    loadSchedule();
+    populateStaffFilter();
+    document.getElementById("checkinButton").addEventListener("click", checkIn);
+    document.getElementById("filterButton").addEventListener("click", applyScheduleFilter);
+    document.getElementById("resetFilterButton").addEventListener("click", resetScheduleFilter);
+});
 
 function formatShiftName(shift) {
     return shift === 1 ? "Sáng" : shift === 2 ? "Trưa" : "Tối";
@@ -15,28 +26,87 @@ async function loadSchedule() {
     try {
         const res = await fetch('/api/scheduleapi');
         const data = await res.json();
-
+        scheduleData = data; // lưu lại toàn bộ dữ liệu
+        console.log("Dữ liệu thời gian biểu:", data);
         const tbody = document.getElementById('scheduleGrid');
         tbody.innerHTML = '';
-        const shifts = ['Sáng', 'Trưa', 'Tối'];
+        const shifts = ['Sáng', 'Chiều', 'Tối'];
 
         for (let s = 0; s < 3; s++) {
             const tr = document.createElement('tr');
             tr.innerHTML = `<th>${shifts[s]}</th>`;
             for (let d = 2; d <= 8; d++) {
                 const cell = document.createElement('td');
-                const staff = data.filter(x => x.idWorkday === d - 1 && x.idWorkshift === s + 1).map(x => x.name);
-                cell.innerHTML = staff.slice(0, 5).map(n => `<div>${n}</div>`).join('') +
-                    (staff.length > 5 ? "<div>...</div>" : "");
+                const staff = data
+                    .filter(x => x.idWorkday === d - 1 && x.idWorkshift === s + 1)
+                    .map(x => `<div data-idstaff="${x.idStaff}">${x.name}</div>`);
+                console.log(staff);
+                cell.innerHTML = staff.slice(0, 5).join('') + (staff.length > 5 ? "<div>...</div>" : "");
+
                 cell.classList.add("cursor-pointer");
                 cell.onclick = () => showShiftDetail(d, s + 1, true);
                 tr.appendChild(cell);
             }
             tbody.appendChild(tr);
         }
+        populateStaffFilter(); // Đảm bảo danh sách nhân viên được cập nhật
     } catch (err) {
         console.error("Lỗi tải thời gian biểu:", err);
     }
+}
+
+async function populateStaffFilter() {
+    try {
+        const res = await fetch('/api/staffapi');
+        const data = await res.json();
+        allStaffOptions = data;
+
+        const list = document.getElementById("staffList");
+        list.innerHTML = "";
+
+        data.forEach(s => {
+            const opt = document.createElement("option");
+            opt.value = `${s.name} (${s.staffType})`; // hiển thị
+            opt.dataset.id = s.idStaff; // lưu id
+            list.appendChild(opt);
+        });
+    } catch (err) {
+        console.error("Lỗi tải danh sách nhân viên:", err);
+    }
+}
+
+function applyScheduleFilter() {
+    const input = document.getElementById("staffFilterInput").value.toLowerCase();
+    const found = allStaffOptions.find(s => input.includes(s.name.toLowerCase()));
+    if (!found) return alert("Không tìm thấy nhân viên!");
+
+    const selectedId = found.idStaff.toString();
+
+    const rows = document.querySelectorAll("#scheduleGrid tr");
+    rows.forEach((row, sIndex) => {
+        const cells = row.querySelectorAll("td");
+        cells.forEach((cell, dIndex) => {
+            const workday = dIndex + 2;
+            const shift = sIndex + 1;
+            const hasStaff = scheduleData.some(x =>
+                x.idStaff == selectedId &&
+                x.idWorkday == workday - 1 &&
+                x.idWorkshift == shift
+            );
+            cell.classList.remove("cell-highlight", "cell-muted");
+            cell.classList.add(hasStaff ? "cell-highlight" : "cell-muted");
+        });
+    });
+}
+
+function resetScheduleFilter() {
+    const grid = document.getElementById("scheduleGrid");
+    grid.querySelectorAll("td").forEach(cell => {
+        cell.classList.remove("cell-highlight", "cell-muted");
+    });
+
+    // Reset ô input tìm kiếm nhân viên
+    document.getElementById("staffFilterInput").value = "";
 }
 
 async function showShiftDetail(day, shift, isNew) {
@@ -234,7 +304,6 @@ async function toggleLate(idStaff, checked) {
 
 async function checkIn() {
     const messageBox = document.getElementById("checkinMessage");
-    const token = localStorage.getItem("token");
     if (!token) {
         messageBox.textContent = "Bạn chưa đăng nhập.";
         messageBox.className = "text-danger";
@@ -265,8 +334,3 @@ async function checkIn() {
         messageBox.className = "text-danger";
     }
 }
-
-document.addEventListener('DOMContentLoaded', () => {
-    loadSchedule();
-    document.getElementById("checkinButton").addEventListener("click", checkIn);
-});

@@ -1,88 +1,106 @@
 ﻿@{
-    ViewData["Title"] = "Thời gian biểu nhân viên";
+	ViewData["Title"] = "Thời gian biểu nhân viên";
 }
 
 <style>
-    #scheduleGrid td,
-    #scheduleGrid th {
-        min-width: 140px;
-        max-width: 140px;
-        width: 140px;
-        vertical-align: top;
-        padding: 4px;
-    }
+	#scheduleGrid td,
+	#scheduleGrid th {
+		min-width: 140px;
+		max-width: 140px;
+		width: 140px;
+		vertical-align: top;
+		padding: 4px;
+	}
 
-    #scheduleGrid td {
-        transition: background-color 0.2s ease;
-        cursor: pointer;
-    }
+	#scheduleGrid td {
+		transition: background-color 0.2s ease;
+		cursor: pointer;
+	}
 
-        #scheduleGrid td:hover {
-            background-color: #f0f8ff;
-            box-shadow: 0 0 6px rgba(0, 0, 0, 0.1);
-            z-index: 1;
-            position: relative;
-        }
+		#scheduleGrid td:hover {
+			background-color: #f0f8ff;
+			box-shadow: 0 0 6px rgba(0, 0, 0, 0.1);
+			z-index: 1;
+			position: relative;
+		}
+
+	.cell-highlight {
+		background-color: #fff !important;
+		font-weight: bold;
+		box-shadow: inset 0 0 0 2px #0d6efd;
+	}
+
+	.cell-muted {
+		background-color: #ccc !important;
+		opacity: 0.6;
+	}
 
 </style>
 
 <h2>Thời gian biểu</h2>
 <div class="text-end mb-3">
-    <button class="btn btn-success" id="checkinButton">🕒 Chấm công</button>
-    <div id="checkinMessage" class="mt-2"></div>
+	<button class="btn btn-success" id="checkinButton">🕒 Chấm công</button>
+	<div id="checkinMessage" class="mt-2"></div>
+</div>
+
+<div class="d-flex align-items-center gap-2 mb-3" style="max-width: 400px;">
+	<input class="form-control" list="staffList" id="staffFilterInput" placeholder="Nhập tên nhân viên...">
+	<datalist id="staffList"></datalist>
+	<button class="btn btn-primary" id="filterButton">Lọc</button>
+	<button class="btn btn-secondary text-nowrap" id="resetFilterButton">Xóa lọc</button>
 </div>
 
 <div class="table-responsive">
-    <table class="table table-bordered text-center align-middle">
-        <thead class="table-dark">
-            <tr>
-                <th>Ca / Thứ</th>
-                @for (int i = 2; i <= 8; i++)
-                {
-                    <th>@(i == 8 ? "Chủ nhật" : $"Thứ {i}")</th>
-                }
-            </tr>
-        </thead>
-        <tbody id="scheduleGrid"></tbody>
-    </table>
+	<table class="table table-bordered text-center align-middle">
+		<thead class="table-dark">
+			<tr>
+				<th>Ca / Thứ</th>
+				@for (int i = 2; i <= 8; i++)
+				{
+					<th>@(i == 8 ? "Chủ nhật" : $"Thứ {i}")</th>
+				}
+			</tr>
+		</thead>
+		<tbody id="scheduleGrid"></tbody>
+	</table>
 </div>
 
 <!-- Modal chi tiết ca -->
 <div class="modal fade" id="shiftDetailModal" tabindex="-1">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header"><h5>Chi tiết ca</h5></div>
-            <div class="modal-body">
-                <p><strong>Ca:</strong> <span id="modalShiftName"></span></p>
-                <p><strong>Ngày:</strong> <span id="modalDayName"></span></p>
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header"><h5>Chi tiết ca</h5></div>
+			<div class="modal-body">
+				<p><strong>Ca:</strong> <span id="modalShiftName"></span></p>
+				<p><strong>Ngày:</strong> <span id="modalDayName"></span></p>
 
-                <h6>Danh sách nhân viên</h6>
-                <table class="table table-bordered align-middle">
-                    <thead class="table-light">
-                        <tr>
-                            <th>Họ tên</th>
-                            <th>Chức vụ</th>
-                            <th>Đã có mặt</th>
-                            <th>Đi muộn</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody id="shiftStaffTableBody"></tbody>
-                </table>
-                <!-- Nút để mở khu vực thêm nhân viên -->
-                <button class="btn btn-outline-primary mb-2" onclick="toggleAddStaff()" id="addStaffBtn">
-                    + Thêm nhân viên
-                </button>
+				<h6>Danh sách nhân viên</h6>
+				<table class="table table-bordered align-middle">
+					<thead class="table-light">
+						<tr>
+							<th>Họ tên</th>
+							<th>Chức vụ</th>
+							<th>Đã có mặt</th>
+							<th>Đi muộn</th>
+							<th></th>
+						</tr>
+					</thead>
+					<tbody id="shiftStaffTableBody"></tbody>
+				</table>
+				<!-- Nút để mở khu vực thêm nhân viên -->
+				<button class="btn btn-outline-primary mb-2" onclick="toggleAddStaff()" id="addStaffBtn">
+					+ Thêm nhân viên
+				</button>
 
-                <!-- Vùng chọn nhân viên ẩn ban đầu -->
-                <div id="addStaffArea" style="display: none;">
-                    <input type="text" id="staffSearchInput" class="form-control mb-2" placeholder="Nhập tên nhân viên...">
-                    <div id="staffSearchResults" class="list-group mb-2" style="max-height: 200px; overflow-y: auto;"></div>
-                    <div id="selectedStaffPreview" class="mb-2"></div>
-                    <button class="btn btn-success" onclick="addStaffToShift()">Thêm</button>
-                </div>
-            </div>
-        </div>
-    </div>
+				<!-- Vùng chọn nhân viên ẩn ban đầu -->
+				<div id="addStaffArea" style="display: none;">
+					<input type="text" id="staffSearchInput" class="form-control mb-2" placeholder="Nhập tên nhân viên...">
+					<div id="staffSearchResults" class="list-group mb-2" style="max-height: 200px; overflow-y: auto;"></div>
+					<div id="selectedStaffPreview" class="mb-2"></div>
+					<button class="btn btn-success" onclick="addStaffToShift()">Thêm</button>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
 <script src="~/js/schedule.js"></script>

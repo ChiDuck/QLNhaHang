@@ -30,11 +30,35 @@ namespace QLNhaHang.Controllers.API
                     i.IdInventoryitemtype,
                     InventoryitemtypeName = i.IdInventoryitemtypeNavigation.Name
                 })
-                .ToListAsync();
+				.OrderBy(i => i.Name)
+				.ToListAsync();
             return Ok(items);
         }
 
-        [HttpGet("{id}")]
+		[HttpGet("search")]
+		public async Task<IActionResult> SearchInventoryItems([FromQuery] string keyword)
+		{
+			if (string.IsNullOrWhiteSpace(keyword))
+				return BadRequest("Từ khóa không hợp lệ.");
+
+			var result = await db.Inventoryitems
+				.Where(i => i.Name.Contains(keyword))
+				.Select(i => new
+				{
+					i.IdInventoryitem,
+					i.Name,
+					i.Unit,
+					i.Amount,
+					i.IdInventoryitemtype,
+					InventoryitemtypeName = i.IdInventoryitemtypeNavigation.Name
+				})
+				.OrderBy(i => i.Name)
+				.ToListAsync();
+
+			return Ok(result);
+		}
+
+		[HttpGet("{id}")]
         public async Task<IActionResult> GetInventoryItem(int id)
         {
             var item = await db.Inventoryitems

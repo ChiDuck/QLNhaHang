@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using QLNhaHang.Models;
 using System.Security.Claims;
 
@@ -27,6 +28,7 @@ namespace QLNhaHang.Controllers.API
 				{
 					idWorkday = w.IdWorkday,
 					idWorkshift = w.IdWorkshift,
+					idStaff = w.IdStaff,
 					name = w.IdStaffNavigation.Name,
 				}).ToListAsync();
 
@@ -204,9 +206,12 @@ namespace QLNhaHang.Controllers.API
 
 			detail.Days++;
 			detail.Hours += currentShift.Shifthour;
-			if (shift.Islate == true) detail.Latetimes++;
+			if (shift.Islate == true)
+			{
+				detail.Latetimes++;
+			}
 
-			detail.Totalsalary = (detail.Hours * (_context.Staff.First(s => s.IdStaff == staffId).Hourlysalary ?? 0));
+			detail.Totalsalary = detail.Hours * (_context.Staff.First(s => s.IdStaff == staffId).Hourlysalary ?? 0) - detail.Subtract + detail.Bonus;
 
 			await _context.SaveChangesAsync();
 			return Ok("Chấm công thành công.");

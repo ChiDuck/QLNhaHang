@@ -19,6 +19,7 @@ namespace QLNhaHang.Controllers.API
 		[HttpGet]
 		public async Task<IActionResult> GetPayrolls() => Ok(await _context.Payrolls
 		.Select(p => new { id = p.IdPayroll, p.Month, p.Year })
+		.OrderByDescending(p => p.Year).ThenByDescending(p => p.Month)
 		.ToListAsync());
 
 		[HttpGet("{id}")]
@@ -44,23 +45,47 @@ namespace QLNhaHang.Controllers.API
 			});
 		}
 
-		[HttpGet("{id}/staff/{staffId}")]
-		public async Task<IActionResult> GetStaffPayrollDetail(int id, int staffId)
+		[HttpGet("{idPayroll}/{idStaff}")]
+		public async Task<IActionResult> GetDetail(int idPayroll, int idStaff)
 		{
-			var detail = await _context.Payrolldetails
-				.Include(p => p.IdStaffNavigation)
-				.FirstOrDefaultAsync(p => p.IdPayroll == id && p.IdStaff == staffId);
+			var pd = await _context.Payrolldetails
+				.FirstOrDefaultAsync(p => p.IdPayroll == idPayroll && p.IdStaff == idStaff);
 
-			if (detail == null) return NotFound();
+			if (pd == null) return NotFound();
 
 			return Ok(new
 			{
-				name = detail.IdStaffNavigation.Name,
-				hours = detail.Hours,
-				absences = detail.Absencetimes,
-				lates = detail.Latetimes,
-				totalsalary = detail.Totalsalary
+				pd.IdStaff,
+				pd.IdPayroll,
+				pd.Days,
+				pd.Hours,
+				pd.Absencetimes,
+				pd.Latetimes,
+				pd.Subtract,
+				pd.Bonus,
+				pd.Totalsalary,
+				pd.Note
 			});
+		}
+
+		[HttpPut("update")]
+		public async Task<IActionResult> UpdateDetail([FromBody] Payrolldetail dto)
+		{
+			var pd = await _context.Payrolldetails
+				.FirstOrDefaultAsync(p => p.IdPayroll == dto.IdPayroll && p.IdStaff == dto.IdStaff);
+			if (pd == null) return NotFound();
+
+			pd.Days = dto.Days;
+			pd.Hours = dto.Hours;
+			pd.Absencetimes = dto.Absencetimes;
+			pd.Latetimes = dto.Latetimes;
+			pd.Subtract = dto.Subtract;
+			pd.Bonus = dto.Bonus;
+			pd.Totalsalary = dto.Totalsalary;
+			pd.Note = dto.Note;
+
+			await _context.SaveChangesAsync();
+			return Ok();
 		}
 
 	}

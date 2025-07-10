@@ -3,18 +3,24 @@
 }
 
 <h2>Đơn giao hàng</h2>
+<div class="input-group mb-3">
+    <input type="text" id="shiporderSearchInput" class="form-control" placeholder="Tìm theo SĐT hoặc Email">
+    <button class="btn btn-primary" onclick="searchShipOrders()">Tìm kiếm</button>
+</div>
 <table class="table table-bordered" id="ordersTable">
     <thead>
         <tr>
             <th>Mã đơn</th>
-            <th>Khách</th>
             <th>Đặt lúc</th>
+            <th>Khách</th>
+			<th>SĐT</th>
+			<th>Email</th>
             <th>Giá</th>
             <th>Trạng thái</th>
             <th></th>
         </tr>
     </thead>
-    <tbody></tbody>
+    <tbody id ="shiporderTableBody"></tbody>
 </table>
 
 <!-- Modal chi tiết -->

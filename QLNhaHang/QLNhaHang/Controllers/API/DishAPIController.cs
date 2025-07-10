@@ -37,8 +37,33 @@ namespace QLNhaHang.Controllers.API
             return Ok(dishes);
         }
 
-        // Thêm endpoint để lấy danh sách món ăn có sẵn
-        [HttpGet("available")]
+		[HttpGet("search")]
+		public async Task<IActionResult> SearchDishes([FromQuery] string keyword)
+		{
+			if (string.IsNullOrWhiteSpace(keyword))
+				return BadRequest("Từ khóa không hợp lệ.");
+
+			var result = await db.Dishes
+				.Where(d => d.Name.Contains(keyword))
+				.Select(d => new
+				{
+					d.IdDish,
+					d.Name,
+					d.Price,
+					d.Discount,
+					d.Issoldout,
+					d.Photo,
+					d.Description,
+					d.IdDishcategory,
+					DishcategoryName = d.IdDishcategoryNavigation.Name
+				})
+				.ToListAsync();
+
+			return Ok(result);
+		}
+
+		// Thêm endpoint để lấy danh sách món ăn có sẵn
+		[HttpGet("available")]
         public async Task<IActionResult> GetAvailableDishes()
         {
             var dishes = await db.Dishes

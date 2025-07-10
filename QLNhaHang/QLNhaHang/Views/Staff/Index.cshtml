@@ -3,6 +3,10 @@
 }
 
 <h2 class="mb-4">Danh Sách Nhân Viên</h2>
+<div class="input-group mb-3">
+	<input type="text" id="staffSearchInput" class="form-control" placeholder="Tìm theo tên, SĐT, Email, hoặc CCCD">
+	<button class="btn btn-primary" onclick="searchStaff()">Tìm kiếm</button>
+</div>
 
 <!-- Nút thêm nhân viên mới -->
 <button id="addStaffBtn" class="btn btn-success mb-3">
@@ -20,7 +24,7 @@
 			<th>Vị Trí</th>
 		</tr>
 	</thead>
-	<tbody>
+	<tbody id ="staffTableBody">
 		<!-- Dữ liệu sẽ được thêm bằng JavaScript -->
 	</tbody>
 </table>

@@ -24,6 +24,22 @@ namespace QLNhaHang.Controllers.API
 			return Ok(cus);
 		}
 
+		[HttpGet("search")]
+		public async Task<IActionResult> SearchCustomers([FromQuery] string keyword)
+		{
+			if (string.IsNullOrWhiteSpace(keyword))
+				return BadRequest("Từ khóa tìm kiếm không hợp lệ.");
+
+			var result = await _context.Customers
+				.Where(c =>
+					c.Name.Contains(keyword) ||
+					c.Phone.Contains(keyword) ||
+					c.Email.Contains(keyword))
+				.ToListAsync();
+
+			return Ok(result);
+		}
+
 		[HttpDelete("{id}")]
 		public async Task<IActionResult> DeleteCustomer(int id)
 		{

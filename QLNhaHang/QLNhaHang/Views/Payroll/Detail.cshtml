@@ -5,49 +5,59 @@
     </thead>
     <tbody id="payrollDetails"></tbody>
 </table>
+<!-- Modal chi tiết bảng lương -->
+<div class="modal fade" id="payrollDetailModal" tabindex="-1" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header bg-info text-white">
+				<h5 class="modal-title">Chi tiết bảng lương: <span id="payrollModalStaffName"></span></h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+			</div>
+			<div class="modal-body">
+				<form id="payrollDetailForm">
+					<input type="hidden" id="pd_IdPayroll">
+					<input type="hidden" id="pd_IdStaff">
 
-<!-- Modal xem chi tiết -->
-<div class="modal fade" id="staffPayrollModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header"><h5>Chi tiết bảng lương</h5></div>
-            <div class="modal-body" id="modalContent"></div>
-        </div>
-    </div>
+					<div class="mb-2">
+						<label class="form-label">Số ngày làm</label>
+						<input type="number" class="form-control" id="pd_Days">
+					</div>
+					<div class="mb-2">
+						<label class="form-label">Số giờ</label>
+						<input type="number" step="0.1" class="form-control" id="pd_Hours">
+					</div>
+					<div class="mb-2">
+						<label class="form-label">Số lần nghỉ</label>
+						<input type="number" class="form-control" id="pd_Absencetimes">
+					</div>
+					<div class="mb-2">
+						<label class="form-label">Số lần đi muộn</label>
+						<input type="number" class="form-control" id="pd_Latetimes">
+					</div>
+					<div class="mb-2">
+						<label class="form-label">Tiền trừ (VNĐ)</label>
+						<input type="number" step="1000" class="form-control" id="pd_Subtract">
+					</div>
+					<div class="mb-2">
+						<label class="form-label">Tiền thưởng (VNĐ)</label>
+						<input type="number" step="1000" class="form-control" id="pd_Bonus">
+					</div>
+					<div class="mb-2">
+						<label class="form-label">Tổng lương (VNĐ)</label>
+						<input type="number" step="1000" class="form-control" id="pd_Totalsalary">
+					</div>
+					<div class="mb-2">
+						<label class="form-label">Ghi chú</label>
+						<textarea class="form-control" id="pd_Note"></textarea>
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+				<button class="btn btn-success" onclick="savePayrollDetail()">Lưu thay đổi</button>
+			</div>
+		</div>
+	</div>
 </div>
 
-<script>
-    const urlParams = new URLSearchParams(window.location.search);
-    const id = urlParams.get('id');
-
-    async function loadDetails() {
-        const res = await fetch(`/api/payrollapi/${id}`);
-        const data = await res.json();
-        document.getElementById('payrollMonth').textContent = data.month;
-        document.getElementById('payrollYear').textContent = data.year;
-        const tbody = document.getElementById('payrollDetails');
-        tbody.innerHTML = data.details.map(d => `
-            <tr>
-                <td>${d.name}</td>
-                <td>${d.type}</td>
-                <td><button class="btn btn-sm btn-info" onclick="showDetail(${d.id})">Xem</button></td>
-            </tr>
-        `).join('');
-    }
-
-    async function showDetail(staffId) {
-        const res = await fetch(`/api/payroll/${id}/staff/${staffId}`);
-        const d = await res.json();
-        const content = `
-            <p><strong>Tên:</strong> ${d.name}</p>
-            <p><strong>Giờ làm:</strong> ${d.hours}</p>
-            <p><strong>Số lần vắng:</strong> ${d.absences}</p>
-            <p><strong>Số lần đi trễ:</strong> ${d.lates}</p>
-            <p><strong>Lương:</strong> ${d.totalsalary.toLocaleString()} đ</p>
-        `;
-        document.getElementById('modalContent').innerHTML = content;
-        new bootstrap.Modal(document.getElementById('staffPayrollModal')).show();
-    }
-
-    loadDetails();
-</script>
+<script src="~/js/payrolldetail.js"></script>
