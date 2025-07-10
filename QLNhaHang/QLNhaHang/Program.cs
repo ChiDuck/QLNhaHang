@@ -1,7 +1,10 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Hangfire;
+using Hangfire.SqlServer;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using QLNhaHang.Models;
+using QLNhaHang.Service;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -27,6 +30,13 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 			)
 		};
 	});
+
+builder.Services.AddHangfire(config =>
+	config.SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
+		  .UseSimpleAssemblyNameTypeSerializer()
+		  .UseRecommendedSerializerSettings()
+		  .UseSqlServerStorage(builder.Configuration.GetConnectionString("QLNhaHangContext"))); // 👉 dùng chuỗi kết nối thật
+builder.Services.AddHangfireServer();
 
 var app = builder.Build();
 
@@ -54,4 +64,17 @@ app.MapGet("/AdminIndex", context => {
 	return Task.CompletedTask;
 });
 
+app.UseHangfireDashboard(); // Dashboard tại /hangfire
+RecurringJobOptions options = new()
+{
+	TimeZone = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time")
+};
+RecurringJob.AddOrUpdate<AttendanceService>(
+	"mark-absence",
+	service => service.MarkAbsences(),
+	"05 22 * * *", // Mỗi ngày lúc 22:05 (giờ máy chủ)
+	options
+);
+
 app.Run();
+
