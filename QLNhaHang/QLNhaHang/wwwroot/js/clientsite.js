@@ -24,7 +24,7 @@ async function loginCustomer() {
             return;
         }
 
-        localStorage.setItem("token", data.token);
+        localStorage.setItem("customertoken", data.customertoken);
         localStorage.setItem("customer", JSON.stringify(data));
         msg.textContent = "Đăng nhập thành công!";
         msg.className = "text-success";
@@ -113,7 +113,7 @@ function renderAccountDropdown() {
 
 // Đăng xuất người dùng
 function logoutCustomer() {
-    localStorage.removeItem('token');
+    localStorage.removeItem('customertoken');
     localStorage.removeItem('customer');
     renderAccountDropdown();
     location.reload();

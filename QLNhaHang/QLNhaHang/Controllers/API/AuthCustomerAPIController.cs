@@ -81,7 +81,7 @@ public class AuthCustomerAPIController : ControllerBase
 
 		return Ok(new
 		{
-			token = new JwtSecurityTokenHandler().WriteToken(token),
+			customertoken = new JwtSecurityTokenHandler().WriteToken(token),
 			name = customer.Name,
 			phone = customer.Phone,
 			email = customer.Email

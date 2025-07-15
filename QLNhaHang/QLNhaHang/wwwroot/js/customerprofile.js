@@ -1,5 +1,5 @@
-﻿const token = localStorage.getItem("token");
-if (!token) {
+﻿const customertoken = localStorage.getItem("customertoken");
+if (!customertoken) {
     window.location.href = "/Home/Index"; // hoặc modal đăng nhập
 }
 
@@ -21,9 +21,9 @@ function showSection(id) {
 let originalProfile = {};
 
 async function loadUserInfo() {
-    if (!token) return;
+    if (!customertoken) return;
     const res = await fetch("/api/customerapi/profile", {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${customertoken}` }
     });
 
     const data = await res.json();
@@ -64,7 +64,7 @@ document.getElementById("saveProfileBtn").addEventListener("click", async () => 
         method: "PUT",
         headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`
+            Authorization: `Bearer ${localStorage.getItem("customertoken")}`
         },
         body: JSON.stringify(body)
     });
@@ -83,9 +83,9 @@ document.getElementById("saveProfileBtn").addEventListener("click", async () => 
 });
 
 async function loadReservationHistory() {
-    const token = localStorage.getItem("token");
+    const customertoken = localStorage.getItem("customertoken");
     const res = await fetch("/api/customerapi/reservations", {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${customertoken}` }
     });
     const data = await res.json();
     console.log(data);
@@ -104,9 +104,9 @@ async function loadReservationHistory() {
 }
 
 async function loadOrderHistory() {
-    const token = localStorage.getItem("token");
+    const customertoken = localStorage.getItem("customertoken");
     const res = await fetch("/api/customerapi/orders", {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${customertoken}` }
     });
     const data = await res.json();
     const div = document.getElementById("orderList");
@@ -149,7 +149,7 @@ async function changePassword() {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
+                'Authorization': `Bearer ${customertoken}`
             },
             body: JSON.stringify({ currentPassword: current, newPassword: newPass })
         });

@@ -268,10 +268,6 @@ INSERT INTO WORKSHIFT VALUES
 (2, '13:00', '18:00', 5),	-- 13 - 18
 (3, '18:00', '22:00', 4)  -- 18 - 22
 
-INSERT INTO PAYROLL VALUES 
-(6, 2025),
-(7, 2025)
-
 select * from CUSTOMER
 select * from cart
 select * from staff
@@ -286,3 +282,4 @@ select * from RESERVATIONORDER r Where r.ID_RESERVATION = 10
 SELECT * FROM Weeklyshift
 WHERE ID_WORKDAY = 2 AND ID_WORKSHIFT = 2
 SELECT * FROM payrolldetail
+SELECT * FROM payroll

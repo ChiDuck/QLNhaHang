@@ -1,4 +1,4 @@
-﻿const token = localStorage.getItem("token");
+﻿const customertoken = localStorage.getItem("customertoken");
 
 document.addEventListener('DOMContentLoaded', function () {
     // Khởi tạo modal
@@ -173,7 +173,7 @@ document.addEventListener('DOMContentLoaded', function () {
     async function loadCustomerProfile() {
         try {
             const res = await fetch(`/api/customerapi/profile`, {
-                headers: { Authorization: `Bearer ${token}` }
+                headers: { Authorization: `Bearer ${customertoken}` }
             });
             const customerData = await res.json();
             document.getElementById('customerName').value = customerData.name || '';
@@ -192,7 +192,7 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
-        if (token) {
+        if (customertoken) {
             await loadCustomerProfile(); // Tải thông tin khách hàng nếu đã đăng nhập
         }
 
@@ -247,8 +247,8 @@ document.addEventListener('DOMContentLoaded', function () {
             const headers = {
                 'Content-Type': 'application/json'
             };
-            if (token) {
-                headers['Authorization'] = 'Bearer ' + token;
+            if (customertoken) {
+                headers['Authorization'] = 'Bearer ' + customertoken;
             }
 
             const response = await fetch("/api/reservationapi/noorder", {
@@ -282,8 +282,8 @@ document.addEventListener('DOMContentLoaded', function () {
             const headers = {
                 'Content-Type': 'application/json'
             };
-            if (token) {
-                headers['Authorization'] = 'Bearer ' + token;
+            if (customertoken) {
+                headers['Authorization'] = 'Bearer ' + customertoken;
             }
 
             const response = await fetch("/api/reservationapi/vnpay", {

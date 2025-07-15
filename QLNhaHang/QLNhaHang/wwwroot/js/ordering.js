@@ -2,7 +2,7 @@
 let checkoutModal = null;
 const DEFAULT_SHIPPING_FEE = 15000;
 
-const token = localStorage.getItem("token");
+const customertoken = localStorage.getItem("customertoken");
 
 // Cập nhật thông tin đơn hàng
 function updateOrderSummary() {
@@ -57,11 +57,11 @@ async function openCheckoutModal() {
     //    alert('Giỏ hàng của bạn đang trống');
     //    return;
     //}
-    console.log(token);
-    if (token) {
+    console.log(customertoken);
+    if (customertoken) {
         try {
             const res = await fetch(`/api/customerapi/profile`, {
-                headers: { Authorization: `Bearer ${token}` }
+                headers: { Authorization: `Bearer ${customertoken}` }
             });
             const customerData = await res.json();
             document.getElementById('customerName').value = customerData.name || '';
@@ -192,8 +192,8 @@ async function createCashOrder(orderData) {
         const headers = {
             'Content-Type': 'application/json'
         };
-        if (token) {
-            headers['Authorization'] = 'Bearer ' + token;
+        if (customertoken) {
+            headers['Authorization'] = 'Bearer ' + customertoken;
         }
 
         const response = await fetch('/api/shiporderapi/cash', {
@@ -227,8 +227,8 @@ async function processVNPayPayment(orderData) {
         const headers = {
             'Content-Type': 'application/json'
         };
-        if (token) {
-            headers['Authorization'] = 'Bearer ' + token;
+        if (customertoken) {
+            headers['Authorization'] = 'Bearer ' + customertoken;
         }
 
         // Gọi API để tạo yêu cầu thanh toán VNPay

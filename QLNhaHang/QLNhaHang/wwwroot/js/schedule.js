@@ -7,6 +7,7 @@ let scheduleData = [];
 const token = localStorage.getItem("token");
 
 document.addEventListener('DOMContentLoaded', () => {
+    displayCurrentWeek();
     loadSchedule();
     populateStaffFilter();
     document.getElementById("checkinButton").addEventListener("click", checkIn);
@@ -333,4 +334,18 @@ async function checkIn() {
         messageBox.textContent = "Lỗi kết nối đến máy chủ.";
         messageBox.className = "text-danger";
     }
+}
+
+function getWeekOfMonth(date) {
+    const firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
+    const firstDayWeekday = firstDay.getDay() === 0 ? 7 : firstDay.getDay(); // chuyển Chủ nhật từ 0 → 7
+    const currentDate = date.getDate();
+    return Math.ceil((currentDate + firstDayWeekday - 1) / 7);
+}
+
+function displayCurrentWeek() {
+    const now = new Date();
+    const week = getWeekOfMonth(now);
+    const formattedDate = now.toLocaleDateString('vi-VN');
+    document.getElementById('currentWeekDisplay').textContent = `Tuần ${week} - ${formattedDate}`;
 }
