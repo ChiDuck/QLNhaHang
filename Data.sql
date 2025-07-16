@@ -270,6 +270,7 @@ INSERT INTO WORKSHIFT VALUES
 
 select * from CUSTOMER
 select * from cart
+select * from cartdetail where ID_CART = 1
 select * from staff
 select * from WORKDAY
 select * from WORKSHIFT

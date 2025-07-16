@@ -1,4 +1,7 @@
 ﻿// Hàm đăng nhập người dùng
+let customertoken = localStorage.getItem("customertoken");
+console.log("Customer token: ", customertoken);
+
 async function loginCustomer() {
     const identity = document.getElementById('loginIdentity').value.trim();
     const password = document.getElementById('loginPassword').value;
@@ -25,9 +28,34 @@ async function loginCustomer() {
         }
 
         localStorage.setItem("customertoken", data.customertoken);
+        customertoken = data.customertoken; // Cập nhật biến toàn cục
         localStorage.setItem("customer", JSON.stringify(data));
         msg.textContent = "Đăng nhập thành công!";
         msg.className = "text-success";
+
+        // Nếu có cart trong localStorage, đồng bộ lên server sau khi đăng nhập
+        // Đồng bộ cart local lên server nếu có và cart server đang rỗng
+        const localCart = localStorage.getItem('cart');
+        if (localCart) {
+            const cartItems = JSON.parse(localCart);
+            if (Array.isArray(cartItems) && cartItems.length > 0) {
+                // Gửi cart lên server
+                fetch('/api/cartapi', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + data.customertoken
+                    },
+                    body: JSON.stringify(cartItems)
+                }).then(() => {
+                    // Xóa cart local sau khi đồng bộ thành công
+                    localStorage.removeItem('cart');
+                }).catch(() => {
+                    // Nếu lỗi, có thể giữ lại cart local để thử lại sau
+                });
+            }
+            localStorage.removeItem('cart'); // Xóa cart local sau khi đăng nhập thành công
+        }
 
         var modalEl = document.getElementById('loginModal');
         if (modalEl) bootstrap.Modal.getInstance(modalEl)?.hide();
@@ -35,10 +63,12 @@ async function loginCustomer() {
         if (modalEl) bootstrap.Modal.getInstance(modalEl)?.hide();
 
         renderAccountDropdown();
+
     } catch (err) {
         msg.textContent = "Lỗi kết nối đến máy chủ.";
         msg.className = "text-danger";
     }
+    window.location.reload();
 }
 
 // Hàm đăng ký người dùng
@@ -115,6 +145,7 @@ function renderAccountDropdown() {
 function logoutCustomer() {
     localStorage.removeItem('customertoken');
     localStorage.removeItem('customer');
+    localStorage.removeItem('cart');
     renderAccountDropdown();
     location.reload();
 }

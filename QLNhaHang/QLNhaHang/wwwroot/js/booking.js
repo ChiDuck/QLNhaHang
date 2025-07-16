@@ -1,6 +1,4 @@
-﻿const customertoken = localStorage.getItem("customertoken");
-
-document.addEventListener('DOMContentLoaded', function () {
+﻿document.addEventListener('DOMContentLoaded', function () {
     // Khởi tạo modal
     const step1Modal = new bootstrap.Modal('#bookingStep1Modal');
     const step2Modal = new bootstrap.Modal('#bookingStep2Modal');
@@ -176,7 +174,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 headers: { Authorization: `Bearer ${customertoken}` }
             });
             const customerData = await res.json();
-            document.getElementById('customerName').value = customerData.name || '';
+            document.getElementById('customerBookName').value = customerData.name || '';
             document.getElementById('customerPhone').value = customerData.phone || '';
             document.getElementById('customerEmail').value = customerData.email || '';
         }
@@ -222,7 +220,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Xác nhận đặt bàn
     document.getElementById("confirmBooking").addEventListener("click", async function () {
-        const customerName = document.getElementById("customerName").value;
+        const customerName = document.getElementById("customerBookName").value;
         const customerPhone = document.getElementById("customerPhone").value;
         const customerEmail = document.getElementById("customerEmail").value;
         const bookingNote = document.getElementById("bookingNote").value;

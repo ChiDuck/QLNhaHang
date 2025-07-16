@@ -2,8 +2,6 @@
 let checkoutModal = null;
 const DEFAULT_SHIPPING_FEE = 15000;
 
-const customertoken = localStorage.getItem("customertoken");
-
 // Cập nhật thông tin đơn hàng
 function updateOrderSummary() {
     const shiporderSummary = document.getElementById('shiporderSummary');
@@ -44,12 +42,27 @@ document.addEventListener('DOMContentLoaded', async function () {
     // Xử lý nút thanh toán trong modal giỏ hàng
     document.getElementById('checkoutButton').addEventListener('click', openCheckoutModal);
 
+    document.getElementById('backToCartBtn').addEventListener('click', checkoutModal.hide());
     // Xử lý checkbox giao hàng
     document.getElementById('isShipping').addEventListener('change', toggleShippingAddress);
 
     // Xử lý nút đặt hàng
     document.getElementById('submitOrderBtn').addEventListener('click', submitOrder);
 });
+
+//// Checkout
+//async function checkout() {
+//    if (cart.length === 0) return;
+//    if (isLoggedIn()) {
+//        // Send order to server
+//        await checkoutToAPI();
+//    } else {
+//        // Save to localStorage and redirect to login
+//        localStorage.setItem('cart', JSON.stringify(cart));
+//        showToast('Vui lòng đăng nhập để đặt hàng');
+//        new bootstrap.Modal(document.getElementById('loginModal')).show();
+//    }
+//}
 
 // Mở modal thanh toán
 async function openCheckoutModal() {
@@ -64,6 +77,7 @@ async function openCheckoutModal() {
                 headers: { Authorization: `Bearer ${customertoken}` }
             });
             const customerData = await res.json();
+            console.log(customerData.name);
             document.getElementById('customerName').value = customerData.name || '';
             document.getElementById('phone').value = customerData.phone || '';
             document.getElementById('email').value = customerData.email || '';
@@ -76,6 +90,7 @@ async function openCheckoutModal() {
 
     updateOrderSummary();
     checkoutModal.show();
+    bootstrap.Modal.getInstance(document.getElementById('cartModal'))?.hide();
 }
 
 // Cập nhật thông tin đơn hàng

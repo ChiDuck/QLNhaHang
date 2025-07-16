@@ -1,5 +1,4 @@
-﻿const customertoken = localStorage.getItem("customertoken");
-if (!customertoken) {
+﻿if (!customertoken) {
     window.location.href = "/Home/Index"; // hoặc modal đăng nhập
 }
 
