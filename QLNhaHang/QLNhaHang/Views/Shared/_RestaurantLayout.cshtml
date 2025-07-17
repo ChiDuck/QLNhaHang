@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<title>@ViewData["Title"] - Nhà Hàng Delicious</title>
+	<title>@ViewData["Title"] - Nhà Hàng Đức Phát</title>
 
 	<!-- Bootstrap CSS -->
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -11,314 +11,410 @@
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 	<!-- Google Fonts -->
 	<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+	<!-- Animate.css -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
 	<link rel="stylesheet" href="~/css/client.css" asp-append-version="true" />
+	<link rel="stylesheet" href="~/css/home-customer.css" asp-append-version="true" />
+	<link rel="stylesheet" href="~/css/restaurant-layout.css" asp-append-version="true" />
 	<link rel="stylesheet" href="~/QLNhaHang.styles.css" asp-append-version="true" />
 	@await RenderSectionAsync("Styles", required: false)
 </head>
 <body>
 	<!-- Navigation -->
-	<nav class="navbar navbar-expand-lg sticky-top">
+	<nav class="navbar navbar-expand-lg sticky-top modern-navbar">
 		<div class="container">
-			<a class="navbar-brand" href="@Url.Action("Index", "Home")">
-				<i class="fas fa-utensils me-2"></i>Delicious
+			<a class="navbar-brand modern-brand" href="@Url.Action("Index", "Home")">
+				<div class="brand-icon">
+					<i class="fas fa-utensils"></i>
+				</div>
+				<span class="brand-text">Đức Phát</span>
 			</a>
 
-			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-				<span class="navbar-toggler-icon"></span>
+			<button class="navbar-toggler modern-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+				<span></span>
+				<span></span>
+				<span></span>
 			</button>
 
 			<div class="collapse navbar-collapse" id="navbarNav">
 				<ul class="navbar-nav me-auto">
 					<li class="nav-item">
-						<a class="nav-link" href="@Url.Action("Index", "Home")">
+						<a class="nav-link modern-nav-link" href="@Url.Action("Index", "Home")">
 							<i class="fas fa-home me-1"></i>Trang chủ
 						</a>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link" asp-area="" asp-controller="Home" asp-action="Menu">
+						<a class="nav-link modern-nav-link" asp-area="" asp-controller="Home" asp-action="Menu">
 							<i class="fas fa-book-open me-1"></i>Thực đơn
 						</a>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link" href="@Url.Action("About", "Home")">
+						<a class="nav-link modern-nav-link" href="@Url.Action("About", "Home")">
 							<i class="fas fa-info-circle me-1"></i>Giới thiệu
 						</a>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link" href="@Url.Action("Contact", "Home")">
+						<a class="nav-link modern-nav-link" href="@Url.Action("Contact", "Home")">
 							<i class="fas fa-phone me-1"></i>Liên hệ
 						</a>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link" asp-area="" asp-controller="Dish" asp-action="Index">Admin Dashboard</a>
-					</li>
-					<li class="nav-item dropdown">
-						<a class="nav-link dropdown-toggle" href="#" id="accountDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-							<i class="fa fa-user"></i> <span id="accountName">Tài khoản</span>
+						<a class="nav-link modern-nav-link" asp-area="" asp-controller="Dish" asp-action="Index">
+							<i class="fas fa-cog me-1"></i>Quản lý
 						</a>
-						<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="accountDropdown" id="accountMenu">
-							<!-- Nội dung sẽ được cập nhật bằng JS -->
-						</ul>
 					</li>
-
 				</ul>
 
-				<div class="d-flex align-items-center">
-					<!-- Reservation Button -->
-					<a class="btn btn-reservation me-3 book-now-btn">
-						<i class="fas fa-calendar-check me-2"></i>Đặt bàn
-					</a>
-				</div>
-				<div class="d-flex justify-content-end">
-					<button id="cartButton" class="btn btn-primary position-relative" data-bs-toggle="modal" data-bs-target="#cartModal">
-						<i class="fas fa-shopping-cart"></i> Giỏ Hàng
-						<span id="cartBadge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">0</span>
+				<div class="d-flex align-items-center navbar-actions">
+					<!-- Cart Button -->
+					<button id="cartButton" class="btn modern-cart-btn position-relative" data-bs-toggle="modal" data-bs-target="#cartModal">
+						<i class="fas fa-shopping-cart"></i>
+						<span id="cartBadge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill modern-badge">0</span>
 					</button>
+					
+					<!-- Account Dropdown -->
+					<div class="nav-item dropdown ms-3">
+						<a class="nav-link dropdown-toggle modern-account-btn" href="#" id="accountDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+							<div class="account-avatar">
+								<i class="fa fa-user"></i>
+							</div>
+							<span id="accountName" class="account-name">Tài khoản</span>
+						</a>
+						<ul class="dropdown-menu modern-dropdown" aria-labelledby="accountDropdown" id="accountMenu">
+							<!-- Content will be updated by JS -->
+						</ul>
+					</div>
 				</div>
 			</div>
 		</div>
 	</nav>
 
 	<!-- Main Content -->
-	<main>
+	<main class="main-content">
 		@RenderBody()
 	</main>
 
 	<!-- Footer -->
-	<footer class="footer">
-		<div class="container">
-			<div class="row">
-				<div class="col-lg-4 col-md-6 mb-4">
-					<h5>Nhà Hàng Delicious</h5>
-					<p class="mb-3">Trải nghiệm ẩm thực tuyệt vời với những món ăn được chế biến từ nguyên liệu tươi ngon nhất.</p>
-					<div class="social-links">
-						<a href="#"><i class="fab fa-facebook"></i></a>
-						<a href="#"><i class="fab fa-instagram"></i></a>
-						<a href="#"><i class="fab fa-twitter"></i></a>
-						<a href="#"><i class="fab fa-youtube"></i></a>
+	<footer class="modern-footer">
+		<div class="footer-content">
+			<div class="container">
+				<div class="row">
+					<div class="col-lg-4 col-md-6 mb-4">
+						<div class="footer-brand">
+							<h5 class="footer-title">
+								<i class="fas fa-utensils me-2"></i>Nhà Hàng Đức Phát
+							</h5>
+							<p class="footer-description">Trải nghiệm ẩm thực tuyệt vời với những món ăn được chế biến từ nguyên liệu tươi ngon nhất.</p>
+							<div class="social-links">
+								<a href="#" class="social-link"><i class="fab fa-facebook"></i></a>
+								<a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+								<a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+								<a href="#" class="social-link"><i class="fab fa-youtube"></i></a>
+							</div>
+						</div>
+					</div>
+
+					<div class="col-lg-2 col-md-6 mb-4">
+						<h6 class="footer-heading">Menu</h6>
+						<ul class="footer-links">
+							<li><a href="@Url.Action("Index", "Home")">Trang chủ</a></li>
+							<li><a href="@Url.Action("Menu", "Home")">Thực đơn</a></li>
+							<li><a href="@Url.Action("About", "Home")">Giới thiệu</a></li>
+							<li><a href="@Url.Action("Contact", "Home")">Liên hệ</a></li>
+						</ul>
+					</div>
+
+					<div class="col-lg-3 col-md-6 mb-4">
+						<h6 class="footer-heading">Liên hệ</h6>
+						<ul class="footer-contact">
+							<li><i class="fas fa-map-marker-alt"></i>123 Đường ABC, Quận 1, TP.HCM</li>
+							<li><i class="fas fa-phone"></i>(028) 1234 5678</li>
+							<li><i class="fas fa-envelope"></i>info@ducphat.com</li>
+						</ul>
+					</div>
+
+					<div class="col-lg-3 col-md-6 mb-4">
+						<h6 class="footer-heading">Giờ mở cửa</h6>
+						<ul class="footer-hours">
+							<li><span>Thứ 2 - Thứ 6:</span> 10:00 - 22:00</li>
+							<li><span>Thứ 7 - Chủ nhật:</span> 9:00 - 23:00</li>
+							<li class="special"><span>Nghỉ lễ:</span> Liên hệ trước</li>
+						</ul>
 					</div>
 				</div>
-
-				<div class="col-lg-2 col-md-6 mb-4">
-					<h5>Menu</h5>
-					<ul class="list-unstyled">
-						<li><a href="@Url.Action("Index", "Home")" class="text-light text-decoration-none">Trang chủ</a></li>
-						<li><a href="@Url.Action("Menu", "Restaurant")" class="text-light text-decoration-none">Thực đơn</a></li>
-						<li><a href="@Url.Action("About", "Home")" class="text-light text-decoration-none">Giới thiệu</a></li>
-						<li><a href="@Url.Action("Contact", "Home")" class="text-light text-decoration-none">Liên hệ</a></li>
-					</ul>
-				</div>
-
-				<div class="col-lg-3 col-md-6 mb-4">
-					<h5>Liên hệ</h5>
-					<ul class="list-unstyled">
-						<li><i class="fas fa-map-marker-alt me-2"></i>123 Đường ABC, Quận 1, TP.HCM</li>
-						<li><i class="fas fa-phone me-2"></i>(028) 1234 5678</li>
-						<li><i class="fas fa-envelope me-2"></i>info@delicious.com</li>
-					</ul>
-				</div>
-
-				<div class="col-lg-3 col-md-6 mb-4">
-					<h5>Giờ mở cửa</h5>
-					<ul class="list-unstyled">
-						<li>Thứ 2 - Thứ 6: 10:00 - 22:00</li>
-						<li>Thứ 7 - Chủ nhật: 9:00 - 23:00</li>
-						<li class="text-warning">Nghỉ lễ: Liên hệ trước</li>
-					</ul>
-				</div>
 			</div>
+		</div>
 
-			<hr class="my-4">
-			<div class="row align-items-center">
-				<div class="col-md-6">
-					<p class="mb-0">&copy; 2024 Nhà Hàng Delicious. All rights reserved.</p>
-				</div>
-				<div class="col-md-6 text-md-end">
-					<a href="#" class="text-light text-decoration-none me-3">Chính sách bảo mật</a>
-					<a href="#" class="text-light text-decoration-none">Điều khoản sử dụng</a>
+		<div class="footer-bottom">
+			<div class="container">
+				<div class="row align-items-center">
+					<div class="col-md-6">
+						<p class="copyright">&copy; 2024 Nhà Hàng Đức Phát. All rights reserved.</p>
+					</div>
+					<div class="col-md-6 text-md-end">
+						<div class="footer-bottom-links">
+							<a href="#">Chính sách bảo mật</a>
+							<a href="#">Điều khoản sử dụng</a>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
 	</footer>
 
-	<!-- Modal đăng nhập -->
-	<div class="modal fade" id="loginModal" tabindex="-1" aria-hidden="true">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title">Đăng nhập</h5>
-					<button class="btn-close" data-bs-dismiss="modal"></button>
+	<!-- Modern Login Modal -->
+	<div class="modal fade modern-modal" id="loginModal" tabindex="-1" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content modern-modal-content">
+				<div class="modal-header modern-modal-header">
+					<h5 class="modal-title">
+						<i class="fas fa-sign-in-alt me-2"></i>Đăng nhập
+					</h5>
+					<button class="btn-close modern-btn-close" data-bs-dismiss="modal"></button>
 				</div>
-				<div class="modal-body">
-					<input type="text" class="form-control mb-2" id="loginIdentity" placeholder="Email hoặc SĐT">
-					<input type="password" class="form-control mb-2" id="loginPassword" placeholder="Mật khẩu">
-					<button class="btn btn-primary w-100" onclick="loginCustomer()">Đăng nhập</button>
-					<div class="text-center mt-2">
-						Chưa có tài khoản? <a href="#" onclick="switchToRegister()">Đăng ký ngay</a>
-					</div>
-					<div id="authMessage" class="text-danger text-center mt-2"></div>
-				</div>
-			</div>
-		</div>
-	</div>
-
-	<!-- Modal đăng ký -->
-	<div class="modal fade" id="registerModal" tabindex="-1" aria-hidden="true">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title">Đăng ký</h5>
-					<button class="btn-close" data-bs-dismiss="modal"></button>
-				</div>
-				<div class="modal-body">
-					<form id="registerForm" onsubmit="event.preventDefault(); registerCustomer()">
-						<input type="text" class="form-control mb-2" id="regName" placeholder="Họ tên">
-						<input type="email" class="form-control mb-2" id="regEmail" placeholder="Email">
-						<input type="text" class="form-control mb-2" id="regPhone" placeholder="Số điện thoại">
-						<input type="password" class="form-control mb-2" id="regPassword" placeholder="Mật khẩu">
-						<button class="btn btn-success w-100" type="submit">Đăng ký</button>
+				<div class="modal-body modern-modal-body">
+					<form class="modern-form">
+						<div class="form-floating mb-3">
+							<input type="text" class="form-control modern-input" id="loginIdentity" placeholder="Email hoặc SĐT">
+							<label for="loginIdentity">Email hoặc Số điện thoại</label>
+						</div>
+						<div class="form-floating mb-3">
+							<input type="password" class="form-control modern-input" id="loginPassword" placeholder="Mật khẩu">
+							<label for="loginPassword">Mật khẩu</label>
+						</div>
+						<button type="button" class="btn modern-btn-primary w-100 mb-3" onclick="loginCustomer()">
+							<i class="fas fa-sign-in-alt me-2"></i>Đăng nhập
+						</button>
 					</form>
-					<div class="text-center mt-2">
-						Đã có tài khoản? <a href="#" onclick="switchToLogin()">Đăng nhập</a>
+					<div class="text-center">
+						<p class="mb-0">
+							Chưa có tài khoản?
+							<a href="#" class="modern-link" onclick="switchToRegister()">Đăng ký ngay</a>
+						</p>
 					</div>
-					<div id="authMessage" class="text-danger text-center mt-2"></div>
+					<div id="authMessage" class="modern-alert mt-3" style="display: none;"></div>
 				</div>
 			</div>
 		</div>
 	</div>
 
-	<!-- Modal Giỏ Hàng -->
-	<div class="modal fade" id="cartModal" tabindex="-1" aria-hidden="true">
-		<div class="modal-dialog modal-lg">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title">Giỏ Hàng Của Bạn</h5>
-					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+	<!-- Modern Register Modal -->
+	<div class="modal fade modern-modal" id="registerModal" tabindex="-1" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content modern-modal-content">
+				<div class="modal-header modern-modal-header">
+					<h5 class="modal-title">
+						<i class="fas fa-user-plus me-2"></i>Đăng ký
+					</h5>
+					<button class="btn-close modern-btn-close" data-bs-dismiss="modal"></button>
 				</div>
-				<div class="modal-body">
-					<div id="emptyCartMessage" class="text-center py-4">
-						<i class="fas fa-shopping-cart fa-4x text-muted mb-3"></i>
-						<p class="text-muted">Giỏ hàng của bạn đang trống</p>
+				<div class="modal-body modern-modal-body">
+					<form id="registerForm" class="modern-form" onsubmit="event.preventDefault(); registerCustomer()">
+						<div class="form-floating mb-3">
+							<input type="text" class="form-control modern-input" id="regName" placeholder="Họ tên" required>
+							<label for="regName">Họ và tên</label>
+						</div>
+						<div class="form-floating mb-3">
+							<input type="email" class="form-control modern-input" id="regEmail" placeholder="Email">
+							<label for="regEmail">Email</label>
+						</div>
+						<div class="form-floating mb-3">
+							<input type="text" class="form-control modern-input" id="regPhone" placeholder="Số điện thoại">
+							<label for="regPhone">Số điện thoại</label>
+						</div>
+						<div class="form-floating mb-3">
+							<input type="password" class="form-control modern-input" id="regPassword" placeholder="Mật khẩu" required>
+							<label for="regPassword">Mật khẩu</label>
+						</div>
+						<button class="btn modern-btn-success w-100 mb-3" type="submit">
+							<i class="fas fa-user-plus me-2"></i>Đăng ký
+						</button>
+					</form>
+					<div class="text-center">
+						<p class="mb-0">
+							Đã có tài khoản?
+							<a href="#" class="modern-link" onclick="switchToLogin()">Đăng nhập</a>
+						</p>
 					</div>
-					<div id="cartItemsContainer" style="display: none;">
-						<table class="table">
-							<thead>
-								<tr>
-									<th>Món</th>
-									<th>Đơn giá</th>
-									<th>Số lượng</th>
-									<th>Thành tiền</th>
-									<th></th>
-								</tr>
-							</thead>
-							<tbody id="cartItems">
-								<!-- Cart items will be loaded here -->
-							</tbody>
-							<tfoot>
-								<tr>
-									<td colspan="3" class="text-end fw-bold">Tổng cộng:</td>
-									<td id="cartTotal" class="fw-bold text-danger">0 ₫</td>
-									<td></td>
-								</tr>
-							</tfoot>
-						</table>
-					</div>
-				</div>
-				<div class="modal-footer">
-					<a class="btn btn-secondary" asp-area="" asp-controller="Home" asp-action="Menu">Tiếp tục chọn món</a>
-					<button id="checkoutButton" type="button" class="btn btn-primary">Đặt món</button>
+					<div id="authMessage" class="modern-alert mt-3" style="display: none;"></div>
 				</div>
 			</div>
 		</div>
 	</div>
 
-	<!-- Modal Thanh Toán -->
-	<div class="modal fade" id="checkoutModal" tabindex="-1" aria-hidden="true">
-		<div class="modal-dialog modal-lg">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title">Thông Tin Thanh Toán</h5>
+	<!-- Modern Cart Modal -->
+	<div class="modal fade modern-modal" id="cartModal" tabindex="-1" aria-hidden="true">
+		<div class="modal-dialog modal-lg modal-dialog-centered">
+			<div class="modal-content modern-modal-content">
+				<div class="modal-header modern-modal-header">
+					<h5 class="modal-title">
+						<i class="fas fa-shopping-cart me-2"></i>Giỏ Hàng Của Bạn
+					</h5>
+					<button type="button" class="btn-close modern-btn-close" data-bs-dismiss="modal"></button>
 				</div>
-				<div class="modal-body">
-					<form id="checkoutForm">
+				<div class="modal-body modern-modal-body">
+					<div id="emptyCartMessage" class="empty-state">
+						<div class="empty-icon">
+							<i class="fas fa-shopping-cart"></i>
+						</div>
+						<h6>Giỏ hàng trống</h6>
+						<p>Hãy thêm một số món ăn vào giỏ hàng của bạn</p>
+					</div>
+					<div id="cartItemsContainer" class="cart-items-container" style="display: none;">
+						<div class="cart-items-list" id="cartItems">
+							<!-- Cart items will be loaded here -->
+						</div>
+						<div class="cart-summary">
+							<div class="summary-row">
+								<span class="summary-label">Tổng cộng:</span>
+								<span id="cartTotal" class="summary-value">0 ₫</span>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer modern-modal-footer">
+					<a class="btn modern-btn-outline" asp-area="" asp-controller="Home" asp-action="Menu">
+						<i class="fas fa-arrow-left me-2"></i>Tiếp tục mua sắm
+					</a>
+					<button id="checkoutButton" type="button" class="btn modern-btn-primary">
+						<i class="fas fa-credit-card me-2"></i>Thanh toán
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Modern Checkout Modal -->
+	<div class="modal fade modern-modal" id="checkoutModal" tabindex="-1" aria-hidden="true">
+		<div class="modal-dialog modal-xl modal-dialog-centered">
+			<div class="modal-content modern-modal-content">
+				<div class="modal-header modern-modal-header">
+					<h5 class="modal-title">
+						<i class="fas fa-credit-card me-2"></i>Thông Tin Thanh Toán
+					</h5>
+					<button type="button" class="btn-close modern-btn-close" data-bs-dismiss="modal"></button>
+				</div>
+				<div class="modal-body modern-modal-body">
+					<form id="checkoutForm" class="modern-form">
 						<div class="row">
-							<!-- Thông tin khách hàng -->
-							<div class="col-md-6">
-								<div class="mb-3">
-									<label for="customerName" class="form-label">Họ và tên <span class="text-danger">*</span></label>
-									<input type="text" class="form-control" id="customerName" required>
-								</div>
+							<!-- Customer Information -->
+							<div class="col-lg-7">
+								<div class="checkout-section">
+									<h6 class="section-title">
+										<i class="fas fa-user me-2"></i>Thông tin khách hàng
+									</h6>
 
-								<div class="mb-3">
-									<label class="form-label">Liên hệ <span class="text-danger">*</span></label>
-									<div class="input-group mb-2">
-										<input type="tel" class="form-control" id="phone" placeholder="Số điện thoại">
-										<span class="input-group-text">hoặc</span>
-										<input type="email" class="form-control" id="email" placeholder="Email">
+									<div class="form-floating mb-3">
+										<input type="text" class="form-control modern-input" id="customerName" placeholder="Họ và tên" required>
+										<label for="customerName">Họ và tên *</label>
 									</div>
-									<small class="text-muted">Nhập ít nhất một trong hai thông tin</small>
+
+									<div class="row">
+										<div class="col-md-6">
+											<div class="form-floating mb-3">
+												<input type="tel" class="form-control modern-input" id="phone" placeholder="Số điện thoại">
+												<label for="phone">Số điện thoại</label>
+											</div>
+										</div>
+										<div class="col-md-6">
+											<div class="form-floating mb-3">
+												<input type="email" class="form-control modern-input" id="email" placeholder="Email">
+												<label for="email">Email</label>
+											</div>
+										</div>
+									</div>
+
+									<div class="form-check modern-checkbox mb-3">
+										<input type="checkbox" class="form-check-input" id="isShipping">
+										<label class="form-check-label" for="isShipping">
+											<i class="fas fa-truck me-2"></i>Giao hàng tận nơi
+										</label>
+									</div>
+
+									<div id="shippingAddressGroup" class="mb-3" style="display: none;">
+										<div class="form-floating">
+											<input type="text" class="form-control modern-input" id="shipAddress" placeholder="Địa chỉ giao hàng">
+											<label for="shipAddress">Địa chỉ giao hàng *</label>
+										</div>
+									</div>
+
+									<div class="form-floating mb-3">
+										<textarea class="form-control modern-input" id="note" placeholder="Ghi chú" style="height: 80px;"></textarea>
+										<label for="note">Ghi chú đặc biệt</label>
+									</div>
 								</div>
 
-								<div class="mb-3 form-check">
-									<input type="checkbox" class="form-check-input" id="isShipping">
-									<label class="form-check-label" for="isShipping">Giao hàng tận nơi</label>
-								</div>
+								<div class="checkout-section">
+									<h6 class="section-title">
+										<i class="fas fa-credit-card me-2"></i>Phương thức thanh toán
+									</h6>
 
-								<div id="shippingAddressGroup" class="mb-3" style="display: none;">
-									<label for="shipAddress" class="form-label">Địa chỉ giao hàng <span class="text-danger">*</span></label>
-									<input type="text" class="form-control" id="shipAddress">
-								</div>
-
-								<div class="mb-3">
-									<label for="note" class="form-label">Ghi chú</label>
-									<textarea class="form-control" id="note" rows="2"></textarea>
+									<div class="payment-methods">
+										<div class="payment-option">
+											<input class="form-check-input" type="radio" name="paymentMethod" id="cashPayment" value="cash" checked>
+											<label class="payment-label" for="cashPayment">
+												<div class="payment-icon">
+													<i class="fas fa-money-bill-wave"></i>
+												</div>
+												<div class="payment-info">
+													<span class="payment-name">Tiền mặt</span>
+													<small class="payment-desc">Thanh toán khi nhận hàng</small>
+												</div>
+											</label>
+										</div>
+										<div class="payment-option">
+											<input class="form-check-input" type="radio" name="paymentMethod" id="vnpayPayment" value="vnpay">
+											<label class="payment-label" for="vnpayPayment">
+												<div class="payment-icon">
+													<img src="https://sandbox.vnpayment.vn/apis/assets/images/logo.svg" alt="VNPay" style="height: 24px;">
+												</div>
+												<div class="payment-info">
+													<span class="payment-name">VNPay</span>
+													<small class="payment-desc">Thanh toán online</small>
+												</div>
+											</label>
+										</div>
+									</div>
 								</div>
 							</div>
 
-							<!-- Thông tin đơn hàng -->
-							<div class="col-md-6">
-								<h5 class="mb-3">Chi tiết đơn hàng</h5>
-								<div id="orderSummary" class="mb-3">
-									<!-- Danh sách món sẽ được thêm bằng JS -->
-								</div>
+							<!-- Order Summary -->
+							<div class="col-lg-5">
+								<div class="order-summary">
+									<h6 class="section-title">
+										<i class="fas fa-receipt me-2"></i>Chi tiết đơn hàng
+									</h6>
 
-								<div class="border-top pt-2">
-									<div class="d-flex justify-content-between mb-2">
-										<span>Tạm tính:</span>
-										<span id="subtotal">0 ₫</span>
+									<div id="orderSummary" class="order-items">
+										<!-- Order items will be loaded here -->
 									</div>
-									<div class="d-flex justify-content-between mb-2">
-										<span>Phí vận chuyển:</span>
-										<span id="shippingFee">15,000 ₫</span>
-									</div>
-									<div class="d-flex justify-content-between fw-bold fs-5">
-										<span>Tổng cộng:</span>
-										<span id="totalPrice">0 ₫</span>
-									</div>
-								</div>
 
-								<div class="mt-4">
-									<h5 class="mb-3">Phương thức thanh toán</h5>
-									<div class="form-check mb-2">
-										<input class="form-check-input" type="radio" name="paymentMethod" id="cashPayment" value="cash" checked>
-										<label class="form-check-label" for="cashPayment">
-											Thanh toán tiền mặt khi nhận hàng
-										</label>
-									</div>
-									<div class="form-check">
-										<input class="form-check-input" type="radio" name="paymentMethod" id="vnpayPayment" value="vnpay">
-										<label class="form-check-label" for="vnpayPayment">
-											<img src="https://sandbox.vnpayment.vn/apis/assets/images/logo.svg" alt="VNPay" style="height: 20px; margin-left: 5px;">
-										</label>
+									<div class="order-totals">
+										<div class="total-row">
+											<span>Tạm tính:</span>
+											<span id="subtotal">0 ₫</span>
+										</div>
+										<div class="total-row">
+											<span>Phí vận chuyển:</span>
+											<span id="shippingFee">15,000 ₫</span>
+										</div>
+										<div class="total-row final-total">
+											<span>Tổng cộng:</span>
+											<span id="totalPrice">0 ₫</span>
+										</div>
 									</div>
 								</div>
 							</div>
 						</div>
 					</form>
 				</div>
-				<div class="modal-footer">
-					<button type="button" id="backToCartBtn" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#cartModal">Quay lại</button>
-					<button type="button" id="submitOrderBtn" class="btn btn-primary">Đặt hàng</button>
+				<div class="modal-footer modern-modal-footer">
+					<button type="button" id="backToCartBtn" class="btn modern-btn-outline" data-bs-toggle="modal" data-bs-target="#cartModal">
+						<i class="fas fa-arrow-left me-2"></i>Quay lại giỏ hàng
+					</button>
+					<button type="button" id="submitOrderBtn" class="btn modern-btn-primary">
+						<i class="fas fa-check me-2"></i>Đặt hàng
+					</button>
 				</div>
 			</div>
 		</div>
@@ -330,42 +426,7 @@
 	<script src="~/js/menu.js" asp-append-version="true"></script>
 	<script src="~/js/cart.js" asp-append-version="true"></script>
 	<script src="~/js/ordering.js" asp-append-version="true"></script>
-	<!-- Custom Scripts -->
-	<script>
-		// Smooth scrolling for anchor links
-				document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-			const target = anchor.getAttribute('href');
-			if (target && target.length > 1) {
-				anchor.addEventListener('click', function (e) {
-					e.preventDefault();
-					const el = document.querySelector(target);
-					if (el) el.scrollIntoView({ behavior: 'smooth' });
-				});
-			}
-		});
-
-		// Navbar background on scroll
-		window.addEventListener('scroll', function () {
-			const navbar = document.querySelector('.navbar');
-			if (window.scrollY > 50) {
-				navbar.style.background = 'rgba(255, 255, 255, 0.98)';
-			} else {
-				navbar.style.background = 'rgba(255, 255, 255, 0.95)';
-			}
-		});
-
-		// Auto-hide alerts after 5 seconds
-		setTimeout(function () {
-			const alerts = document.querySelectorAll('.alert');
-			alerts.forEach(alert => {
-				if (alert.classList.contains('alert-dismissible')) {
-					alert.style.transition = 'opacity 0.5s';
-					alert.style.opacity = '0';
-					setTimeout(() => alert.remove(), 500);
-				}
-			});
-		}, 5000);
-	</script>
+	<script src="~/js/restaurant-layout.js" asp-append-version="true"></script>
 
 	@await RenderSectionAsync("Scripts", required: false)
 </body>

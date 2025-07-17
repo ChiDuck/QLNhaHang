@@ -1,38 +1,125 @@
 ﻿@{
-    ViewData["Title"] = "Món";
+    ViewData["Title"] = "Quản lý món ăn";
 }
 
-<h1 class="mb-4">Danh sách món ăn</h1>
-<div class="input-group mb-3">
-    <input type="text" id="dishSearchInput" class="form-control" placeholder="Tìm tên món ăn...">
-    <button class="btn btn-primary" onclick="searchDishes()">Tìm kiếm</button>
+<link rel="stylesheet" href="~/css/dish.css" asp-append-version="true" />
+
+<div class="dish-management">
+    <!-- Header Section -->
+    <div class="page-header">
+        <div class="header-content">
+            <div class="header-info">
+                <h1 class="page-title">
+                    <i class="fas fa-utensils"></i>
+                    Quản lý món ăn
+                </h1>
+                <p class="page-subtitle">Quản lý thực đơn và món ăn của nhà hàng</p>
+            </div>
+            <button class="btn btn-primary btn-add-dish" onclick="openAddDishModal()">
+                <i class="fas fa-plus"></i>
+                Thêm món mới
+            </button>
+        </div>
+    </div>
+
+    <!-- Stats Section -->
+    <div class="stats-section">
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-utensils"></i>
+            </div>
+            <div class="stat-content">
+                <h3 id="totalDishes">0</h3>
+                <p>Tổng món ăn</p>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon available">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <div class="stat-content">
+                <h3 id="availableDishes">0</h3>
+                <p>Còn hàng</p>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon discount">
+                <i class="fas fa-percentage"></i>
+            </div>
+            <div class="stat-content">
+                <h3 id="discountDishes">0</h3>
+                <p>Đang giảm giá</p>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon soldout">
+                <i class="fas fa-times-circle"></i>
+            </div>
+            <div class="stat-content">
+                <h3 id="soldOutDishes">0</h3>
+                <p>Hết hàng</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search and Filter Section -->
+    <div class="search-section">
+        <div class="search-container">
+            <div class="search-input-wrapper">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" id="dishSearchInput" class="search-input" placeholder="Tìm kiếm món ăn...">
+                <button class="search-btn" onclick="searchDishes()">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="filter-section">
+            <div class="filter-group">
+                <label class="filter-label">Lọc theo:</label>
+                <select class="filter-select" id="categoryFilter" onchange="filterDishes()">
+                    <option value="">Tất cả danh mục</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <select class="filter-select" id="statusFilter" onchange="filterDishes()">
+                    <option value="">Tất cả trạng thái</option>
+                    <option value="available">Còn hàng</option>
+                    <option value="unavailable">Hết hàng</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading State -->
+    <div class="loading-state" id="loadingState" style="display: none;">
+        <div class="spinner"></div>
+        <p>Đang tải dữ liệu...</p>
+    </div>
+
+    <!-- Dishes Grid -->
+    <div class="dishes-container">
+        <div class="dishes-grid" id="dishTableBody">
+            <!-- Dishes will be loaded here -->
+        </div>
+    </div>
+
+    <!-- Empty State -->
+    <div class="empty-state" id="emptyState" style="display: none;">
+        <i class="fas fa-utensils"></i>
+        <h3>Chưa có món ăn nào</h3>
+        <p>Hãy thêm món ăn đầu tiên cho nhà hàng của bạn</p>
+        <button class="btn btn-primary" onclick="openAddDishModal()">
+            <i class="fas fa-plus"></i>
+            Thêm món mới
+        </button>
+    </div>
 </div>
-<button class="btn btn-success mb-3" onclick="openAddDishModal()">
-    <i class="fas fa-plus"></i> Thêm món
-</button>
-<table class="table table-bordered">
-    <thead class="table-dark">
-        <tr>
-            <th>ID</th>
-            <th>Tên món</th>
-            <th>Giá</th>
-            <th>Giảm giá</th>
-            <th>Hết hàng</th>
-            <th>Loại món</th>
-            <th>Ảnh</th>
-            <th>Thao tác</th>
-        </tr>
-    </thead>
-    <tbody id="dishTableBody">
-        <!-- Dữ liệu sẽ được render bằng JavaScript -->
-    </tbody>
-</table>
 
 <!-- Modal chi tiết món ăn -->
 <div class="modal fade" id="dishDetailModal" tabindex="-1" aria-labelledby="dishDetailLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
-        <!-- modal giữa màn hình -->
-		<div class="modal-content" id="dishDetailContent">
+        <div class="modal-content" id="dishDetailContent">
             <!-- Nội dung chi tiết sẽ được load tại đây -->
         </div>
     </div>
@@ -44,5 +131,6 @@
         <div class="modal-content" id="editDishModalContent"></div>
     </div>
 </div>
+
 <script src="~/js/upload.js"></script>
 <script src="~/js/dish.js"></script>

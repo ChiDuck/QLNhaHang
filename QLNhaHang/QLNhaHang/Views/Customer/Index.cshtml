@@ -1,27 +1,79 @@
 ﻿@{
-	ViewData["Title"] = "Khách hàng";
+    ViewData["Title"] = "Khách hàng";
 }
 
-<h2 class="mb-4">Danh sách khách hàng</h2>
-<div class="input-group mb-3">
-	<input type="text" id="searchInput" class="form-control" placeholder="Nhập tên, email hoặc SĐT khách hàng">
-	<button class="btn btn-primary" onclick="searchCustomers()">Tìm</button>
+<div class="customer-page">
+    <div class="page-header">
+        <div class="header-content">
+            <h1 class="page-title">
+                <i class="fas fa-users"></i>
+                Quản lý khách hàng
+            </h1>
+            <p class="page-subtitle">Quản lý thông tin khách hàng của nhà hàng</p>
+        </div>
+    </div>
+
+    <div class="stats-cards">
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-users"></i>
+            </div>
+            <div class="stat-content">
+                <h3 id="totalCustomers">0</h3>
+                <p>Tổng khách hàng</p>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-user-plus"></i>
+            </div>
+            <div class="stat-content">
+                <h3 id="newCustomers">0</h3>
+                <p>Khách hàng mới</p>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-star"></i>
+            </div>
+            <div class="stat-content">
+                <h3 id="vipCustomers">0</h3>
+                <p>Khách VIP</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <div class="section-header">
+            <h2>Danh sách khách hàng</h2>
+            <div class="search-controls">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchInput" placeholder="Nhập tên, email hoặc SĐT khách hàng">
+                </div>
+                <button class="btn btn-primary" onclick="searchCustomers()">
+                    <i class="fas fa-search"></i>
+                    Tìm kiếm
+                </button>
+            </div>
+        </div>
+
+        <div class="customers-grid" id="customerTableBody">
+            <!-- Grid items will be rendered here -->
+        </div>
+
+        <div class="empty-state" id="emptyState" style="display: none;">
+            <i class="fas fa-users"></i>
+            <h3>Chưa có khách hàng nào</h3>
+            <p>Khách hàng sẽ được tự động thêm khi đặt hàng</p>
+        </div>
+
+        <div class="loading-state" id="loadingState">
+            <div class="loading-spinner"></div>
+            <p>Đang tải dữ liệu...</p>
+        </div>
+    </div>
 </div>
-<table class="table table-bordered table-striped">
-	<thead class="table-dark">
-		<tr>
-			<th>ID</th>
-			<th>Họ tên</th>
-			<th>Điện thoại</th>
-			<th>Email</th>
-			<th>Ngày sinh</th>
-			<th>Địa chỉ</th>
-			<th>Ảnh</th>
-			<th>Thao tác</th>
-		</tr>
-	</thead>
-	<tbody id="customerTableBody">
-		<!-- dữ liệu sẽ render ở đây -->
-	</tbody>
-</table>
+
+<link rel="stylesheet" href="~/css/customer.css">
 <script src="~/js/customer.js"></script>

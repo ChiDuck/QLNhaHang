@@ -118,12 +118,22 @@ namespace QLNhaHang.Controllers.API
             if (dish == null)
                 return NotFound();
 
-            var usedIngredients = await db.Dishingredients
-                .AnyAsync(di => di.IdDish == id);
-            if (usedIngredients)
-                db.Dishingredients.RemoveRange(
-                    db.Dishingredients.Where(di => di.IdDish == id)
-                );
+            // Kiểm tra liên kết với Orderitems hoặc Reservationorders
+            bool hasOrderItems = await db.Orderitems.AnyAsync(oi => oi.IdDish == id);
+            bool hasReservationOrders = await db.Reservationorders.AnyAsync(ro => ro.IdDish == id);
+
+            if (hasOrderItems || hasReservationOrders)
+            {
+                return Conflict("Không thể xóa món ăn này vì đã có trong đơn hàng hoặc đặt bàn.");
+            }
+
+            // Xóa các Dishingredients liên quan
+            var ingredients = db.Dishingredients.Where(di => di.IdDish == id);
+            db.Dishingredients.RemoveRange(ingredients);
+
+            // Xóa các Cartdetails liên quan
+            var cartDetails = db.Cartdetails.Where(cd => cd.IdDish == id);
+            db.Cartdetails.RemoveRange(cartDetails);
 
             db.Dishes.Remove(dish);
             await db.SaveChangesAsync();

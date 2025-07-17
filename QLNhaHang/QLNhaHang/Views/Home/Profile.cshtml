@@ -1,87 +1,394 @@
 ﻿@{
-    ViewData["Title"] = "Thông tin cá nhân";
+    ViewData["Title"] = "Thông tin cá nhân - Nhà Hàng Đức Phát";
     Layout = "~/Views/Shared/_RestaurantLayout.cshtml";
 }
 
-<div class="container mt-4">
-    <div class="row">
-        <!-- Sidebar -->
-        <div class="col-md-3">
-            <div class="list-group" id="profileMenu">
-                <button class="list-group-item list-group-item-action active" onclick="showSection('info')">Thông tin cá nhân</button>
-                <button class="list-group-item list-group-item-action" onclick="showSection('reservations')">Lịch sử đặt bàn</button>
-                <button class="list-group-item list-group-item-action" onclick="showSection('orders')">Lịch sử đơn hàng</button>
-                <button class="list-group-item list-group-item-action" onclick="showSection('changepassword')">Thay đổi mật khẩu</button>
+<div class="profile-page">
+    <!-- Profile Header -->
+    <section class="profile-header">
+        <div class="profile-header-overlay"></div>
+        <div class="container">
+            <div class="profile-header-content">
+                <div class="profile-avatar">
+                    <div class="avatar-circle">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <button class="avatar-edit-btn" title="Thay đổi ảnh đại diện">
+                        <i class="fas fa-camera"></i>
+                    </button>
+                </div>
+                <div class="profile-info">
+                    <h1 class="profile-name" id="profileHeaderName">Đang tải...</h1>
+                    <p class="profile-email" id="profileHeaderEmail">Đang tải...</p>
+                    <div class="profile-stats">
+                        <div class="stat-item">
+                            <span class="stat-number" id="totalOrders">0</span>
+                            <span class="stat-label">Đơn hàng</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number" id="totalReservations">0</span>
+                            <span class="stat-label">Đặt bàn</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number" id="memberSince">2024</span>
+                            <span class="stat-label">Thành viên từ</span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
+    </section>
 
-        <!-- Nội dung -->
-        <div class="col-md-9">
-            <div id="infoSection" class="profile-section">
-                <h5>Thông tin cá nhân</h5>
-                <form id="profileForm" class="row g-3">
-                    <div class="col-md-6">
-                        <label class="form-label">Họ tên</label>
-                        <input type="text" class="form-control" id="cusName">
+    <!-- Profile Content -->
+    <section class="profile-content">
+        <div class="container">
+            <div class="row">
+                <!-- Sidebar Navigation -->
+                <div class="col-lg-3">
+                    <div class="profile-sidebar">
+                        <nav class="profile-nav">
+                            <button class="profile-nav-item active" data-section="info">
+                                <i class="fas fa-user me-3"></i>
+                                <span>Thông tin cá nhân</span>
+                            </button>
+                            <button class="profile-nav-item" data-section="reservations">
+                                <i class="fas fa-calendar-check me-3"></i>
+                                <span>Lịch sử đặt bàn</span>
+                                <span class="nav-badge" id="reservationsBadge">0</span>
+                            </button>
+                            <button class="profile-nav-item" data-section="orders">
+                                <i class="fas fa-shopping-bag me-3"></i>
+                                <span>Lịch sử đơn hàng</span>
+                                <span class="nav-badge" id="ordersBadge">0</span>
+                            </button>
+                            <button class="profile-nav-item" data-section="favorites">
+                                <i class="fas fa-heart me-3"></i>
+                                <span>Món ăn yêu thích</span>
+                                <span class="nav-badge" id="favoritesBadge">0</span>
+                            </button>
+                            <button class="profile-nav-item" data-section="changepassword">
+                                <i class="fas fa-lock me-3"></i>
+                                <span>Đổi mật khẩu</span>
+                            </button>
+                            <button class="profile-nav-item" data-section="notifications">
+                                <i class="fas fa-bell me-3"></i>
+                                <span>Thông báo</span>
+                            </button>
+                        </nav>
                     </div>
-                    <div class="col-md-6">
-                        <label class="form-label">Số điện thoại</label>
-                        <input type="text" class="form-control" id="cusPhone">
-                    </div>
-                    <div class="col-md-6">
-                        <label class="form-label">Email</label>
-                        <input type="email" class="form-control" id="cusEmail">
-                    </div>
-                    <div class="col-md-6">
-                        <label class="form-label">Ngày sinh</label>
-                        <input type="date" class="form-control" id="cusBirthday">
-                    </div>
-                    <div class="col-12">
-                        <label class="form-label">Địa chỉ</label>
-                        <textarea class="form-control" id="cusAddress" rows="2"></textarea>
-                    </div>
-                    <div class="col-12">
-                        <button type="button" class="btn btn-primary" id="saveProfileBtn" disabled>Lưu thay đổi</button>
-                    </div>
-                </form>
-                <div id="profileMsg" class="mt-2"></div>
-            </div>
-
-            <div id="reservationsSection" class="profile-section d-none">
-                <h5>Lịch sử đặt bàn</h5>
-                <div id="reservationList"></div>
-            </div>
-
-            <div id="ordersSection" class="profile-section d-none">
-                <h5>Lịch sử đơn hàng</h5>
-                <div id="orderList"></div>
-            </div>
-
-            <div id="changepasswordSection" class="profile-section d-none">
-                <div class="text-dark">
-                    <strong>Đổi mật khẩu</strong>
                 </div>
-                <div class="card-body">
-                    <div class="mb-2">
-                        <label for="currentPassword" class="form-label">Mật khẩu hiện tại</label>
-                        <input type="password" id="currentPassword" class="form-control" />
+
+                <!-- Main Content -->
+                <div class="col-lg-9">
+                    <!-- Personal Information Section -->
+                    <div id="infoSection" class="profile-section active">
+                        <div class="section-card">
+                            <div class="section-header">
+                                <h5 class="section-title">
+                                    <i class="fas fa-user me-2"></i>Thông tin cá nhân
+                                </h5>
+                                <button class="btn modern-btn-outline btn-sm" id="editProfileBtn">
+                                    <i class="fas fa-edit me-1"></i>Chỉnh sửa
+                                </button>
+                            </div>
+
+                            <form id="profileForm" class="modern-form">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-floating mb-3">
+                                            <input type="text" class="form-control modern-input" id="cusName" readonly>
+                                            <label for="cusName">Họ và tên</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-floating mb-3">
+                                            <input type="tel" class="form-control modern-input" id="cusPhone" readonly>
+                                            <label for="cusPhone">Số điện thoại</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-floating mb-3">
+                                            <input type="email" class="form-control modern-input" id="cusEmail" readonly>
+                                            <label for="cusEmail">Email</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-floating mb-3">
+                                            <input type="date" class="form-control modern-input" id="cusBirthday" readonly>
+                                            <label for="cusBirthday">Ngày sinh</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="form-floating mb-3">
+                                            <textarea class="form-control modern-input" id="cusAddress" style="height: 100px;" readonly></textarea>
+                                            <label for="cusAddress">Địa chỉ</label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-actions" style="display: none;">
+                                    <button type="button" class="btn modern-btn-outline" id="cancelEditBtn">
+                                        <i class="fas fa-times me-1"></i>Hủy
+                                    </button>
+                                    <button type="button" class="btn modern-btn-primary" id="saveProfileBtn">
+                                        <i class="fas fa-save me-1"></i>Lưu thay đổi
+                                    </button>
+                                </div>
+                            </form>
+
+                            <div id="profileMessage" class="modern-alert mt-3" style="display: none;"></div>
+                        </div>
                     </div>
-                    <div class="mb-2">
-                        <label for="newPassword" class="form-label">Mật khẩu mới</label>
-                        <input type="password" id="newPassword" class="form-control" />
+
+                    <!-- Reservations Section -->
+                    <div id="reservationsSection" class="profile-section">
+                        <div class="section-card">
+                            <div class="section-header">
+                                <h5 class="section-title">
+                                    <i class="fas fa-calendar-check me-2"></i>Lịch sử đặt bàn
+                                </h5>
+                                <div class="section-actions">
+                                    <select class="filter-select" id="reservationFilter">
+                                        <option value="">Tất cả</option>
+                                        <option value="confirmed">Đã xác nhận</option>
+                                        <option value="completed">Hoàn thành</option>
+                                        <option value="cancelled">Đã hủy</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div id="reservationsList" class="items-list">
+                                <div class="loading-state">
+                                    <div class="loading-spinner-large"></div>
+                                    <p>Đang tải lịch sử đặt bàn...</p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="mb-2">
-                        <label for="confirmPassword" class="form-label">Xác nhận mật khẩu mới</label>
-                        <input type="password" id="confirmPassword" class="form-control" />
+
+                    <!-- Orders Section -->
+                    <div id="ordersSection" class="profile-section">
+                        <div class="section-card">
+                            <div class="section-header">
+                                <h5 class="section-title">
+                                    <i class="fas fa-shopping-bag me-2"></i>Lịch sử đơn hàng
+                                </h5>
+                                <div class="section-actions">
+                                    <select class="filter-select" id="orderFilter">
+                                        <option value="">Tất cả</option>
+                                        <option value="pending">Chờ xử lý</option>
+                                        <option value="confirmed">Đã xác nhận</option>
+                                        <option value="delivered">Đã giao</option>
+                                        <option value="cancelled">Đã hủy</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div id="ordersList" class="items-list">
+                                <div class="loading-state">
+                                    <div class="loading-spinner-large"></div>
+                                    <p>Đang tải lịch sử đơn hàng...</p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <button class="btn btn-primary" onclick="changePassword()">Cập nhật mật khẩu</button>
-                    <div id="passwordMessage" class="mt-2"></div>
+
+                    <!-- Favorites Section -->
+                    <div id="favoritesSection" class="profile-section">
+                        <div class="section-card">
+                            <div class="section-header">
+                                <h5 class="section-title">
+                                    <i class="fas fa-heart me-2"></i>Món ăn yêu thích
+                                </h5>
+                                <button class="btn modern-btn-outline btn-sm" id="clearFavoritesBtn">
+                                    <i class="fas fa-trash me-1"></i>Xóa tất cả
+                                </button>
+                            </div>
+
+                            <div id="favoritesList" class="favorites-grid">
+                                <div class="loading-state">
+                                    <div class="loading-spinner-large"></div>
+                                    <p>Đang tải món ăn yêu thích...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Change Password Section -->
+                    <div id="changepasswordSection" class="profile-section">
+                        <div class="section-card">
+                            <div class="section-header">
+                                <h5 class="section-title">
+                                    <i class="fas fa-lock me-2"></i>Đổi mật khẩu
+                                </h5>
+                            </div>
+
+                            <form id="changePasswordForm" class="modern-form">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-floating mb-3">
+                                            <input type="password" class="form-control modern-input" id="currentPassword" required>
+                                            <label for="currentPassword">Mật khẩu hiện tại</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6"></div>
+                                    <div class="col-md-6">
+                                        <div class="form-floating mb-3">
+                                            <input type="password" class="form-control modern-input" id="newPassword" required>
+                                            <label for="newPassword">Mật khẩu mới</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-floating mb-3">
+                                            <input type="password" class="form-control modern-input" id="confirmPassword" required>
+                                            <label for="confirmPassword">Xác nhận mật khẩu mới</label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="password-requirements">
+                                    <h6>Yêu cầu mật khẩu:</h6>
+                                    <ul class="requirements-list">
+                                        <li class="requirement" data-requirement="length">
+                                            <i class="fas fa-times text-danger"></i>
+                                            Ít nhất 8 ký tự
+                                        </li>
+                                        <li class="requirement" data-requirement="uppercase">
+                                            <i class="fas fa-times text-danger"></i>
+                                            Có ít nhất 1 chữ hoa
+                                        </li>
+                                        <li class="requirement" data-requirement="lowercase">
+                                            <i class="fas fa-times text-danger"></i>
+                                            Có ít nhất 1 chữ thường
+                                        </li>
+                                        <li class="requirement" data-requirement="number">
+                                            <i class="fas fa-times text-danger"></i>
+                                            Có ít nhất 1 số
+                                        </li>
+                                    </ul>
+                                </div>
+
+                                <button type="submit" class="btn modern-btn-primary">
+                                    <i class="fas fa-key me-2"></i>Cập nhật mật khẩu
+                                </button>
+                            </form>
+
+                            <div id="passwordMessage" class="modern-alert mt-3" style="display: none;"></div>
+                        </div>
+                    </div>
+
+                    <!-- Notifications Section -->
+                    <div id="notificationsSection" class="profile-section">
+                        <div class="section-card">
+                            <div class="section-header">
+                                <h5 class="section-title">
+                                    <i class="fas fa-bell me-2"></i>Cài đặt thông báo
+                                </h5>
+                            </div>
+
+                            <div class="notification-settings">
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <h6>Thông báo đơn hàng</h6>
+                                        <p>Nhận thông báo về trạng thái đơn hàng</p>
+                                    </div>
+                                    <div class="setting-control">
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" id="orderNotifications" checked>
+                                            <label class="form-check-label" for="orderNotifications"></label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <h6>Thông báo đặt bàn</h6>
+                                        <p>Nhận thông báo về lịch đặt bàn</p>
+                                    </div>
+                                    <div class="setting-control">
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" id="reservationNotifications" checked>
+                                            <label class="form-check-label" for="reservationNotifications"></label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <h6>Khuyến mãi & Ưu đãi</h6>
+                                        <p>Nhận thông báo về các chương trình khuyến mãi</p>
+                                    </div>
+                                    <div class="setting-control">
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" id="promotionNotifications" checked>
+                                            <label class="form-check-label" for="promotionNotifications"></label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <h6>Email marketing</h6>
+                                        <p>Nhận email về tin tức và sự kiện mới</p>
+                                    </div>
+                                    <div class="setting-control">
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" id="emailMarketing">
+                                            <label class="form-check-label" for="emailMarketing"></label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<!-- Order Detail Modal -->
+<div class="modal fade modern-modal" id="orderDetailModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content modern-modal-content">
+            <div class="modal-header modern-modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-receipt me-2"></i>Chi tiết đơn hàng
+                </h5>
+                <button type="button" class="btn-close modern-btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body modern-modal-body">
+                <div id="orderDetailContent">
+                    <!-- Content will be loaded by JS -->
                 </div>
             </div>
         </div>
     </div>
 </div>
 
+<!-- Reservation Detail Modal -->
+<div class="modal fade modern-modal" id="reservationDetailModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content modern-modal-content">
+            <div class="modal-header modern-modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-calendar-check me-2"></i>Chi tiết đặt bàn
+                </h5>
+                <button type="button" class="btn-close modern-btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body modern-modal-body">
+                <div id="reservationDetailContent">
+                    <!-- Content will be loaded by JS -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/profile.css" asp-append-version="true" />
+}
+
 @section Scripts {
-    <script src="~/js/customerprofile.js"></script>
+    <script src="~/js/profile-enhanced.js" asp-append-version="true"></script>
 }

@@ -1,59 +1,274 @@
 ﻿@{
-    ViewData["Title"] = "Bàn";
+	ViewData["Title"] = "Quản lý Bàn ăn";
+	Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1 class="mb-4">Danh sách bàn ăn</h1>
-<button class="btn btn-success mb-3" onclick="showAddForm()">
-    <i class="fas fa-plus"></i> Thêm bàn
-</button>
+<link href="~/css/dinetable.css" rel="stylesheet" />
 
-<table class="table table-bordered">
-    <thead class="table-dark">
-        <tr>
-            <th>ID</th>
-            <th>Tên bàn</th>
-            <th>Số ghế</th>
-            <th>Khu vực</th>
-            <th>Loại bàn</th>
-            <th>Thao tác</th>
-        </tr>
-    </thead>
-    <tbody id="dinetableTableBody">
-        <!-- Dữ liệu sẽ được render ở đây -->
-    </tbody>
-</table>
+<div class="dinetable-container">
+	<!-- Header Section -->
+	<div class="dinetable-header">
+		<div class="header-content">
+			<div class="header-left">
+				<h1 class="page-title">
+					<i class="fas fa-chair"></i>
+					Quản lý Bàn ăn
+				</h1>
+				<p class="page-subtitle">Quản lý thông tin bàn ăn trong nhà hàng</p>
+			</div>
+			<div class="header-right">
+				<button class="btn btn-primary add-btn" onclick="showAddForm()">
+					<i class="fas fa-plus"></i>
+					Thêm bàn mới
+				</button>
+			</div>
+		</div>
 
-<!-- Modal Thêm/Sửa bàn -->
-<div class="modal fade" id="dinetableModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <form id="dinetableForm">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="dinetableModalTitle">Thêm bàn</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <input type="hidden" id="dinetableId" />
+		<!-- Stats Cards -->
+		<div class="stats-grid">
+			<div class="stat-card">
+				<div class="stat-icon">
+					<i class="fas fa-chair"></i>
+				</div>
+				<div class="stat-content">
+					<div class="stat-number" id="totalTables">0</div>
+					<div class="stat-label">Tổng số bàn</div>
+				</div>
+			</div>
+			<div class="stat-card">
+				<div class="stat-icon available">
+					<i class="fas fa-check-circle"></i>
+				</div>
+				<div class="stat-content">
+					<div class="stat-number" id="availableTables">0</div>
+					<div class="stat-label">Bàn trống</div>
+				</div>
+			</div>
+			<div class="stat-card">
+				<div class="stat-icon occupied">
+					<i class="fas fa-users"></i>
+				</div>
+				<div class="stat-content">
+					<div class="stat-number" id="occupiedTables">0</div>
+					<div class="stat-label">Bàn có khách</div>
+				</div>
+			</div>
+			<div class="stat-card">
+				<div class="stat-icon">
+					<i class="fas fa-map-marker-alt"></i>
+				</div>
+				<div class="stat-content">
+					<div class="stat-number" id="totalAreas">0</div>
+					<div class="stat-label">Khu vực</div>
+				</div>
+			</div>
+		</div>
+	</div>
 
-                    <div class="mb-2">
-                        <label>Tên bàn</label>
-                        <input type="text" class="form-control" id="dinetableName"/>
-                    </div>
-                    <div class="mb-2">
-                        <label>Khu vực</label>
-                        <select class="form-select" id="dinetableArea"></select>
-                    </div>
-                    <div class="mb-2">
-                        <label>Loại bàn</label>
-                        <select class="form-select" id="dinetableType"></select>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary">Xác nhận</button>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                </div>
-            </form>
-        </div>
-    </div>
+	<!-- Controls Section -->
+	<div class="controls-section">
+		<div class="search-controls">
+			<div class="search-box">
+				<i class="fas fa-search"></i>
+				<input type="text" id="searchInput" placeholder="Tìm kiếm bàn..." />
+			</div>
+			<div class="filter-group">
+				<select id="areaFilter" class="form-select">
+					<option value="">Tất cả khu vực</option>
+				</select>
+				<select id="typeFilter" class="form-select">
+					<option value="">Tất cả loại bàn</option>
+				</select>
+				<select id="statusFilter" class="form-select">
+					<option value="">Tất cả trạng thái</option>
+					<option value="available">Trống</option>
+					<option value="occupied">Có khách</option>
+				</select>
+			</div>
+		</div>
+		<div class="view-controls">
+			<button class="btn btn-outline view-btn active" data-view="grid">
+				<i class="fas fa-th"></i>
+			</button>
+			<button class="btn btn-outline view-btn" data-view="list">
+				<i class="fas fa-list"></i>
+			</button>
+			<button class="btn btn-outline" onclick="exportData()">
+				<i class="fas fa-download"></i>
+				Xuất Excel
+			</button>
+		</div>
+	</div>
+
+	<!-- Content Section -->
+	<div class="content-section">
+		<!-- Grid View -->
+		<div id="gridView" class="grid-view active">
+			<div class="tables-grid" id="tablesGrid">
+				<!-- Tables will be loaded here -->
+			</div>
+		</div>
+
+		<!-- List View -->
+		<div id="listView" class="list-view">
+			<div class="table-responsive">
+				<table class="table">
+					<thead>
+						<tr>
+							<th>ID</th>
+							<th>Tên bàn</th>
+							<th>Số ghế</th>
+							<th>Khu vực</th>
+							<th>Loại bàn</th>
+							<th>Trạng thái</th>
+							<th>Thao tác</th>
+						</tr>
+					</thead>
+					<tbody id="tablesTableBody">
+						<!-- Table rows will be loaded here -->
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
 </div>
-<script src="~/js/dinetable.js"></script>
+
+<!-- Add/Edit Modal -->
+<div class="modal fade" id="dinetableModal" tabindex="-1">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="dinetableModalTitle">
+					<i class="fas fa-chair"></i>
+					Thêm bàn mới
+				</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+			</div>
+			<form id="dinetableForm">
+				<div class="modal-body">
+					<input type="hidden" id="dinetableId" />
+
+					<div class="row">
+						<div class="col-md-6">
+							<div class="form-group">
+								<label class="form-label">
+									<i class="fas fa-tag"></i>
+									Tên bàn
+								</label>
+								<input type="text" class="form-control" id="dinetableName" required />
+								<div class="form-text">Nhập tên bàn (VD: Bàn 01, Bàn VIP 1)</div>
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="form-group">
+								<label class="form-label">
+									<i class="fas fa-map-marker-alt"></i>
+									Khu vực
+								</label>
+								<select class="form-select" id="dinetableArea" required>
+									<option value="">Chọn khu vực</option>
+								</select>
+							</div>
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="col-md-6">
+							<div class="form-group">
+								<label class="form-label">
+									<i class="fas fa-chair"></i>
+									Loại bàn
+								</label>
+								<select class="form-select" id="dinetableType" required>
+									<option value="">Chọn loại bàn</option>
+								</select>
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="form-group">
+								<label class="form-label">
+									<i class="fas fa-info-circle"></i>
+									Trạng thái
+								</label>
+								<select class="form-select" id="dinetableStatus">
+									<option value="available">Trống</option>
+									<option value="occupied">Có khách</option>
+									<option value="maintenance">Bảo trì</option>
+								</select>
+							</div>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label class="form-label">
+							<i class="fas fa-sticky-note"></i>
+							Ghi chú
+						</label>
+						<textarea class="form-control" id="dinetableNote" rows="3" placeholder="Ghi chú thêm về bàn..."></textarea>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+						<i class="fas fa-times"></i>
+						Hủy
+					</button>
+					<button type="submit" class="btn btn-primary">
+						<i class="fas fa-save"></i>
+						Lưu thông tin
+					</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">
+					<i class="fas fa-exclamation-triangle text-warning"></i>
+					Xác nhận xóa
+				</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+			</div>
+			<div class="modal-body">
+				<p>Bạn có chắc chắn muốn xóa bàn <strong id="deleteTableName"></strong>?</p>
+				<p class="text-muted">Hành động này không thể hoàn tác.</p>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+				<button type="button" class="btn btn-danger" id="confirmDelete">
+					<i class="fas fa-trash"></i>
+					Xóa bàn
+				</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Toast Container -->
+<div class="toast-container position-fixed top-0 end-0 p-3">
+	<div id="successToast" class="toast" role="alert">
+		<div class="toast-header">
+			<i class="fas fa-check-circle text-success me-2"></i>
+			<strong class="me-auto">Thành công</strong>
+			<button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+		</div>
+		<div class="toast-body" id="successMessage"></div>
+	</div>
+
+	<div id="errorToast" class="toast" role="alert">
+		<div class="toast-header">
+			<i class="fas fa-exclamation-circle text-danger me-2"></i>
+			<strong class="me-auto">Lỗi</strong>
+			<button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+		</div>
+		<div class="toast-body" id="errorMessage"></div>
+	</div>
+</div>
+
+@section Scripts {
+	<script src="~/js/dinetable-enhanced.js"></script>
+}

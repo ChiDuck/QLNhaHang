@@ -2,22 +2,73 @@
     ViewData["Title"] = "Khu vực";
 }
 
-<h2 class="mb-4">Danh sách khu vực</h2>
-<button class="btn btn-success mb-3" onclick="showAddForm()">
-    <i class="fas fa-plus"></i> Thêm khu vực
-</button>
-<table class="table table-bordered">
-    <thead class="table-dark">
-        <tr>
-            <th>ID</th>
-            <th>Tên khu vực</th>
-            <th>Thao tác</th>
-        </tr>
-    </thead>
-    <tbody id="areaTableBody">
-        <!-- Dữ liệu render ở đây -->
-    </tbody>
-</table>
+<div class="area-page">
+    <div class="page-header">
+        <div class="header-content">
+            <h1 class="page-title">
+                <i class="fas fa-map-marker-alt"></i>
+                Quản lý khu vực
+            </h1>
+            <p class="page-subtitle">Quản lý các khu vực trong nhà hàng</p>
+        </div>
+        <div class="header-actions">
+            <button class="btn btn-primary" onclick="showAddForm()">
+                <i class="fas fa-plus"></i>
+                Thêm khu vực
+            </button>
+        </div>
+    </div>
+
+    <div class="stats-cards">
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-map-marker-alt"></i>
+            </div>
+            <div class="stat-content">
+                <h3 id="totalAreas">0</h3>
+                <p>Tổng khu vực</p>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-table"></i>
+            </div>
+            <div class="stat-content">
+                <h3 id="totalTables">0</h3>
+                <p>Tổng bàn</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <div class="section-header">
+            <h2>Danh sách khu vực</h2>
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="areaSearchInput" placeholder="Tìm kiếm khu vực...">
+            </div>
+        </div>
+
+        <div class="areas-grid" id="areaTableBody">
+            <!-- Grid items will be rendered here -->
+        </div>
+
+        <div class="empty-state" id="emptyState" style="display: none;">
+            <i class="fas fa-map-marker-alt"></i>
+            <h3>Chưa có khu vực nào</h3>
+            <p>Thêm khu vực đầu tiên để bắt đầu</p>
+            <button class="btn btn-primary" onclick="showAddForm()">
+                <i class="fas fa-plus"></i>
+                Thêm khu vực
+            </button>
+        </div>
+
+        <div class="loading-state" id="loadingState">
+            <div class="loading-spinner"></div>
+            <p>Đang tải dữ liệu...</p>
+        </div>
+    </div>
+</div>
 
 <!-- Modal -->
 <div class="modal fade" id="areaModal" tabindex="-1">
@@ -30,18 +81,26 @@
                 </div>
                 <div class="modal-body">
                     <input type="hidden" id="areaId" />
-                    <div class="mb-2">
-                        <label>Tên khu vực</label>
+                    <div class="form-group">
+                        <label class="form-label">Tên khu vực</label>
                         <input type="text" class="form-control" id="areaName" required />
+                        <div class="form-feedback"></div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary">Lưu</button>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i>
+                        Lưu
+                    </button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times"></i>
+                        Hủy
+                    </button>
                 </div>
             </form>
         </div>
     </div>
 </div>
 
+<link rel="stylesheet" href="~/css/area.css">
 <script src="~/js/area.js"></script>

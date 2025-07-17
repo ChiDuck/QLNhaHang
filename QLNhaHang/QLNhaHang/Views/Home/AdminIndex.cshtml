@@ -1,7 +1,193 @@
-﻿@{ 
-    ViewData["Title"] = "Trang chủ - Nhà Hàng ABC";
+﻿@{
+    ViewData["Title"] = "Dashboard";
 }
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+
+<link rel="stylesheet" href="~/css/admin-index.css" asp-append-version="true" />
+
+<div class="dashboard-container">
+    <!-- Stats Cards -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-header">
+                <div class="stat-icon-wrapper success">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="stat-info">
+                    <h3 class="stat-value" id="totalCustomers">0</h3>
+                    <p class="stat-label">Tổng khách hàng</p>
+                </div>
+            </div>
+            <div class="stat-footer">
+                <span class="stat-change positive">
+                    <i class="fas fa-arrow-up"></i>
+                    +12% so với tháng trước
+                </span>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-header">
+                <div class="stat-icon-wrapper warning">
+                    <i class="fas fa-calendar-check"></i>
+                </div>
+                <div class="stat-info">
+                    <h3 class="stat-value" id="totalReservations">0</h3>
+                    <p class="stat-label">Đặt bàn hôm nay</p>
+                </div>
+            </div>
+            <div class="stat-footer">
+                <span class="stat-change positive">
+                    <i class="fas fa-arrow-up"></i>
+                    +8% so với hôm qua
+                </span>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-header">
+                <div class="stat-icon-wrapper info">
+                    <i class="fas fa-truck"></i>
+                </div>
+                <div class="stat-info">
+                    <h3 class="stat-value" id="totalOrders">0</h3>
+                    <p class="stat-label">Đơn giao hàng</p>
+                </div>
+            </div>
+            <div class="stat-footer">
+                <span class="stat-change negative">
+                    <i class="fas fa-arrow-down"></i>
+                    -3% so với hôm qua
+                </span>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-header">
+                <div class="stat-icon-wrapper primary">
+                    <i class="fas fa-money-bill-wave"></i>
+                </div>
+                <div class="stat-info">
+                    <h3 class="stat-value" id="totalRevenue">0đ</h3>
+                    <p class="stat-label">Doanh thu hôm nay</p>
+                </div>
+            </div>
+            <div class="stat-footer">
+                <span class="stat-change positive">
+                    <i class="fas fa-arrow-up"></i>
+                    +15% so với hôm qua
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content Grid -->
+    <div class="dashboard-grid">
+        <!-- Recent Activities -->
+        <div class="dashboard-card">
+            <div class="card-header">
+                <h4 class="card-title">
+                    <i class="fas fa-clock me-2"></i>
+                    Hoạt động gần đây
+                </h4>
+                <button class="btn btn-sm btn-outline-primary">Xem tất cả</button>
+            </div>
+            <div class="card-body">
+                <div class="activity-list" id="recentActivities">
+                    <div class="activity-item">
+                        <div class="activity-icon success">
+                            <i class="fas fa-user-plus"></i>
+                        </div>
+                        <div class="activity-content">
+                            <p class="activity-text">Khách hàng mới <strong>Nguyễn Văn A</strong> đã đăng ký</p>
+                            <span class="activity-time">5 phút trước</span>
+                        </div>
+                    </div>
+
+                    <div class="activity-item">
+                        <div class="activity-icon warning">
+                            <i class="fas fa-calendar"></i>
+                        </div>
+                        <div class="activity-content">
+                            <p class="activity-text">Đặt bàn mới cho <strong>4 người</strong> lúc 19:00</p>
+                            <span class="activity-time">10 phút trước</span>
+                        </div>
+                    </div>
+
+                    <div class="activity-item">
+                        <div class="activity-icon info">
+                            <i class="fas fa-shopping-cart"></i>
+                        </div>
+                        <div class="activity-content">
+                            <p class="activity-text">Đơn hàng mới <strong>#ORD001</strong> cần xử lý</p>
+                            <span class="activity-time">15 phút trước</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="dashboard-card">
+            <div class="card-header">
+                <h4 class="card-title">
+                    <i class="fas fa-bolt me-2"></i>
+                    Thao tác nhanh
+                </h4>
+            </div>
+            <div class="card-body">
+                <div class="quick-actions">
+                    <a href="/Dish/Index" class="quick-action-btn">
+                        <div class="quick-action-icon">
+                            <i class="fas fa-utensils"></i>
+                        </div>
+                        <span>Thêm món mới</span>
+                    </a>
+
+                    <a href="/Staff/Index" class="quick-action-btn">
+                        <div class="quick-action-icon">
+                            <i class="fas fa-user-tie"></i>
+                        </div>
+                        <span>Quản lý nhân viên</span>
+                    </a>
+
+                    <a href="/Inventoryitem/Index" class="quick-action-btn">
+                        <div class="quick-action-icon">
+                            <i class="fas fa-boxes"></i>
+                        </div>
+                        <span>Kiểm tra kho</span>
+                    </a>
+
+                    <a href="/Reservation/Index" class="quick-action-btn">
+                        <div class="quick-action-icon">
+                            <i class="fas fa-calendar-check"></i>
+                        </div>
+                        <span>Xem đặt bàn</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chart Section -->
+    <div class="dashboard-card full-width">
+        <div class="card-header">
+            <h4 class="card-title">
+                <i class="fas fa-chart-line me-2"></i>
+                Doanh thu 7 ngày qua
+            </h4>
+            <div class="card-actions">
+                <select class="form-select form-select-sm">
+                    <option>7 ngày qua</option>
+                    <option>30 ngày qua</option>
+                    <option>3 tháng qua</option>
+                </select>
+            </div>
+        </div>
+        <div class="card-body">
+            <canvas id="revenueChart" height="100"></canvas>
+        </div>
+    </div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="~/js/admin-index.js" asp-append-version="true"></script>

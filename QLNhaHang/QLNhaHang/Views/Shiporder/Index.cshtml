@@ -1,67 +1,264 @@
 ﻿@{
-    ViewData["Title"] = "Đơn giao hàng";
+    ViewData["Title"] = "Quản lý đơn giao hàng";
 }
 
-<h2>Đơn giao hàng</h2>
-<div class="input-group mb-3">
-    <input type="text" id="shiporderSearchInput" class="form-control" placeholder="Tìm theo SĐT hoặc Email">
-    <button class="btn btn-primary" onclick="searchShipOrders()">Tìm kiếm</button>
-</div>
-<table class="table table-bordered" id="ordersTable">
-    <thead>
-        <tr>
-            <th>Mã đơn</th>
-            <th>Đặt lúc</th>
-            <th>Khách</th>
-			<th>SĐT</th>
-			<th>Email</th>
-            <th>Giá</th>
-            <th>Trạng thái</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody id ="shiporderTableBody"></tbody>
-</table>
+<div class="shiporder-container">
+    <!-- Header Section -->
+    <div class="page-header">
+        <div class="header-content">
+            <div class="header-left">
+                <h1 class="page-title">
+                    <i class="fas fa-truck"></i>
+                    Quản lý đơn giao hàng
+                </h1>
+                <p class="page-subtitle">Theo dõi và xử lý các đơn giao hàng</p>
+            </div>
+            <div class="header-right">
+                <div class="stats-cards">
+                    <div class="stat-card">
+                        <div class="stat-icon pending">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-number" id="pendingCount">0</span>
+                            <span class="stat-label">Chờ xử lý</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon processing">
+                            <i class="fas fa-cog"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-number" id="processingCount">0</span>
+                            <span class="stat-label">Đang xử lý</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon completed">
+                            <i class="fas fa-check"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-number" id="completedCount">0</span>
+                            <span class="stat-label">Hoàn thành</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-<!-- Modal chi tiết -->
+    <!-- Controls Section -->
+    <div class="controls-section">
+        <div class="search-filters">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="shiporderSearchInput" placeholder="Tìm theo SĐT, Email hoặc tên khách hàng..." />
+                <button class="clear-search" id="clearSearch" style="display: none;">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="filter-group">
+                <select id="statusFilter" class="filter-select">
+                    <option value="">Tất cả trạng thái</option>
+                    <option value="1">Chờ thanh toán</option>
+                    <option value="2">Đã từ chối</option>
+                    <option value="3">Đang xử lý</option>
+                    <option value="4">Đang giao</option>
+                    <option value="5">Hoàn thành</option>
+                    <option value="6">Đã hủy</option>
+                </select>
+                <select id="dateFilter" class="filter-select">
+                    <option value="">Tất cả thời gian</option>
+                    <option value="today">Hôm nay</option>
+                    <option value="week">Tuần này</option>
+                    <option value="month">Tháng này</option>
+                </select>
+                <select id="sortOrder" class="filter-select">
+                    <option value="newest">Mới nhất</option>
+                    <option value="oldest">Cũ nhất</option>
+                    <option value="price-high">Giá cao nhất</option>
+                    <option value="price-low">Giá thấp nhất</option>
+                </select>
+            </div>
+            <button class="refresh-btn" id="refreshData">
+                <i class="fas fa-sync-alt"></i>
+                Làm mới
+            </button>
+        </div>
+    </div>
+
+    <!-- Loading State -->
+    <div class="loading-container" id="loadingContainer">
+        <div class="loading-spinner"></div>
+        <p>Đang tải dữ liệu...</p>
+    </div>
+
+    <!-- Empty State -->
+    <div class="empty-state" id="emptyState" style="display: none;">
+        <div class="empty-icon">
+            <i class="fas fa-box-open"></i>
+        </div>
+        <h3>Không có đơn giao hàng nào</h3>
+        <p>Chưa có đơn giao hàng nào được tạo hoặc không tìm thấy kết quả phù hợp.</p>
+    </div>
+
+    <!-- Orders Grid -->
+    <div class="orders-grid" id="ordersGrid">
+        <!-- Orders will be populated here -->
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination-container" id="paginationContainer">
+        <div class="pagination-info">
+            <span id="paginationInfo">Hiển thị 0 - 0 của 0 đơn hàng</span>
+        </div>
+        <div class="pagination-controls" id="paginationControls">
+            <!-- Pagination buttons will be generated here -->
+        </div>
+    </div>
+</div>
+
+<!-- Order Detail Modal -->
 <div class="modal fade" id="orderDetailModal" tabindex="-1">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header">
-                <h5>Chi tiết đơn hàng</h5>
+                <div class="modal-title-section">
+                    <h5 class="modal-title">
+                        <i class="fas fa-receipt"></i>
+                        Chi tiết đơn hàng #<span id="detailId"></span>
+                    </h5>
+                    <span class="order-status-badge" id="detailStatusBadge"></span>
+                </div>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
-                <p><strong>Mã đơn:</strong> <span id="detailId"></span></p>
-                <p><strong>Khách hàng:</strong> <span id="detailCustomer"></span></p>
-                <p><strong>Số điện thoại:</strong> <span id="detailPhone"></span></p>
-                <p><strong>Email:</strong> <span id="detailEmail"></span></p>
-                <p><strong>Thời gian đặt:</strong> <span id="detailDate"></span></p>
-                <p><strong>Hình thức nhận hàng:</strong> <span id="detailShippingType"></span></p>
-                <p id="detailAddressRow"><strong>Địa chỉ giao hàng:</strong> <span id="detailAddress"></span></p>
-                <p><strong>Ghi chú:</strong> <span id="detailNote"></span></p>
-                <p><strong>Hình thức thanh toán:</strong> <span id="detailPaymentMethod"></span></p>
-                <p id="detailTransidRow"><strong>Mã giao dịch:</strong> <span id="detailTransid"></span></p>
+                <div class="order-detail-content">
+                    <!-- Customer Info -->
+                    <div class="detail-section">
+                        <h6 class="section-title">
+                            <i class="fas fa-user"></i>
+                            Thông tin khách hàng
+                        </h6>
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <label>Tên khách hàng:</label>
+                                <span id="detailCustomer"></span>
+                            </div>
+                            <div class="info-item">
+                                <label>Số điện thoại:</label>
+                                <span id="detailPhone"></span>
+                            </div>
+                            <div class="info-item">
+                                <label>Email:</label>
+                                <span id="detailEmail"></span>
+                            </div>
+                            <div class="info-item">
+                                <label>Thời gian đặt:</label>
+                                <span id="detailDate"></span>
+                            </div>
+                        </div>
+                    </div>
 
-                <h6 class="mt-3">Danh sách món:</h6>
-                <ul id="detailItems" class="list-group mb-3"></ul>
+                    <!-- Delivery Info -->
+                    <div class="detail-section">
+                        <h6 class="section-title">
+                            <i class="fas fa-shipping-fast"></i>
+                            Thông tin giao hàng
+                        </h6>
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <label>Hình thức:</label>
+                                <span id="detailShippingType"></span>
+                            </div>
+                            <div class="info-item" id="detailAddressRow">
+                                <label>Địa chỉ:</label>
+                                <span id="detailAddress"></span>
+                            </div>
+                            <div class="info-item">
+                                <label>Phí giao hàng:</label>
+                                <span id="detailShipFee"></span>
+                            </div>
+                            <div class="info-item">
+                                <label>Ghi chú:</label>
+                                <span id="detailNote"></span>
+                            </div>
+                        </div>
+                    </div>
 
-                <div class="text-end">
-                    <p><strong>Phí giao hàng:</strong> <span id="detailShipFee"></span></p>
-                    <p class="fw-bold">Tổng cộng: <span id="detailTotal"></span></p>
+                    <!-- Payment Info -->
+                    <div class="detail-section">
+                        <h6 class="section-title">
+                            <i class="fas fa-credit-card"></i>
+                            Thông tin thanh toán
+                        </h6>
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <label>Phương thức:</label>
+                                <span id="detailPaymentMethod"></span>
+                            </div>
+                            <div class="info-item" id="detailTransidRow">
+                                <label>Mã giao dịch:</label>
+                                <span id="detailTransid"></span>
+                            </div>
+                            <div class="info-item total-price">
+                                <label>Tổng cộng:</label>
+                                <span id="detailTotal"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Order Items -->
+                    <div class="detail-section">
+                        <h6 class="section-title">
+                            <i class="fas fa-utensils"></i>
+                            Danh sách món ăn
+                        </h6>
+                        <div class="items-list" id="detailItems">
+                            <!-- Items will be populated here -->
+                        </div>
+                    </div>
+
+                    <!-- Ingredients -->
+                    <div class="detail-section">
+                        <h6 class="section-title">
+                            <i class="fas fa-leaf"></i>
+                            Nguyên liệu cần dùng
+                        </h6>
+                        <div class="ingredients-warning" id="ingredientWarning" style="display:none;">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            Không đủ nguyên liệu để thực hiện đơn hàng!
+                        </div>
+                        <div class="ingredients-list" id="ingredientList">
+                            <!-- Ingredients will be populated here -->
+                        </div>
+                    </div>
                 </div>
-                <h6 class="mt-4">Nguyên liệu cần dùng:</h6>
-                <ul id="ingredientList" class="list-group mb-2"></ul>
-                <div id="ingredientWarning" class="alert alert-danger" style="display:none;">
-                    ⚠️ Không đủ nguyên liệu để thực hiện đơn hàng!
-                </div>
-
             </div>
             <div class="modal-footer">
-                <button id="btnAccept" class="btn btn-success">Chấp nhận</button>
-                <button id="btnReject" class="btn btn-danger">Từ chối</button>
+                <div class="action-buttons">
+                    <button id="btnReject" class="btn btn-danger">
+                        <i class="fas fa-times"></i>
+                        Từ chối
+                    </button>
+                    <button id="btnAccept" class="btn btn-success">
+                        <i class="fas fa-check"></i>
+                        Chấp nhận
+                    </button>
+                </div>
+                <button class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times"></i>
+                    Đóng
+                </button>
             </div>
         </div>
     </div>
 </div>
-<script src="~/js/shiporder.js"></script>
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/shiporder.css" />
+}
+
+@section Scripts {
+    <script src="~/js/shiporder-enhanced.js"></script>
+}

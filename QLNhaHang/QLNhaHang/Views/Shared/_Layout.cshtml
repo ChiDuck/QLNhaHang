@@ -3,94 +3,173 @@
 <head>
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<title>@ViewData["Title"] - QLNhaHang</title>
+	<title>@ViewData["Title"] - Nhà hàng Đức Phát</title>
 	<!-- Font Awesome -->
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 	<!-- Google Fonts -->
-	<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 	<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
 	<link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+	<link rel="stylesheet" href="~/css/admin-layout.css" asp-append-version="true" />
 	<link rel="stylesheet" href="~/QLNhaHang.styles.css" asp-append-version="true" />
 	@await RenderSectionAsync("Styles", required: false)
 </head>
 <body>
-	<header>
-		<nav class="navbar navbar-expand-sm navbar-light border-bottom shadow-sm">
-			<div class="container-fluid">
-				<a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">QLNhaHang</a>
-				<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
-						aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-					<span class="navbar-toggler-icon"></span>
+	<div class="admin-wrapper">
+		<!-- Sidebar -->
+		<nav class="sidebar" id="sidebar">
+			<div class="sidebar-header">
+				<div class="brand">
+					<i class="fas fa-utensils brand-icon"></i>
+					<span class="brand-text">Nhà hàng Đức Phát</span>
+				</div>
+				<button class="sidebar-toggle" id="sidebarToggle">
+					<i class="fas fa-times"></i>
 				</button>
-				<div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-					<ul class="navbar-nav flex-grow-1">
-						<li class="nav-item">
-							<a class="nav-link text-dark" asp-controller="Home" asp-action="AdminIndex">Trang chủ</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link text-dark" asp-controller="Customer" asp-action="Index">Quản lý khách hàng</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link text-dark" asp-controller="Reservation" asp-action="Index">Quản lý đặt bàn</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link text-dark" asp-controller="Shiporder" asp-action="Index">Quản lý đơn giao hàng</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link text-dark" asp-controller="Dish" asp-action="Index">Quản lý món</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link text-dark" asp-controller="Inventoryitem" asp-action="Index">Quản lý kho</a>
-						</li>
-						<li class="nav-item dropdown">
-							<a class="nav-link dropdown-toggle text-dark" href="#" id="dinetableDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-								Quản lý bàn
+			</div>
+
+			<div class="sidebar-nav">
+				<div class="nav-section">
+					<h6 class="nav-section-title">QUẢN LÝ CHÍNH</h6>
+					<a class="nav-item" asp-controller="Home" asp-action="AdminIndex">
+						<i class="fas fa-home"></i>
+						<span>Trang chủ</span>
+					</a>
+					<a class="nav-item" asp-controller="Customer" asp-action="Index">
+						<i class="fas fa-users"></i>
+						<span>Khách hàng</span>
+					</a>
+					<a class="nav-item" asp-controller="Reservation" asp-action="Index">
+						<i class="fas fa-calendar-check"></i>
+						<span>Đặt bàn</span>
+					</a>
+					<a class="nav-item" asp-controller="Shiporder" asp-action="Index">
+						<i class="fas fa-truck"></i>
+						<span>Đơn giao hàng</span>
+					</a>
+				</div>
+
+				<div class="nav-section">
+					<h6 class="nav-section-title">THỰC ĐƠN & KHO</h6>
+					<a class="nav-item" asp-controller="Dish" asp-action="Index">
+						<i class="fas fa-utensils"></i>
+						<span>Quản lý món</span>
+					</a>
+					<a class="nav-item" asp-controller="Inventoryitem" asp-action="Index">
+						<i class="fas fa-boxes"></i>
+						<span>Quản lý kho</span>
+					</a>
+				</div>
+
+				<div class="nav-section">
+					<h6 class="nav-section-title">CƠ SỞ VẬT CHẤT</h6>
+					<div class="nav-group">
+						<div class="nav-group-header" data-bs-toggle="collapse" data-bs-target="#tableManagement">
+							<i class="fas fa-chair"></i>
+							<span>Quản lý bàn</span>
+							<i class="fas fa-chevron-down nav-arrow"></i>
+						</div>
+						<div class="collapse nav-group-content" id="tableManagement">
+							<a class="nav-subitem" asp-controller="Dinetable" asp-action="Index">
+								<span>Bàn ăn</span>
 							</a>
-							<ul class="dropdown-menu" aria-labelledby="dinetableDropdown">
-								<li><a class="dropdown-item" asp-controller="Dinetable" asp-action="Index">Bàn</a></li>
-								<li><a class="dropdown-item" asp-controller="Tabletype" asp-action="Index">Loại bàn</a></li>
-								<li><a class="dropdown-item" asp-controller="Area" asp-action="Index">Khu vực</a></li>
-							</ul>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link text-dark" asp-controller="Staff" asp-action="Index">Quản lý nhân sự</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link text-dark" asp-controller="Schedule" asp-action="Index">Quản lý thời gian biểu</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link text-dark" asp-controller="Payroll" asp-action="Index">Quản lý bảng lương</a>
-						</li>
-					</ul>
+							<a class="nav-subitem" asp-controller="Tabletype" asp-action="Index">
+								<span>Loại bàn</span>
+							</a>
+							<a class="nav-subitem" asp-controller="Area" asp-action="Index">
+								<span>Khu vực</span>
+							</a>
+						</div>
+					</div>
+				</div>
+
+				<div class="nav-section">
+					<h6 class="nav-section-title">NHÂN SỰ</h6>
+					<a class="nav-item" asp-controller="Staff" asp-action="Index">
+						<i class="fas fa-user-tie"></i>
+						<span>Quản lý nhân sự</span>
+					</a>
+					<a class="nav-item" asp-controller="Schedule" asp-action="Index">
+						<i class="fas fa-clock"></i>
+						<span>Thời gian biểu</span>
+					</a>
+					<a class="nav-item" asp-controller="Payroll" asp-action="Index">
+						<i class="fas fa-money-bill-wave"></i>
+						<span>Bảng lương</span>
+					</a>
 				</div>
 			</div>
 		</nav>
-	</header>
 
-	<div class="container main">
-		<main role="main" class="pb-3">
-			@RenderBody()
-		</main>
+		<!-- Main Content -->
+		<div class="main-content">
+			<!-- Top Header -->
+			<header class="top-header">
+				<div class="header-left">
+					<button class="mobile-menu-toggle" id="mobileMenuToggle">
+						<i class="fas fa-bars"></i>
+					</button>
+					<div class="page-title-container">
+						<h1 class="page-title">@ViewData["Title"]</h1>
+					</div>
+				</div>
+				<div class="header-right">
+					<div class="header-actions">
+						<button class="header-btn notification-btn">
+							<i class="fas fa-bell"></i>
+							<span class="notification-badge">3</span>
+						</button>
+						<div class="user-menu">
+							<button class="header-btn user-btn" data-bs-toggle="modal" data-bs-target="#profileModal">
+								<div class="user-avatar">
+									<i class="fas fa-user"></i>
+								</div>
+								<span class="user-name">Admin</span>
+							</button>
+						</div>
+					</div>
+				</div>
+			</header>
+
+			<!-- Page Content -->
+			<main class="page-content">
+				@RenderBody()
+			</main>
+		</div>
 	</div>
 
-	<footer class="border-top footer text-muted">
-		<div class="container">
-			&copy; 2025 - QLNhaHang - <a asp-controller="Home" asp-action="Privacy">Privacy</a>
-		</div>
-	</footer>
+	<!-- Sidebar Overlay for Mobile -->
+	<div class="sidebar-overlay" id="sidebarOverlay"></div>
 
+	<!-- Profile Modal -->
 	<div class="modal fade" id="profileModal" tabindex="-1">
 		<div class="modal-dialog">
 			<div class="modal-content">
-				<div class="modal-header bg-primary text-white">
-					<h5 class="modal-title">Thông tin cá nhân</h5>
-					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+				<div class="modal-header">
+					<h5 class="modal-title">
+						<i class="fas fa-user-circle me-2"></i>
+						Thông tin cá nhân
+					</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
 				</div>
 				<div class="modal-body">
-					<p><strong>Họ tên:</strong> <span id="profileName"></span></p>
-					<p><strong>Email:</strong> <span id="profileEmail"></span></p>
-					<p><strong>SĐT:</strong> <span id="profilePhone"></span></p>
-					<p><strong>Loại:</strong> <span id="profileType"></span></p>
+					<div class="profile-info">
+						<div class="profile-item">
+							<strong>Họ tên:</strong> <span id="profileName">Administrator</span>
+						</div>
+						<div class="profile-item">
+							<strong>Email:</strong> <span id="profileEmail">admin@qlnhahang.com</span>
+						</div>
+						<div class="profile-item">
+							<strong>SĐT:</strong> <span id="profilePhone">0123456789</span>
+						</div>
+						<div class="profile-item">
+							<strong>Loại:</strong> <span id="profileType">Quản trị viên</span>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
 				</div>
 			</div>
 		</div>
@@ -99,6 +178,7 @@
 	<script src="~/lib/jquery/dist/jquery.min.js"></script>
 	<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 	<script src="~/js/site.js" asp-append-version="true"></script>
+	<script src="~/js/admin-layout.js" asp-append-version="true"></script>
 	@await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

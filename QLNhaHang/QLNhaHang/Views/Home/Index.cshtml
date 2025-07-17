@@ -1,226 +1,405 @@
 ﻿@{
-	ViewData["Title"] = "Trang chủ - Nhà Hàng Delicious";
-	Layout = "~/Views/Shared/_RestaurantLayout.cshtml";
+    ViewData["Title"] = "Trang chủ - Nhà Hàng Đức Phát";
+    Layout = "~/Views/Shared/_RestaurantLayout.cshtml";
 }
 
-<!-- Hero Banner -->
-<section class="hero-banner">
-	<div class="container">
-		<div class="row align-items-center mt-5">
-			<div class="col-md-6">
-				<h1 class="display-4 fw-bold mb-4">Ẩm thực Việt đỉnh cao</h1>
-				<p class="lead mb-4">Trải nghiệm hương vị truyền thống với phong cách hiện đại</p>
-				<button class="btn btn-primary btn-lg px-4 me-2 book-now-btn">Đặt bàn ngay</button>
-				<a href="/menu" class="btn btn-outline-light btn-lg px-4">Xem thực đơn</a>
-			</div>
-			<div class="col-md-6">
-				@* <img src="~/images/hero-dish.png" alt="Món ăn đặc biệt" class="img-fluid"> *@
-			</div>
-		</div>
-	</div>
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="hero-content">
+        <div class="container">
+            <div class="row justify-content-center text-center">
+                <div class="col-lg-8">
+                    <h1 class="hero-title animate__animated animate__fadeInUp">Chào mừng đến với Đức Phát</h1>
+                    <p class="hero-subtitle animate__animated animate__fadeInUp animate__delay-1s">
+                        Trải nghiệm ẩm thực tuyệt vời với những món ăn được chế biến từ nguyên liệu tươi ngon nhất
+                    </p>
+                    <div class="hero-buttons animate__animated animate__fadeInUp animate__delay-2s">
+                        <a href="@Url.Action("Menu", "Home")" class="btn btn-primary btn-lg me-3">
+                            <i class="fas fa-utensils me-2"></i>Xem thực đơn
+                        </a>
+                        <button class="btn btn-outline-light btn-lg book-now-btn">
+                            <i class="fas fa-calendar-check me-2"></i>Đặt bàn ngay
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="hero-scroll-indicator">
+        <i class="fas fa-chevron-down"></i>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="features-section py-5">
+    <div class="container">
+        <div class="row text-center mb-5">
+            <div class="col-12">
+                <h2 class="section-title">Tại sao chọn chúng tôi?</h2>
+                <p class="section-subtitle">Những điều đặc biệt làm nên thương hiệu Đức Phát</p>
+            </div>
+        </div>
+        <div class="row g-4">
+            <div class="col-lg-4 col-md-6">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-leaf"></i>
+                    </div>
+                    <h4>Nguyên liệu tươi ngon</h4>
+                    <p>Chúng tôi chỉ sử dụng những nguyên liệu tươi ngon nhất, được tuyển chọn kỹ lưỡng từ các nhà cung cấp uy tín.</p>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-award"></i>
+                    </div>
+                    <h4>Đầu bếp chuyên nghiệp</h4>
+                    <p>Đội ngũ đầu bếp giàu kinh nghiệm với nhiều năm trong nghề, mang đến những món ăn tinh tế nhất.</p>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <h4>Phục vụ nhanh chóng</h4>
+                    <p>Dịch vụ chuyên nghiệp, phục vụ nhanh chóng và chu đáo, đảm bảo trải nghiệm tuyệt vời cho khách hàng.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Popular Dishes Section -->
+<section class="popular-dishes-section py-5 bg-light">
+    <div class="container">
+        <div class="row text-center mb-5">
+            <div class="col-12">
+                <h2 class="section-title">Món ăn nổi bật</h2>
+                <p class="section-subtitle">Những món ăn được yêu thích nhất tại nhà hàng</p>
+            </div>
+        </div>
+        <div class="row g-4" id="popularDishes">
+            <!-- Popular dishes will be loaded here -->
+        </div>
+        <div class="text-center mt-4">
+            <a href="@Url.Action("Menu", "Home")" class="btn btn-primary btn-lg">
+                <i class="fas fa-eye me-2"></i>Xem tất cả món ăn
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section py-5">
+    <div class="container">
+        <div class="row justify-content-center text-center">
+            <div class="col-lg-8">
+                <h2 class="cta-title">Sẵn sàng trải nghiệm?</h2>
+                <p class="cta-subtitle">Đặt bàn ngay hôm nay để thưởng thức những món ăn tuyệt vời</p>
+                <div class="cta-buttons">
+                    <button class="btn btn-primary btn-lg me-3 book-now-btn">
+                        <i class="fas fa-calendar-check me-2"></i>Đặt bàn ngay
+                    </button>
+                    <a href="tel:(028)1234-5678" class="btn btn-outline-primary btn-lg">
+                        <i class="fas fa-phone me-2"></i>Gọi ngay
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
 </section>
 
 <!-- Special Dishes -->
 <section class="py-5 bg-light">
-	<div class="container">
-		<h2 class="text-center mb-5">Món ăn đặc biệt của chúng tôi</h2>
-		<div class="row">
-			<!-- Các món ăn sẽ được render ở đây -->
-		</div>
-	</div>
+    <div class="container">
+        <h2 class="text-center mb-5">Món ăn đặc biệt của chúng tôi</h2>
+        <div class="row">
+            <!-- Các món ăn sẽ được render ở đây -->
+        </div>
+    </div>
 </section>
 
 <!-- Modal 1: Chọn Ngày/Giờ/Số Người -->
 <div class="modal fade" id="bookingStep1Modal" data-bs-backdrop="static" tabindex="-1" aria-hidden="true">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header bg-primary text-white">
-				<h5 class="modal-title">Chọn thời gian</h5>
-				<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-			</div>
-			<div class="modal-body">
-				<div class="mb-3">
-					<label class="form-label">Ngày đặt bàn</label>
-					<input type="date" class="form-control" id="bookingDate" min="@DateTime.Now.ToString("yyyy-MM-dd")">
-				</div>
-				<div class="mb-3">
-					<label class="form-label">Giờ đặt bàn</label>
-					<select class="form-select" id="bookingTime">
-						<!-- Options sẽ được điền bằng JS -->
-					</select>
-				</div>
-				<div class="mb-3">
-					<label class="form-label">Số lượng người</label>
-					@* <input type="number" class="form-control" id="partySize" min="1" max="20" value="2"> *@
-					<select id="partySize" class="form-select">
-						@for (int i = 1; i <= 15; i++)
-						{
-							<option value="@i">@i</option>
-						}
-					</select>
-				</div>
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-				<button type="button" class="btn btn-primary" id="nextToStep2">Tiếp theo</button>
-			</div>
-		</div>
-	</div>
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title">Chọn thời gian</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label class="form-label">Ngày đặt bàn</label>
+                    <input type="date" class="form-control" id="bookingDate" min="@DateTime.Now.ToString("yyyy-MM-dd")">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Giờ đặt bàn</label>
+                    <select class="form-select" id="bookingTime">
+                        <!-- Options will be filled by JS -->
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Số lượng người</label>
+                    <select id="partySize" class="form-select">
+                        @for (int i = 1; i <= 15; i++)
+                        {
+                            <option value="@i">@i</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                <button type="button" class="btn btn-primary" id="nextToStep2">Tiếp theo</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 <!-- Modal chọn món đi kèm -->
 <div id="dishModal" class="modal fade" data-bs-backdrop="static" tabindex="-1" aria-hidden="true">
-	<div class="modal-dialog modal-lg">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h5 class="modal-title">Chọn món đi kèm</h5>
-			</div>
-			<div class="modal-body">
-				<div class="row">
-					<!-- Danh sách món ăn -->
-					<div class="col-md-8 overflow-auto" style="max-height: 470px;">
-						<div id="dishList" class="dish-list">
-							<!-- Món ăn sẽ được thêm bằng JavaScript -->
-						</div>
-					</div>
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Chọn món đi kèm</h5>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <!-- Danh sách món ăn -->
+                    <div class="col-md-8 overflow-auto" style="max-height: 470px;">
+                        <div id="dishList" class="dish-list">
+                            <!-- Món ăn sẽ được thêm bằng JavaScript -->
+                        </div>
+                    </div>
 
-					<!-- Tóm tắt đơn hàng -->
-					<div class="col-md-4">
-						<div class="card">
-							<div class="card-header">
-								<h5 class="card-title">Món đã chọn</h5>
-							</div>
-							<div class="card-body">
-								<div id="noDishesSelected">
-									<p class="text-muted">Chưa có món nào được chọn</p>
-								</div>
-								<ul id="selectedDishesList" class="list-group list-group-flush overflow-auto" style="display: none;max-height: 370px;">
-									<!-- Các món đã chọn sẽ được thêm vào đây -->
-								</ul>
-								<p id="selectedDishesTotal" class="mt-2 text-end fw-bold text-success" style="display:none;"></p>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-secondary" id="backToStep1">Quay lại</button>
-				<button id="skipDishesBtn" class="btn btn-secondary me-2">Bỏ qua</button>
-				<button id="confirmDishesBtn" class="btn btn-primary">Xác nhận</button>
-
-			</div>
-		</div>
-	</div>
+                    <!-- Tóm tắt đơn hàng -->
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-title">Món đã chọn</h5>
+                            </div>
+                            <div class="card-body">
+                                <div id="noDishesSelected">
+                                    <p class="text-muted">Chưa có món nào được chọn</p>
+                                </div>
+                                <ul id="selectedDishesList" class="list-group list-group-flush overflow-auto" style="display: none;max-height: 370px;">
+                                    <!-- Các món đã chọn sẽ được thêm vào đây -->
+                                </ul>
+                                <p id="selectedDishesTotal" class="mt-2 text-end fw-bold text-success" style="display:none;"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="backToStep1">Quay lại</button>
+                <button id="skipDishesBtn" class="btn btn-secondary me-2">Bỏ qua</button>
+                <button id="confirmDishesBtn" class="btn btn-primary">Xác nhận</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 <!-- Modal 2: Chọn Loại Bàn -->
 <div class="modal fade" id="bookingStep2Modal" data-bs-backdrop="static" tabindex="-1" aria-hidden="true">
-	<div class="modal-dialog modal-dialog-scrollable modal-lg">
-		<div class="modal-content">
-			<div class="modal-header bg-primary text-white">
-				<h5 class="modal-title">Chọn bàn mong muốn</h5>
-			</div>
-			<div class="modal-body">
-				<div class="alert alert-info text-center">
-					<p><strong><span id="displayBookingTime"></span></strong> - <strong><span id="displayPartySize"></span> người<strong> </p>
-				</div>
+    <div class="modal-dialog modal-dialog-scrollable modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title">Chọn bàn mong muốn</h5>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-info text-center">
+                    <p><strong><span id="displayBookingTime"></span></strong> - <strong><span id="displayPartySize"></span> người<strong> </p>
+                </div>
 
-				<div id="availableTableTypesContainer">
-					<!-- Các loại bàn sẽ được điền bằng JS -->
-				</div>
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-secondary" id="backToStepDish">Quay lại</button>
-				<button type="button" class="btn btn-primary" id="nextToStep3" disabled>Tiếp theo</button>
-			</div>
-		</div>
-	</div>
+                <div id="availableTableTypesContainer">
+                    <!-- Các loại bàn sẽ được điền bằng JS -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="backToStepDish">Quay lại</button>
+                <button type="button" class="btn btn-primary" id="nextToStep3" disabled>Tiếp theo</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 <!-- Modal 3: Thông Tin Khách Hàng -->
 <div class="modal fade" id="bookingStep3Modal" data-bs-backdrop="static" tabindex="-1" aria-hidden="true">
-	<div class="modal-dialog modal-dialog-scrollable">
-		<div class="modal-content">
-			<div class="modal-header bg-primary text-white">
-				<h5 class="modal-title">Bước 3: Thông tin liên hệ</h5>
-			</div>
-			<div class="modal-body">
-				<div class="mb-3">
-					<label class="form-label">Họ tên</label>
-					<input type="text" class="form-control" id="customerBookName">
-				</div>
-				<div class="mb-3">
-					<label class="form-label">Số điện thoại *</label>
-					<input type="tel" class="form-control" id="customerPhone" required>
-				</div>
-				<div class="mb-3">
-					<label class="form-label">Email</label>
-					<input type="email" class="form-control" id="customerEmail">
-				</div>
-				<div class="mb-3">
-					<label class="form-label">Ghi chú</label>
-					<textarea class="form-control" id="bookingNote" rows="3"></textarea>
-				</div>
-				<div class="card mb-3">
-					<div class="card-body">
-						<h6 class="card-title">Thông tin đặt bàn</h6>
-						<p class="mb-1"><strong>Bàn:</strong> <span id="displaySelectedTable"></span></p>
-						<p class="mb-1"><strong>Ngày:</strong> <span id="displaySelectedDate"></span></p>
-						<p class="mb-1"><strong>Giờ:</strong> <span id="displaySelectedTime"></span></p>
-						<p class="mb-1"><strong>Số người:</strong> <span id="displaySelectedPartySize"></span></p>
-					</div>
-				</div>
-				<div class="card mb-3">
-					<div class="card-body">
-						<h6 class="card-title">Món đã chọn</h6>
-						<ul id="selectedDishesSummary" class="list-group mb-2"></ul>
-						<p id="selectedDishesSummaryTotal" class="text-end fw-bold text-success"></p>
-					</div>
-				</div>
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-secondary" id="backToStep2">Quay lại</button>
-				<button type="button" class="btn btn-success" id="confirmBooking">Xác nhận đặt bàn</button>
-			</div>
-		</div>
-	</div>
+    <div class="modal-dialog modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title">Bước 3: Thông tin liên hệ</h5>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label class="form-label">Họ tên</label>
+                    <input type="text" class="form-control" id="customerBookName">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Số điện thoại *</label>
+                    <input type="tel" class="form-control" id="customerPhone" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Email</label>
+                    <input type="email" class="form-control" id="customerEmail">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Ghi chú</label>
+                    <textarea class="form-control" id="bookingNote" rows="3"></textarea>
+                </div>
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h6 class="card-title">Thông tin đặt bàn</h6>
+                        <p class="mb-1"><strong>Bàn:</strong> <span id="displaySelectedTable"></span></p>
+                        <p class="mb-1"><strong>Ngày:</strong> <span id="displaySelectedDate"></span></p>
+                        <p class="mb-1"><strong>Giờ:</strong> <span id="displaySelectedTime"></span></p>
+                        <p class="mb-1"><strong>Số người:</strong> <span id="displaySelectedPartySize"></span></p>
+                    </div>
+                </div>
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h6 class="card-title">Món đã chọn</h6>
+                        <ul id="selectedDishesSummary" class="list-group mb-2"></ul>
+                        <p id="selectedDishesSummaryTotal" class="text-end fw-bold text-success"></p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="backToStep2">Quay lại</button>
+                <button type="button" class="btn btn-success" id="confirmBooking">Xác nhận đặt bàn</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 <!-- Modal Thành Công -->
 <div class="modal fade" id="bookingSuccessModal" data-bs-backdrop="static" tabindex="-1" aria-hidden="true">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header bg-success text-white">
-				<h5 class="modal-title">Đặt bàn thành công!</h5>
-				<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-			</div>
-			<div class="modal-body">
-				<div class="text-center">
-					<i class="fas fa-check-circle fa-5x text-success mb-4"></i>
-					<h4>Cảm ơn bạn đã đặt bàn!</h4>
-					<p>Mã đặt bàn của bạn: <strong id="bookingCode"></strong></p>
-					<p>Chúng tôi đã gửi thông tin đặt bàn đến email của bạn.</p>
-				</div>
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-primary" data-bs-dismiss="modal">Đóng</button>
-			</div>
-		</div>
-	</div>
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title">Đặt bàn thành công!</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="text-center">
+                    <i class="fas fa-check-circle fa-5x text-success mb-4"></i>
+                    <h4>Cảm ơn bạn đã đặt bàn!</h4>
+                    <p>Mã đặt bàn của bạn: <strong id="bookingCode"></strong></p>
+                    <p>Chúng tôi đã gửi thông tin đặt bàn đến email của bạn.</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Đóng</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 @section Styles {
-	<style>
-		.hero-banner {
-			padding: 5rem 0;
-			background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('/images/restaurant-bg.jpg');
-			background-size: cover;
-			background-position: center;
-			color: white;
-		}
-	</style>
+    <style>
+        .hero-section {
+            position: relative;
+            padding: 5rem 0;
+            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('/images/restaurant-bg.jpg');
+            background-size: cover;
+            background-position: center;
+            color: white;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-title {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .hero-subtitle {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .hero-buttons .btn {
+            font-size: 1rem;
+            padding: 0.75rem 1.5rem;
+        }
+
+        .hero-scroll-indicator {
+            position: absolute;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            cursor: pointer;
+        }
+
+        .features-section .feature-card {
+            padding: 2rem;
+            border-radius: 0.5rem;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .features-section .feature-icon {
+            font-size: 2rem;
+            color: #333;
+            margin-bottom: 1rem;
+        }
+
+        .features-section h4 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .features-section p {
+            font-size: 1rem;
+            color: #666;
+        }
+
+        .popular-dishes-section .section-title {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .popular-dishes-section .section-subtitle {
+            font-size: 1.25rem;
+            color: #666;
+            margin-bottom: 2rem;
+        }
+
+        .cta-section .cta-title {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .cta-section .cta-subtitle {
+            font-size: 1.25rem;
+            color: #666;
+            margin-bottom: 2rem;
+        }
+
+        .cta-section .cta-buttons .btn {
+            font-size: 1rem;
+            padding: 0.75rem 1.5rem;
+        }
+    </style>
 }
 
 @section Scripts {
-	<script src="~/js/booking.js"></script>
+    <script src="~/js/home-customer.js" asp-append-version="true"></script>
+    <script src="~/js/booking.js"></script>
 }

@@ -1,63 +1,306 @@
-﻿<h4>Chi tiết bảng lương tháng <span id="payrollMonth"></span>/<span id="payrollYear"></span></h4>
-<table class="table">
-    <thead>
-        <tr><th>Nhân viên</th><th>Chức vụ</th><th></th></tr>
-    </thead>
-    <tbody id="payrollDetails"></tbody>
-</table>
-<!-- Modal chi tiết bảng lương -->
-<div class="modal fade" id="payrollDetailModal" tabindex="-1" aria-hidden="true">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header bg-info text-white">
-				<h5 class="modal-title">Chi tiết bảng lương: <span id="payrollModalStaffName"></span></h5>
-				<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-			</div>
-			<div class="modal-body">
-				<form id="payrollDetailForm">
-					<input type="hidden" id="pd_IdPayroll">
-					<input type="hidden" id="pd_IdStaff">
+﻿@{
+    ViewData["Title"] = "Chi tiết Bảng lương";
+}
 
-					<div class="mb-2">
-						<label class="form-label">Số ngày làm</label>
-						<input type="number" class="form-control" id="pd_Days">
-					</div>
-					<div class="mb-2">
-						<label class="form-label">Số giờ</label>
-						<input type="number" step="0.1" class="form-control" id="pd_Hours">
-					</div>
-					<div class="mb-2">
-						<label class="form-label">Số lần nghỉ</label>
-						<input type="number" class="form-control" id="pd_Absencetimes">
-					</div>
-					<div class="mb-2">
-						<label class="form-label">Số lần đi muộn</label>
-						<input type="number" class="form-control" id="pd_Latetimes">
-					</div>
-					<div class="mb-2">
-						<label class="form-label">Tiền trừ (VNĐ)</label>
-						<input type="number" step="1000" class="form-control" id="pd_Subtract">
-					</div>
-					<div class="mb-2">
-						<label class="form-label">Tiền thưởng (VNĐ)</label>
-						<input type="number" step="1000" class="form-control" id="pd_Bonus">
-					</div>
-					<div class="mb-2">
-						<label class="form-label">Tổng lương (VNĐ)</label>
-						<input type="number" step="1000" class="form-control" id="pd_Totalsalary">
-					</div>
-					<div class="mb-2">
-						<label class="form-label">Ghi chú</label>
-						<textarea class="form-control" id="pd_Note"></textarea>
-					</div>
-				</form>
-			</div>
-			<div class="modal-footer">
-				<button class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-				<button class="btn btn-success" onclick="savePayrollDetail()">Lưu thay đổi</button>
-			</div>
-		</div>
-	</div>
+<div class="payroll-detail-container">
+    <!-- Header Section -->
+    <div class="page-header">
+        <div class="header-content">
+            <h1 class="page-title">
+                <i class="fas fa-file-invoice-dollar"></i>
+                Chi tiết Bảng lương
+            </h1>
+            <p class="page-subtitle">
+                Tháng <span id="payrollMonth" class="fw-bold text-primary">--</span> /
+                <span id="payrollYear" class="fw-bold text-primary">--</span>
+            </p>
+        </div>
+        <div class="header-actions">
+            <button class="btn btn-outline-primary" id="exportPayrollBtn">
+                <i class="fas fa-download"></i>
+                Xuất Excel
+            </button>
+            <button class="btn btn-outline-secondary" id="printPayrollBtn">
+                <i class="fas fa-print"></i>
+                In bảng lương
+            </button>
+            <a href="/Payroll" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i>
+                Quay lại
+            </a>
+        </div>
+    </div>
+
+    <!-- Summary Stats -->
+    <div class="payroll-summary">
+        <div class="stat-card primary">
+            <div class="stat-icon">
+                <i class="fas fa-users"></i>
+            </div>
+            <div class="stat-content">
+                <div class="stat-number" id="totalEmployees">0</div>
+                <div class="stat-label">Tổng nhân viên</div>
+            </div>
+        </div>
+        <div class="stat-card success">
+            <div class="stat-icon">
+                <i class="fas fa-money-bill-wave"></i>
+            </div>
+            <div class="stat-content">
+                <div class="stat-number" id="totalSalary">0</div>
+                <div class="stat-label">Tổng lương (VNĐ)</div>
+            </div>
+        </div>
+        <div class="stat-card warning">
+            <div class="stat-icon">
+                <i class="fas fa-gift"></i>
+            </div>
+            <div class="stat-content">
+                <div class="stat-number" id="totalBonus">0</div>
+                <div class="stat-label">Tổng thưởng (VNĐ)</div>
+            </div>
+        </div>
+        <div class="stat-card danger">
+            <div class="stat-icon">
+                <i class="fas fa-minus-circle"></i>
+            </div>
+            <div class="stat-content">
+                <div class="stat-number" id="totalDeduction">0</div>
+                <div class="stat-label">Tổng trừ (VNĐ)</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter and Search -->
+    <div class="content-card">
+        <div class="card-header">
+            <h3><i class="fas fa-search"></i> Tìm kiếm và Lọc</h3>
+        </div>
+        <div class="filter-section">
+            <div class="search-group">
+                <label for="employeeSearch">Tìm nhân viên:</label>
+                <div class="search-input-group">
+                    <input type="text" id="employeeSearch" class="form-control"
+                           placeholder="Nhập tên nhân viên...">
+                    <button class="search-btn" id="searchBtn">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="filter-group">
+                <label for="departmentFilter">Bộ phận:</label>
+                <select class="form-select" id="departmentFilter">
+                    <option value="">Tất cả bộ phận</option>
+                    <option value="Bếp">Bếp</option>
+                    <option value="Phục vụ">Phục vụ</option>
+                    <option value="Quản lý">Quản lý</option>
+                    <option value="Thu ngân">Thu ngân</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="sortBy">Sắp xếp theo:</label>
+                <select class="form-select" id="sortBy">
+                    <option value="name">Tên A-Z</option>
+                    <option value="salary">Lương cao-thấp</option>
+                    <option value="days">Ngày làm nhiều-ít</option>
+                    <option value="bonus">Thưởng cao-thấp</option>
+                </select>
+            </div>
+            <button class="btn btn-outline-secondary" id="resetFilters">
+                <i class="fas fa-times"></i>
+                Xóa lọc
+            </button>
+        </div>
+    </div>
+
+    <!-- Employee Payroll Grid -->
+    <div class="content-card">
+        <div class="card-header">
+            <h3><i class="fas fa-table"></i> Chi tiết lương nhân viên</h3>
+            <div class="view-controls">
+                <button class="btn btn-sm btn-outline-primary" id="gridViewBtn">
+                    <i class="fas fa-th"></i>
+                    Lưới
+                </button>
+                <button class="btn btn-sm btn-outline-primary" id="listViewBtn">
+                    <i class="fas fa-list"></i>
+                    Danh sách
+                </button>
+            </div>
+        </div>
+        <div class="payroll-content">
+            <div id="payrollGrid" class="payroll-grid"></div>
+            <div id="payrollList" class="payroll-list" style="display: none;">
+                <div class="table-responsive">
+                    <table class="table table-hover payroll-table">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Nhân viên</th>
+                                <th>Chức vụ</th>
+                                <th class="text-center">Ngày làm</th>
+                                <th class="text-center">Giờ làm</th>
+                                <th class="text-center">Nghỉ</th>
+                                <th class="text-center">Muộn</th>
+                                <th class="text-end">Lương cơ bản</th>
+                                <th class="text-end">Thưởng</th>
+                                <th class="text-end">Trừ</th>
+                                <th class="text-end">Tổng lương</th>
+                                <th class="text-center">Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody id="payrollTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination-container">
+        <nav aria-label="Payroll pagination">
+            <ul class="pagination justify-content-center" id="payrollPagination"></ul>
+        </nav>
+        <div class="pagination-info">
+            <span id="paginationInfo">Hiển thị 0 - 0 của 0 nhân viên</span>
+        </div>
+    </div>
 </div>
 
-<script src="~/js/payrolldetail.js"></script>
+<!-- Enhanced Payroll Detail Modal -->
+<div class="modal fade" id="payrollDetailModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title">
+                    <i class="fas fa-user-edit"></i>
+                    Chi tiết lương: <span id="payrollModalStaffName"></span>
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="payrollDetailForm">
+                    <input type="hidden" id="pd_IdPayroll">
+                    <input type="hidden" id="pd_IdStaff">
+
+                    <!-- Employee Info Section -->
+                    <div class="employee-info-section">
+                        <h6><i class="fas fa-user"></i> Thông tin nhân viên</h6>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="info-item">
+                                    <label>Họ tên:</label>
+                                    <span id="employeeName" class="fw-bold"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="info-item">
+                                    <label>Chức vụ:</label>
+                                    <span id="employeePosition" class="badge bg-secondary"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Work Details Section -->
+                    <div class="work-details-section">
+                        <h6><i class="fas fa-clock"></i> Chi tiết công việc</h6>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Số ngày làm việc</label>
+                                    <input type="number" class="form-control" id="pd_Days" min="0" max="31">
+                                    <small class="form-text text-muted">Số ngày thực tế làm việc trong tháng</small>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Tổng số giờ</label>
+                                    <input type="number" step="0.5" class="form-control" id="pd_Hours" min="0">
+                                    <small class="form-text text-muted">Tổng giờ làm việc (bao gồm tăng ca)</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Số lần nghỉ</label>
+                                    <input type="number" class="form-control" id="pd_Absencetimes" min="0">
+                                    <small class="form-text text-muted">Số lần nghỉ không phép</small>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Số lần đi muộn</label>
+                                    <input type="number" class="form-control" id="pd_Latetimes" min="0">
+                                    <small class="form-text text-muted">Số lần đến muộn</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Salary Calculation Section -->
+                    <div class="salary-calculation-section">
+                        <h6><i class="fas fa-calculator"></i> Tính toán lương</h6>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Tiền trừ (VNĐ)</label>
+                                    <input type="number" step="1000" class="form-control" id="pd_Subtract" min="0">
+                                    <small class="form-text text-muted">Tiền phạt, khấu trừ</small>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Tiền thưởng (VNĐ)</label>
+                                    <input type="number" step="1000" class="form-control" id="pd_Bonus" min="0">
+                                    <small class="form-text text-muted">Thưởng hiệu suất, lễ tết</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Tổng lương thực nhận (VNĐ)</label>
+                            <input type="number" step="1000" class="form-control total-salary-input" id="pd_Totalsalary" readonly>
+                            <small class="form-text text-muted">Lương sau khi tính thưởng phạt</small>
+                        </div>
+                    </div>
+
+                    <!-- Notes Section -->
+                    <div class="notes-section">
+                        <h6><i class="fas fa-sticky-note"></i> Ghi chú</h6>
+                        <div class="form-group">
+                            <textarea class="form-control" id="pd_Note" rows="3"
+                                      placeholder="Ghi chú thêm về lương tháng này..."></textarea>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times"></i>
+                    Hủy
+                </button>
+                <button class="btn btn-warning" id="calculateSalaryBtn">
+                    <i class="fas fa-calculator"></i>
+                    Tính lại lương
+                </button>
+                <button class="btn btn-success" onclick="payrollDetailManager.savePayrollDetail()">
+                    <i class="fas fa-save"></i>
+                    Lưu thay đổi
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Loading Overlay -->
+<div id="loadingOverlay" class="loading-overlay" style="display: none;">
+    <div class="loading-content">
+        <div class="loading-spinner"></div>
+        <p>Đang tải dữ liệu...</p>
+    </div>
+</div>
+@section Styles {
+    <link href="~/css/payroll-detail.css" rel="stylesheet" />
+}
+
+<script src="~/js/payrolldetail-enhanced.js"></script>

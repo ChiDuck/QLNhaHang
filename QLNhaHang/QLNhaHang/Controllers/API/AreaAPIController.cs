@@ -17,17 +17,26 @@ namespace QLNhaHang.Controllers.API
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Area>>> GetAllAreas()
-        {
-            try
-            {
-                return await db.Areas.ToListAsync();
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Lỗi server: {ex.Message}");
-            }
-        }
+		public async Task<IActionResult> GetAllAreas()
+		{
+			try
+			{
+				var areas = await db.Areas
+					.Select(a => new
+					{
+						a.IdArea,
+						a.Name,
+						TableCount = a.Dinetables.Count
+					})
+					.ToListAsync();
+
+				return Ok(areas);
+			}
+			catch (Exception ex)
+			{
+				return StatusCode(500, $"Lỗi server: {ex.Message}");
+			}
+		}
 
         // GET: api/areaapi/5
         [HttpGet("{id}")]

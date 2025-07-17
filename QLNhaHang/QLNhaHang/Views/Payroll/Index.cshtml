@@ -1,12 +1,105 @@
-﻿<h4>Danh sách bảng lương</h4>
-<table class="table">
-    <thead>
-        <tr>
-            <th>Tháng</th>
-            <th>Năm</th>
-            <th>Hành động</th>
-        </tr>
-    </thead>
-    <tbody id="payrollList"></tbody>
-</table>
-<script src="~/js/payroll.js"></script>
+﻿@{
+    ViewData["Title"] = "Bảng lương";
+}
+
+<div class="payroll-container">
+    <div class="page-header">
+        <div class="header-content">
+            <h1 class="page-title">
+                <i class="fas fa-money-check-alt"></i>
+                Quản lý bảng lương
+            </h1>
+            <p class="page-subtitle">Theo dõi và quản lý bảng lương nhân viên</p>
+        </div>
+        <div class="header-actions">
+            <button class="btn btn-primary" onclick="createNewPayroll()">
+                <i class="fas fa-plus"></i>
+                Tạo bảng lương mới
+            </button>
+        </div>
+    </div>
+
+    <div class="content-card">
+        <div class="card-header">
+            <div class="filter-section">
+                <select class="filter-select" id="yearFilter">
+                    <option value="">Tất cả năm</option>
+                </select>
+                <select class="filter-select" id="monthFilter">
+                    <option value="">Tất cả tháng</option>
+                    <option value="1">Tháng 1</option>
+                    <option value="2">Tháng 2</option>
+                    <option value="3">Tháng 3</option>
+                    <option value="4">Tháng 4</option>
+                    <option value="5">Tháng 5</option>
+                    <option value="6">Tháng 6</option>
+                    <option value="7">Tháng 7</option>
+                    <option value="8">Tháng 8</option>
+                    <option value="9">Tháng 9</option>
+                    <option value="10">Tháng 10</option>
+                    <option value="11">Tháng 11</option>
+                    <option value="12">Tháng 12</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="payroll-stats">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-file-invoice-dollar"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-number" id="totalPayrolls">0</div>
+                    <div class="stat-label">Tổng bảng lương</div>
+                </div>
+            </div>
+            <div class="stat-card success">
+                <div class="stat-icon">
+                    <i class="fas fa-calendar-check"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-number" id="currentMonth">--</div>
+                    <div class="stat-label">Tháng hiện tại</div>
+                </div>
+            </div>
+            <div class="stat-card info">
+                <div class="stat-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-number" id="totalEmployees">0</div>
+                    <div class="stat-label">Tổng nhân viên</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="payroll-grid" id="payrollGrid">
+            <!-- Grid items will be rendered here -->
+        </div>
+
+        <div class="loading-state" id="loadingState">
+            <div class="loading-spinner"></div>
+            <p>Đang tải dữ liệu...</p>
+        </div>
+
+        <div class="empty-state" id="emptyState" style="display: none;">
+            <div class="empty-icon">
+                <i class="fas fa-file-invoice"></i>
+            </div>
+            <h3>Chưa có bảng lương nào</h3>
+            <p>Hãy tạo bảng lương đầu tiên</p>
+            <button class="btn btn-primary" onclick="createNewPayroll()">
+                <i class="fas fa-plus"></i>
+                Tạo bảng lương mới
+            </button>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <link href="~/css/payroll.css" rel="stylesheet" />
+}
+
+@section Scripts {
+    <script src="~/js/payroll.js"></script>
+}
