@@ -9,30 +9,31 @@
             <h1 class="page-title">
                 <i class="fas fa-file-invoice-dollar"></i>
                 Chi tiết Bảng lương
-            </h1>
-            <p class="page-subtitle">
-                Tháng <span id="payrollMonth" class="fw-bold text-primary">--</span> /
-                <span id="payrollYear" class="fw-bold text-primary">--</span>
-            </p>
-        </div>
-        <div class="header-actions">
-            <button class="btn btn-outline-primary" id="exportPayrollBtn">
+			</h1> 
+            <div class="header-actions">
+				@*             <button class="btn btn-outline-primary" id="exportPayrollBtn">
                 <i class="fas fa-download"></i>
                 Xuất Excel
-            </button>
-            <button class="btn btn-outline-secondary" id="printPayrollBtn">
-                <i class="fas fa-print"></i>
-                In bảng lương
-            </button>
-            <a href="/Payroll" class="btn btn-secondary">
-                <i class="fas fa-arrow-left"></i>
-                Quay lại
-            </a>
+            </button> *@
+				<button class="btn btn-outline-secondary btn-print" id="printPayrollBtn">
+					<i class="fas fa-print"></i>
+					In bảng lương
+				</button>
+				<a href="/Payroll" class="btn btn-secondary">
+					<i class="fas fa-arrow-left"></i>
+					Quay lại
+				</a>
+			</div>
+            
         </div>
+		<p class="page-subtitle">
+			Tháng <span id="payrollMonth" class="fw-bold">--</span> /
+			<span id="payrollYear" class="fw-bold">--</span>
+		</p>
     </div>
 
     <!-- Summary Stats -->
-    <div class="payroll-summary">
+@*     <div class="payroll-summary">
         <div class="stat-card primary">
             <div class="stat-icon">
                 <i class="fas fa-users"></i>
@@ -70,15 +71,11 @@
             </div>
         </div>
     </div>
-
+ *@
     <!-- Filter and Search -->
     <div class="content-card">
-        <div class="card-header">
-            <h3><i class="fas fa-search"></i> Tìm kiếm và Lọc</h3>
-        </div>
         <div class="filter-section">
             <div class="search-group">
-                <label for="employeeSearch">Tìm nhân viên:</label>
                 <div class="search-input-group">
                     <input type="text" id="employeeSearch" class="form-control"
                            placeholder="Nhập tên nhân viên...">
@@ -87,8 +84,7 @@
                     </button>
                 </div>
             </div>
-            <div class="filter-group">
-                <label for="departmentFilter">Bộ phận:</label>
+           @*  <div class="filter-group">
                 <select class="form-select" id="departmentFilter">
                     <option value="">Tất cả bộ phận</option>
                     <option value="Bếp">Bếp</option>
@@ -98,14 +94,13 @@
                 </select>
             </div>
             <div class="filter-group">
-                <label for="sortBy">Sắp xếp theo:</label>
                 <select class="form-select" id="sortBy">
                     <option value="name">Tên A-Z</option>
                     <option value="salary">Lương cao-thấp</option>
                     <option value="days">Ngày làm nhiều-ít</option>
                     <option value="bonus">Thưởng cao-thấp</option>
                 </select>
-            </div>
+            </div> *@
             <button class="btn btn-outline-secondary" id="resetFilters">
                 <i class="fas fa-times"></i>
                 Xóa lọc
@@ -120,11 +115,9 @@
             <div class="view-controls">
                 <button class="btn btn-sm btn-outline-primary" id="gridViewBtn">
                     <i class="fas fa-th"></i>
-                    Lưới
                 </button>
                 <button class="btn btn-sm btn-outline-primary" id="listViewBtn">
                     <i class="fas fa-list"></i>
-                    Danh sách
                 </button>
             </div>
         </div>

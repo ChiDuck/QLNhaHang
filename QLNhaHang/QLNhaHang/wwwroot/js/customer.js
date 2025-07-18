@@ -8,7 +8,7 @@ async function getAllCustomers() {
         if (!response.ok) throw new Error("Lấy danh sách khách hàng thất bại.")
         customerlist = await response.json()
         loadCustomers()
-        updateStats()
+       // updateStats()
         console.log(customerlist)
     } catch (error) {
         console.error("Error:", error)

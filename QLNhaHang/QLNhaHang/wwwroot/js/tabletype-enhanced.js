@@ -12,7 +12,7 @@ class TabletypeManager {
   async init() {
     await this.loadInitialData()
     this.setupEventListeners()
-    this.updateStats()
+   // this.updateStats()
     this.renderTypes()
   }
 
@@ -44,7 +44,7 @@ class TabletypeManager {
       })
 
     // Filter functionality
-    ;["seatsFilter", "sortBy"].forEach((id) => {
+    ;["seatsFilter"].forEach((id) => {
       document.getElementById(id).addEventListener("change", () => {
         this.filterTypes()
       })
@@ -77,7 +77,7 @@ class TabletypeManager {
   filterTypes() {
     const searchTerm = document.getElementById("searchInput").value.toLowerCase()
     const seatsFilter = document.getElementById("seatsFilter").value
-    const sortBy = document.getElementById("sortBy").value
+  //  const sortBy = document.getElementById("sortBy").value
 
     this.filteredTypes = this.types.filter((type) => {
       const matchesSearch = type.name.toLowerCase().includes(searchTerm)
@@ -104,18 +104,18 @@ class TabletypeManager {
     })
 
     // Sort results
-    this.filteredTypes.sort((a, b) => {
-      switch (sortBy) {
-        case "name":
-          return a.name.localeCompare(b.name)
-        case "seats":
-          return b.seats - a.seats
-        case "usage":
-          return b.usageCount - a.usageCount
-        default:
-          return 0
-      }
-    })
+    //this.filteredTypes.sort((a, b) => {
+    //  switch (sortBy) {
+    //    case "name":
+    //      return a.name.localeCompare(b.name)
+    //    case "seats":
+    //      return b.seats - a.seats
+    //    case "usage":
+    //      return b.usageCount - a.usageCount
+    //    default:
+    //      return 0
+    //  }
+    //})
 
     this.renderTypes()
   }
@@ -170,28 +170,13 @@ class TabletypeManager {
                     </div>
                     <div class="type-seats">${type.seats} ghế</div>
                 </div>
-                <div class="type-description">
-                    ${type.description || "Không có mô tả"}
-                </div>
-                <div class="type-info">
-                    <div class="info-row">
-                        <span><i class="fas fa-chair"></i> Số bàn sử dụng:</span>
-                        <strong>${type.usageCount}</strong>
-                    </div>
-                    <div class="info-row">
-                        <span><i class="fas fa-percentage"></i> Tỷ lệ sử dụng:</span>
-                        <strong>${type.usagePercentage.toFixed(1)}%</strong>
-                    </div>
-                    <div class="usage-bar">
-                        <div class="usage-fill" style="width: ${type.usagePercentage}%"></div>
-                    </div>
                 </div>
                 <div class="type-actions">
                     <button class="btn btn-sm btn-outline-primary" onclick="tabletypeManager.showEditForm(${type.idTabletype})">
-                        <i class="fas fa-edit"></i> Sửa
+                        <i class="fas fa-edit"></i>
                     </button>
                     <button class="btn btn-sm btn-outline-danger" onclick="tabletypeManager.showDeleteModal(${type.idTabletype}, '${type.name}', ${type.usageCount})">
-                        <i class="fas fa-trash"></i> Xóa
+                        <i class="fas fa-trash"></i>
                     </button>
                 </div>
             `
@@ -228,10 +213,6 @@ class TabletypeManager {
                     </div>
                 </td>
                 <td>${type.seats}</td>
-                <td>${type.usageCount}</td>
-                <td>
-                    <span class="usage-badge ${usageLevel}">${type.usagePercentage.toFixed(1)}%</span>
-                </td>
                 <td>
                     <div class="btn-group" role="group">
                         <button class="btn btn-sm btn-outline-primary" onclick="tabletypeManager.showEditForm(${type.idTabletype})">
@@ -268,7 +249,7 @@ class TabletypeManager {
   showAddForm() {
     document.getElementById("tabletypeModalTitle").innerHTML = '<i class="fas fa-layer-group"></i> Thêm loại bàn'
     this.resetForm()
-    window.bootstrap.Modal(document.getElementById("tabletypeModal")).show()
+    new bootstrap.Modal(document.getElementById("tabletypeModal")).show()
   }
 
   async showEditForm(id) {
@@ -280,11 +261,11 @@ class TabletypeManager {
       document.getElementById("tabletypeId").value = type.idTabletype
       document.getElementById("tabletypeName").value = type.name
       document.getElementById("tabletypeSeats").value = type.seats
-      document.getElementById("tabletypeDescription").value = type.description || ""
-      document.getElementById("tabletypeColor").value = type.color || "#667eea"
-      document.getElementById("tabletypeOrder").value = type.displayOrder || 1
+      //document.getElementById("tabletypeDescription").value = type.description || ""
+      //document.getElementById("tabletypeColor").value = type.color || "#667eea"
+      //document.getElementById("tabletypeOrder").value = type.displayOrder || 1
 
-      window.bootstrap.Modal(document.getElementById("tabletypeModal")).show()
+      new bootstrap.Modal(document.getElementById("tabletypeModal")).show()
     } catch (error) {
       this.showError("Lỗi khi tải thông tin loại bàn: " + error.message)
     }
@@ -304,7 +285,7 @@ class TabletypeManager {
       warningDiv.style.display = "none"
     }
 
-    window.bootstrap.Modal(document.getElementById("deleteModal")).show()
+    new bootstrap.Modal(document.getElementById("deleteModal")).show()
   }
 
   async submitForm() {
@@ -313,9 +294,9 @@ class TabletypeManager {
         IdTabletype: Number.parseInt(document.getElementById("tabletypeId").value) || 0,
         Name: document.getElementById("tabletypeName").value.trim(),
         Seats: Number.parseInt(document.getElementById("tabletypeSeats").value),
-        Description: document.getElementById("tabletypeDescription").value.trim(),
-        Color: document.getElementById("tabletypeColor").value,
-        DisplayOrder: Number.parseInt(document.getElementById("tabletypeOrder").value),
+      //  Description: document.getElementById("tabletypeDescription").value.trim(),
+      //  Color: document.getElementById("tabletypeColor").value,
+      //  DisplayOrder: Number.parseInt(document.getElementById("tabletypeOrder").value),
       }
 
       // Validation
@@ -345,7 +326,7 @@ class TabletypeManager {
         this.showSuccess(isEdit ? "Cập nhật loại bàn thành công!" : "Thêm loại bàn mới thành công!")
         window.bootstrap.Modal.getInstance(document.getElementById("tabletypeModal")).hide()
         await this.loadInitialData()
-        this.updateStats()
+       // this.updateStats()
         this.renderTypes()
       } else {
         const error = await response.text()
@@ -367,7 +348,7 @@ class TabletypeManager {
         this.showSuccess("Xóa loại bàn thành công!")
         window.bootstrap.Modal.getInstance(document.getElementById("deleteModal")).hide()
         await this.loadInitialData()
-        this.updateStats()
+      //  this.updateStats()
         this.renderTypes()
       } else {
         const error = await response.text()
@@ -381,8 +362,8 @@ class TabletypeManager {
   resetForm() {
     document.getElementById("tabletypeForm").reset()
     document.getElementById("tabletypeId").value = ""
-    document.getElementById("tabletypeColor").value = "#667eea"
-    document.getElementById("tabletypeOrder").value = "1"
+  //  document.getElementById("tabletypeColor").value = "#667eea"
+  //  document.getElementById("tabletypeOrder").value = "1"
   }
 
   async exportData() {

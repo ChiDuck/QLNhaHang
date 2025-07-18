@@ -1,48 +1,50 @@
 ﻿@{
-    ViewData["Title"] = "Kho";
+	ViewData["Title"] = "Kho";
 }
 
 <div class="inventory-container">
-    <div class="page-header">
-        <div class="header-content">
-            <h1 class="page-title">
-                <i class="fas fa-warehouse"></i>
-                Quản lý kho nguyên liệu
-            </h1>
-            <p class="page-subtitle">Theo dõi và quản lý nguyên liệu trong kho</p>
-        </div>
-        <div class="header-actions">
-            <button class="btn btn-primary" onclick="showAddForm()">
-                <i class="fas fa-plus"></i>
-                Thêm nguyên liệu
-            </button>
-        </div>
-    </div>
+	<!-- Header Section -->
+	<div class="page-header">
+		<div class="header-content">
+			<div class="header-info">
+				<h1 class="page-title">
+					<i class="fas fa-warehouse"></i>
+					Quản lý kho nguyên liệu
+				</h1>
+			</div>
+			<button class="btn btn-primary btn-add-item" onclick="showAddForm()">
+				<i class="fas fa-plus"></i>
+				Thêm nguyên liệu
+			</button>
+		</div>
+	</div>
 
-    <div class="content-card">
-        <div class="card-header">
-            <div class="search-section">
-                <div class="search-box">
-                    <i class="fas fa-search search-icon"></i>
-                    <input type="text" id="inventorySearchInput" class="search-input" placeholder="Tìm nguyên liệu theo tên...">
-                    <button class="search-btn" onclick="searchInventoryItems()">
-                        <i class="fas fa-search"></i>
-                    </button>
-                </div>
-            </div>
-            <div class="filter-section">
-                <select class="filter-select" id="typeFilter">
-                    <option value="">Tất cả loại</option>
-                </select>
-                <select class="filter-select" id="statusFilter">
-                    <option value="">Tất cả trạng thái</option>
-                    <option value="low">Sắp hết</option>
-                    <option value="normal">Bình thường</option>
-                </select>
-            </div>
-        </div>
+	<div class="search-section">
+		<div class="search-filters">
+			<div class="search-container">
+				<div class="search-input-wrapper">
+					<i class="fas fa-search search-icon"></i>
+					<input type="text" id="inventorySearchInput" class="search-input" placeholder="Tìm nguyên liệu theo tên...">
+					<button class="search-btn" onclick="searchInventoryItems()">
+						<i class="fas fa-search"></i>
+					</button>
+				</div>
+			</div>
+			<div class="filter-section">
+				<select class="filter-select" id="typeFilter">
+					<option value="">Tất cả loại</option>
+				</select>
+			</div>
+			<button class="refresh-btn" id="refreshData">
+				<i class="fas fa-sync-alt"></i>
+				Làm mới
+			</button>
+		</div>
+	</div>
 
-        <div class="inventory-stats">
+
+	<div class="content-card">
+		@*         <div class="inventory-stats">
             <div class="stat-card">
                 <div class="stat-icon">
                     <i class="fas fa-boxes"></i>
@@ -71,105 +73,105 @@
                 </div>
             </div>
         </div>
+ *@
+		<div class="inventory-grid" id="inventoryGrid">
+			<!-- Grid items will be rendered here -->
+		</div>
 
-        <div class="inventory-grid" id="inventoryGrid">
-            <!-- Grid items will be rendered here -->
-        </div>
+		<div class="loading-state" id="loadingState">
+			<div class="loading-spinner"></div>
+			<p>Đang tải dữ liệu...</p>
+		</div>
 
-        <div class="loading-state" id="loadingState">
-            <div class="loading-spinner"></div>
-            <p>Đang tải dữ liệu...</p>
-        </div>
-
-        <div class="empty-state" id="emptyState" style="display: none;">
-            <div class="empty-icon">
-                <i class="fas fa-box-open"></i>
-            </div>
-            <h3>Chưa có nguyên liệu nào</h3>
-            <p>Hãy thêm nguyên liệu đầu tiên vào kho</p>
-            <button class="btn btn-primary" onclick="showAddForm()">
-                <i class="fas fa-plus"></i>
-                Thêm nguyên liệu
-            </button>
-        </div>
-    </div>
+		<div class="empty-state" id="emptyState" style="display: none;">
+			<div class="empty-icon">
+				<i class="fas fa-box-open"></i>
+			</div>
+			<h3>Chưa có nguyên liệu nào</h3>
+			<p>Hãy thêm nguyên liệu đầu tiên vào kho</p>
+			<button class="btn btn-primary" onclick="showAddForm()">
+				<i class="fas fa-plus"></i>
+				Thêm nguyên liệu
+			</button>
+		</div>
+	</div>
 </div>
 
 <!-- Modal chỉnh sửa -->
 <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="modalLabel">
-                    <i class="fas fa-edit"></i>
-                    Chỉnh sửa nguyên liệu
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
-            </div>
-            <div class="modal-body">
-                <form id="inventoryForm">
-                    <input type="hidden" id="itemId">
-                    
-                    <div class="form-group">
-                        <label for="itemName" class="form-label">
-                            <i class="fas fa-tag"></i>
-                            Tên nguyên liệu
-                        </label>
-                        <input type="text" class="form-control" id="itemName" required>
-                        <div class="invalid-feedback" id="validateName">Tên không được để trống!</div>
-                    </div>
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="modalLabel">
+					<i class="fas fa-edit"></i>
+					Chỉnh sửa nguyên liệu
+				</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+			</div>
+			<div class="modal-body">
+				<form id="inventoryForm">
+					<input type="hidden" id="itemId">
 
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="itemUnit" class="form-label">
-                                    <i class="fas fa-balance-scale"></i>
-                                    Đơn vị
-                                </label>
-                                <input type="text" class="form-control" id="itemUnit" required>
-                                <div class="invalid-feedback" id="validateUnit">Đơn vị không được để trống!</div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="itemAmount" class="form-label">
-                                    <i class="fas fa-sort-numeric-up"></i>
-                                    Số lượng
-                                </label>
-                                <input type="number" class="form-control" id="itemAmount" min="0" step="0.1">
-                            </div>
-                        </div>
-                    </div>
+					<div class="form-group">
+						<label for="itemName" class="form-label">
+							<i class="fas fa-tag"></i>
+							Tên nguyên liệu
+						</label>
+						<input type="text" class="form-control" id="itemName" required>
+						<div class="invalid-feedback" id="validateName">Tên không được để trống!</div>
+					</div>
 
-                    <div class="form-group">
-                        <label for="itemType" class="form-label">
-                            <i class="fas fa-layer-group"></i>
-                            Loại nguyên liệu
-                        </label>
-                        <select class="form-select" id="itemType" required>
-                            <!-- Options will be loaded dynamically -->
-                        </select>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                    <i class="fas fa-times"></i>
-                    Hủy
-                </button>
-                <button type="button" class="btn btn-primary" onclick="updateInventoryitem()">
-                    <i class="fas fa-save"></i>
-                    Lưu thay đổi
-                </button>
-            </div>
-        </div>
-    </div>
+					<div class="row">
+						<div class="col-md-6">
+							<div class="form-group">
+								<label for="itemUnit" class="form-label">
+									<i class="fas fa-balance-scale"></i>
+									Đơn vị
+								</label>
+								<input type="text" class="form-control" id="itemUnit" required>
+								<div class="invalid-feedback" id="validateUnit">Đơn vị không được để trống!</div>
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="form-group">
+								<label for="itemAmount" class="form-label">
+									<i class="fas fa-sort-numeric-up"></i>
+									Số lượng
+								</label>
+								<input type="number" class="form-control" id="itemAmount" min="0" step="0.1">
+							</div>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label for="itemType" class="form-label">
+							<i class="fas fa-layer-group"></i>
+							Loại nguyên liệu
+						</label>
+						<select class="form-select" id="itemType" required>
+							<!-- Options will be loaded dynamically -->
+						</select>
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+					<i class="fas fa-times"></i>
+					Hủy
+				</button>
+				<button type="button" class="btn btn-primary" onclick="updateInventoryitem()">
+					<i class="fas fa-save"></i>
+					Lưu thay đổi
+				</button>
+			</div>
+		</div>
+	</div>
 </div>
 
 @section Styles {
-    <link href="~/css/inventoryitem.css" rel="stylesheet" />
+	<link href="~/css/inventoryitem.css" rel="stylesheet" />
 }
 
 @section Scripts {
-    <script src="~/js/inventoryitem.js"></script>
+	<script src="~/js/inventoryitem.js"></script>
 }

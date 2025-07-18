@@ -1,7 +1,7 @@
 .tabletype-container {
-  padding: 20px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  min-height: 100vh;
+    padding: 2rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
 }
 
 .tabletype-header {
@@ -16,29 +16,17 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 30px;
 }
 
-.page-title {
-  font-size: 2.5rem;
-  font-weight: 700;
-  color: #2c3e50;
-  margin: 0;
-  display: flex;
-  align-items: center;
-  gap: 15px;
-}
-
-.page-title i {
-  color: #667eea;
-}
-
-.page-subtitle {
-  color: #7f8c8d;
-  margin: 5px 0 0 0;
-  font-size: 1.1rem;
-}
-
+    .header-content h1 {
+        color: #2d3748;
+        font-size: 2rem;
+        font-weight: 700;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
 .add-btn {
   background: linear-gradient(45deg, #667eea, #764ba2);
   border: none;
@@ -167,7 +155,7 @@
   padding: 10px 15px;
   border: 2px solid #ecf0f1;
   border-radius: 8px;
-  min-width: 150px;
+  min-width: 180px;
   transition: all 0.3s ease;
 }
 

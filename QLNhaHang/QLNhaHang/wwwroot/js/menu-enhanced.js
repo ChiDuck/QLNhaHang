@@ -172,7 +172,7 @@ class MenuManager {
   }
 
   createDishCard(dish) {
-    const isFavorite = this.favorites.includes(dish.idDish)
+  // const isFavorite = this.favorites.includes(dish.idDish)
     const discountedPrice = dish.price - (dish.price * dish.discount) / 100
     const isListView = this.currentView === "list"
 
@@ -185,10 +185,7 @@ class MenuManager {
             ${dish.issoldout ? '<span class="dish-badge badge-soldout">Hết món</span>' : ""}
             ${dish.isNew ? '<span class="dish-badge badge-new">Mới</span>' : ""}
             ${dish.isPopular ? '<span class="dish-badge badge-popular">Phổ biến</span>' : ""}
-          </div>
-          <button class="dish-favorite ${isFavorite ? "active" : ""}" data-dish-id="${dish.idDish}">
-            <i class="fas fa-heart"></i>
-          </button>
+          </div>  
         </div>
         
         <div class="dish-content">

@@ -116,7 +116,7 @@ class ProfileManager {
       const reservations = reservationsResponse.ok ? await reservationsResponse.json() : []
       const orders = ordersResponse.ok ? await ordersResponse.json() : []
 
-      this.updateStats(reservations, orders)
+     // this.updateStats(reservations, orders)
       this.updateBadges(reservations, orders)
     } catch (error) {
       console.error("Error loading stats:", error)
@@ -369,26 +369,12 @@ class ProfileManager {
       <div class="item-card" onclick="profileManager.showReservationDetail(${reservation.id})">
         <div class="item-header">
           <div>
-            <div class="item-title">Bàn ${reservation.tableName || reservation.tableId}</div>
-            <div class="item-subtitle">${this.formatDate(reservation.date)} - ${reservation.time}</div>
+            <div class="item-title">${reservation.tableName || reservation.tableId}</div>
+            <div class="item-subtitle">${reservation.date} - ${reservation.time}</div>
           </div>
           <span class="item-status status-${this.getReservationStatus(reservation)}">
             ${this.getReservationStatusText(reservation)}
           </span>
-        </div>
-        <div class="item-details">
-          <div class="detail-item">
-            <i class="fas fa-users"></i>
-            <span>${reservation.partySize} người</span>
-          </div>
-          <div class="detail-item">
-            <i class="fas fa-map-marker-alt"></i>
-            <span>${reservation.areaName || "Khu vực chính"}</span>
-          </div>
-          <div class="detail-item">
-            <i class="fas fa-clock"></i>
-            <span>${reservation.duration || 2} giờ</span>
-          </div>
         </div>
         <div class="item-actions">
           <button class="btn modern-btn-outline btn-sm" onclick="event.stopPropagation(); profileManager.showReservationDetail(${reservation.id})">
@@ -435,7 +421,7 @@ class ProfileManager {
       container.innerHTML = this.createEmptyState("shopping-bag", "Không có đơn hàng", "Bạn chưa có đơn hàng nào")
       return
     }
-
+      console.log("Rendering orders:", orders)
     container.innerHTML = orders
       .map(
         (order) => `
@@ -443,7 +429,7 @@ class ProfileManager {
         <div class="item-header">
           <div>
             <div class="item-title">Đơn hàng #${order.id}</div>
-            <div class="item-subtitle">${this.formatDate(order.date)}</div>
+            <div class="item-subtitle">${order.date}</div>
           </div>
           <span class="item-status status-${this.getOrderStatus(order)}">
             ${this.getOrderStatusText(order)}
@@ -466,9 +452,6 @@ class ProfileManager {
         <div class="item-actions">
           <button class="btn modern-btn-outline btn-sm" onclick="event.stopPropagation(); profileManager.showOrderDetail(${order.id})">
             <i class="fas fa-eye me-1"></i>Chi tiết
-          </button>
-          <button class="btn modern-btn-primary btn-sm" onclick="event.stopPropagation(); profileManager.reorder(${order.id})">
-            <i class="fas fa-redo me-1"></i>Đặt lại
           </button>
         </div>
       </div>

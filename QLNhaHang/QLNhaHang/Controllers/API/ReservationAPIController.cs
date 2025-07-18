@@ -105,6 +105,7 @@ namespace QLNhaHang.Controllers.API
 				Reservationprice = res.Reservationprice,
 				Note = res.Note,
 				Transactionid = res.Transactionid,
+				IdReservationstatus = res.IdReservationstatus,
 				Status = res.IdReservationstatusNavigation?.Name,
 				CustomerName = res.IdCustomerNavigation?.Name,
 				TableName = res.IdDinetableNavigation?.Name,
@@ -263,7 +264,6 @@ namespace QLNhaHang.Controllers.API
 			}
 		}
 
-
 		[HttpPost("vnpay")]
 		public async Task<IActionResult> CreateVNPayReservation([FromBody] CreateReservationDto dto)
 		{
@@ -321,9 +321,8 @@ namespace QLNhaHang.Controllers.API
 				Note = dto.Note,
 				Transactionid = transactionId,
 				IdDinetable = availableTable.IdDinetable,
-				IdCustomer = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value)
+				IdCustomer = idCustomer
 			};
-			//Console.WriteLine(reservation);
 			db.Reservations.Add(reservation);
 			await db.SaveChangesAsync();
 

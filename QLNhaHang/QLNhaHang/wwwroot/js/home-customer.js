@@ -78,7 +78,7 @@ async function loadPopularDishes() {
       document.querySelectorAll(".dish-card-home").forEach((card, index) => {
         setTimeout(() => {
           card.classList.add("animate__animated", "animate__fadeInUp")
-        }, index * 100)
+        }, index * 50)
       })
     }, 100)
   } catch (error) {

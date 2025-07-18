@@ -9,16 +9,18 @@
         <div class="container">
             <div class="row justify-content-center text-center">
                 <div class="col-lg-8">
-                    <h1 class="hero-title animate__animated animate__fadeInUp">Chào mừng đến với Đức Phát</h1>
-                    <p class="hero-subtitle animate__animated animate__fadeInUp animate__delay-1s">
+                    <h1 class="hero-title animate__animated animate__fadeInUp" style="text-shadow: 2px 2px 6px #000;">
+                        Chào mừng đến với Đức Phát
+                    </h1>
+                    <p class="hero-subtitle animate__animated animate__fadeInUp animate__delay-1s" style="text-shadow: 2px 2px 6px #000;">
                         Trải nghiệm ẩm thực tuyệt vời với những món ăn được chế biến từ nguyên liệu tươi ngon nhất
                     </p>
                     <div class="hero-buttons animate__animated animate__fadeInUp animate__delay-2s">
                         <a href="@Url.Action("Menu", "Home")" class="btn btn-primary btn-lg me-3">
-                            <i class="fas fa-utensils me-2"></i>Xem thực đơn
+                            Xem thực đơn
                         </a>
                         <button class="btn btn-outline-light btn-lg book-now-btn">
-                            <i class="fas fa-calendar-check me-2"></i>Đặt bàn ngay
+                            Đặt bàn ngay
                         </button>
                     </div>
                 </div>
@@ -77,16 +79,10 @@
         <div class="row text-center mb-5">
             <div class="col-12">
                 <h2 class="section-title">Món ăn nổi bật</h2>
-                <p class="section-subtitle">Những món ăn được yêu thích nhất tại nhà hàng</p>
             </div>
         </div>
         <div class="row g-4" id="popularDishes">
             <!-- Popular dishes will be loaded here -->
-        </div>
-        <div class="text-center mt-4">
-            <a href="@Url.Action("Menu", "Home")" class="btn btn-primary btn-lg">
-                <i class="fas fa-eye me-2"></i>Xem tất cả món ăn
-            </a>
         </div>
     </div>
 </section>
@@ -111,17 +107,7 @@
     </div>
 </section>
 
-<!-- Special Dishes -->
-<section class="py-5 bg-light">
-    <div class="container">
-        <h2 class="text-center mb-5">Món ăn đặc biệt của chúng tôi</h2>
-        <div class="row">
-            <!-- Các món ăn sẽ được render ở đây -->
-        </div>
-    </div>
-</section>
-
-<!-- Modal 1: Chọn Ngày/Giờ/Số Người -->
+@* <!-- Modal 1: Chọn Ngày/Giờ/Số Người -->
 <div class="modal fade" id="bookingStep1Modal" data-bs-backdrop="static" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -297,27 +283,9 @@
         </div>
     </div>
 </div>
-
+ *@
 @section Styles {
     <style>
-        .hero-section {
-            position: relative;
-            padding: 5rem 0;
-            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('/images/restaurant-bg.jpg');
-            background-size: cover;
-            background-position: center;
-            color: white;
-        }
-
-        .hero-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-        }
-
         .hero-content {
             position: relative;
             z-index: 1;

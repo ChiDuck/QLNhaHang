@@ -22,8 +22,8 @@ class PayrollDetailManager {
       "input",
       this.debounce(() => this.handleSearch(), 300),
     )
-    document.getElementById("departmentFilter").addEventListener("change", () => this.applyFilters())
-    document.getElementById("sortBy").addEventListener("change", () => this.applySorting())
+  //  document.getElementById("departmentFilter").addEventListener("change", () => this.applyFilters())
+   // document.getElementById("sortBy").addEventListener("change", () => this.applySorting())
     document.getElementById("resetFilters").addEventListener("click", () => this.resetFilters())
 
     // View controls
@@ -31,7 +31,7 @@ class PayrollDetailManager {
     document.getElementById("listViewBtn").addEventListener("click", () => this.switchView("list"))
 
     // Header actions
-    document.getElementById("exportPayrollBtn").addEventListener("click", () => this.exportPayroll())
+   // document.getElementById("exportPayrollBtn").addEventListener("click", () => this.exportPayroll())
     document.getElementById("printPayrollBtn").addEventListener("click", () => this.printPayroll())
 
     // Modal actions
@@ -126,7 +126,7 @@ class PayrollDetailManager {
       this.filteredData = [...this.payrollData]
 
       this.updateHeader(data.month, data.year)
-      this.updateSummaryStats()
+     // this.updateSummaryStats()
       this.renderPayrollData()
       this.updatePagination()
 

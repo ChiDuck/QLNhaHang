@@ -24,26 +24,37 @@
 
 /* Header Styles */
 .page-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 2rem;
-  flex-wrap: wrap;
-  gap: 1rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 20px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    color: white;
+    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+}
+.header-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
 }
 
-.header-content h1.page-title {
-  font-size: 2.5rem;
-  font-weight: 700;
-  color: var(--primary-color);
-  margin: 0;
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
+.header-content h1 {
+    color: #2d3748;
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.header-content p {
+    color: #718096;
+    margin: 0.5rem 0 0 0;
+    font-size: 1.1rem;
 }
 
 .page-subtitle {
-  color: var(--text-muted);
   margin: 0.5rem 0 0 0;
   font-size: 1.2rem;
 }
@@ -64,6 +75,25 @@
   gap: 0.5rem;
 }
 
+.btn-print {
+    background: rgba(255, 255, 255, 0.2);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    transition: var(--transition);
+    backdrop-filter: blur(10px);
+    cursor: pointer;
+}
+
+    .btn-print:hover {
+        background: white;
+        color: var(--primary-color);
+        border-color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    }
 /* Summary Stats */
 .payroll-summary {
   display: grid;
@@ -410,10 +440,11 @@
 }
 
 .info-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0.5rem 0;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 0.5rem 0;
+    gap: 0.5em;
 }
 
 .info-item label {

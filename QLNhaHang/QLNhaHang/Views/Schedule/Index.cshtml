@@ -1,277 +1,276 @@
 ﻿@{
-    ViewData["Title"] = "Quản lý Thời gian biểu";
+	ViewData["Title"] = "Thời gian biểu";
 }
 
 <style>
-    #scheduleGrid td,
-    #scheduleGrid th {
-        min-width: 140px;
-        max-width: 140px;
-        width: 140px;
-        vertical-align: top;
-        padding: 4px;
-    }
+	#scheduleGrid td,
+	#scheduleGrid th {
+		min-width: 140px;
+		max-width: 140px;
+		width: 140px;
+		vertical-align: top;
+		padding: 4px;
+	}
 
-    #scheduleGrid td {
-        transition: background-color 0.2s ease;
-        cursor: pointer;
-    }
+	#scheduleGrid td {
+		transition: background-color 0.2s ease;
+		cursor: pointer;
+	}
 
-        #scheduleGrid td:hover {
-            background-color: #f0f8ff;
-            box-shadow: 0 0 6px rgba(0, 0, 0, 0.1);
-            z-index: 1;
-            position: relative;
-        }
+		#scheduleGrid td:hover {
+			background-color: #b8b8b8;
+			box-shadow: 0 0 6px rgba(0, 0, 0, 0.1);
+			z-index: 1;
+			position: relative;
+		}
 
-    .cell-highlight {
-        background-color: #fff !important;
-        font-weight: bold;
-        box-shadow: inset 0 0 0 2px #0d6efd;
-    }
+	.cell-highlight {
+		background-color: #fff !important;
+		font-weight: bold;
+		box-shadow: inset 0 0 0 2px #0d6efd;
+	}
 
-    .cell-muted {
-        background-color: #ccc !important;
-        opacity: 0.6;
-    }
+	.cell-muted {
+		background-color: #ccc !important;
+		opacity: 0.6;
+	}
 
-    .schedule-container {
-        display: flex;
-        flex-direction: column;
-    }
+	.schedule-container {
+		display: flex;
+		flex-direction: column;
+	}
 
-    .page-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 20px;
-    }
+	.page-header {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		margin-bottom: 20px;
+	}
 
-    .header-content {
-        flex: 1;
-    }
+	.header-content {
+		flex: 1;
+	}
 
-    .page-title {
-        display: flex;
-        align-items: center;
-    }
+	.page-title {
+		display: flex;
+		align-items: center;
+	}
 
-        .page-title i {
-            margin-right: 10px;
-        }
+		.page-title i {
+			margin-right: 10px;
+		}
 
-    .page-subtitle {
-        margin-top: 5px;
-    }
+	.page-subtitle {
+		margin-top: 5px;
+	}
 
-    .header-actions {
-        display: flex;
-        gap: 10px;
-    }
+	.header-actions {
+		display: flex;
+		gap: 10px;
+	}
 
-        .header-actions button {
-            display: flex;
-            align-items: center;
-        }
+		.header-actions button {
+			display: flex;
+			align-items: center;
+		}
 
-            .header-actions button i {
-                margin-right: 5px;
-            }
+			.header-actions button i {
+				margin-right: 5px;
+			}
 
-    .schedule-stats {
-        display: flex;
-        gap: 20px;
-        margin-bottom: 20px;
-    }
+	.schedule-stats {
+		display: flex;
+		gap: 20px;
+		margin-bottom: 20px;
+	}
 
-    .stat-card {
-        display: flex;
-        align-items: center;
-        padding: 10px;
-        border-radius: 5px;
-    }
+	.stat-card {
+		display: flex;
+		align-items: center;
+		padding: 10px;
+		border-radius: 5px;
+	}
 
-    .stat-icon {
-        margin-right: 10px;
-    }
+	.stat-icon {
+		margin-right: 10px;
+	}
 
-    .stat-content {
-        display: flex;
-        flex-direction: column;
-    }
+	.stat-content {
+		display: flex;
+		flex-direction: column;
+	}
 
-    .stat-number {
-        font-size: 24px;
-        font-weight: bold;
-    }
+	.stat-number {
+		font-size: 24px;
+		font-weight: bold;
+	}
 
-    .stat-label {
-        font-size: 14px;
-    }
+	.stat-label {
+		font-size: 14px;
+	}
 
-    .content-card {
-        margin-bottom: 20px;
-    }
+	.content-card {
+		margin-bottom: 20px;
+	}
 
-    .card-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 10px;
-        background-color: #f8f9fa;
-        border-bottom: 1px solid #dee2e6;
-    }
+	.card-header {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		padding: 10px;
+		background-color: #f8f9fa;
+		border-bottom: 1px solid #dee2e6;
+	}
 
-        .card-header h3 {
-            display: flex;
-            align-items: center;
-        }
+		.card-header h3 {
+			display: flex;
+			align-items: center;
+		}
 
-            .card-header h3 i {
-                margin-right: 10px;
-            }
+			.card-header h3 i {
+				margin-right: 10px;
+			}
 
-    .view-controls {
-        display: flex;
-        gap: 10px;
-    }
+	.view-controls {
+		display: flex;
+		gap: 10px;
+	}
 
-        .view-controls button {
-            display: flex;
-            align-items: center;
-        }
+		.view-controls button {
+			display: flex;
+			align-items: center;
+		}
 
-            .view-controls button i {
-                margin-right: 5px;
-            }
+			.view-controls button i {
+				margin-right: 5px;
+			}
 
-    .schedule-grid-container {
-        padding: 10px;
-    }
+	.schedule-grid-container {
+		padding: 10px;
+	}
 
-    .week-display-card {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 20px;
-    }
+	.week-display-card {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		margin-bottom: 20px;
+	}
 
-    .week-info {
-        flex: 1;
-    }
+	.week-info {
+		flex: 1;
+	}
 
-    .week-title {
-        font-size: 20px;
-        font-weight: bold;
-    }
+	.week-title {
+		font-size: 20px;
+		font-weight: bold;
+	}
 
-    .checkin-message {
-        margin-top: 5px;
-    }
+	.checkin-message {
+		margin-top: 5px;
+	}
 
-    .week-navigation {
-        display: flex;
-        gap: 10px;
-    }
+	.week-navigation {
+		display: flex;
+		gap: 10px;
+	}
 
-        .week-navigation button {
-            display: flex;
-            align-items: center;
-        }
+		.week-navigation button {
+			display: flex;
+			align-items: center;
+		}
 
-            .week-navigation button i {
-                margin-left: 5px;
-            }
+			.week-navigation button i {
+				margin-left: 5px;
+			}
 
-    .modal-header.bg-primary.text-white {
-        background-color: #0d6efd !important;
-        color: white !important;
-    }
+	.modal-header.bg-primary.text-white {
+		background-color: #0d6efd !important;
+		color: white !important;
+	}
 
-        .modal-header.bg-primary.text-white h5 {
-            margin: 0;
-        }
+		.modal-header.bg-primary.text-white h5 {
+			margin: 0;
+		}
 
-        .modal-header.bg-primary.text-white .btn-close {
-            color: white !important;
-        }
+		.modal-header.bg-primary.text-white .btn-close {
+			color: white !important;
+		}
 
-    .shift-info-section {
-        margin-bottom: 20px;
-    }
+	.shift-info-section {
+		margin-bottom: 20px;
+	}
 
-    .info-card {
-        margin-bottom: 10px;
-    }
+	.info-card {
+		margin-bottom: 10px;
+	}
 
-    .staff-list-section {
-        margin-bottom: 20px;
-    }
+	.staff-list-section {
+		margin-bottom: 20px;
+	}
 
-    .section-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 10px;
-    }
+	.section-header {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		margin-bottom: 10px;
+	}
 
-        .section-header h6 {
-            display: flex;
-            align-items: center;
-        }
+		.section-header h6 {
+			display: flex;
+			align-items: center;
+		}
 
-            .section-header h6 i {
-                margin-right: 10px;
-            }
+			.section-header h6 i {
+				margin-right: 10px;
+			}
 
-    .search-input-group {
-        display: flex;
-        gap: 10px;
-    }
+	.search-input-group {
+		display: flex;
+		gap: 10px;
+	}
 
-        .search-input-group button {
-            display: flex;
-            align-items: center;
-        }
+		.search-input-group button {
+			display: flex;
+			align-items: center;
+		}
 
-            .search-input-group button i {
-                margin-left: 5px;
-            }
+			.search-input-group button i {
+				margin-left: 5px;
+			}
 
-    .search-results {
-        max-height: 200px;
-        overflow-y: auto;
-    }
+	.search-results {
+		max-height: 200px;
+		overflow-y: auto;
+	}
 
-    .selected-staff-preview {
-        margin-bottom: 10px;
-    }
+	.selected-staff-preview {
+		margin-bottom: 10px;
+	}
 </style>
 
 <div class="schedule-container">
-    <!-- Header Section -->
-    <div class="page-header">
-        <div class="header-content">
-            <h1 class="page-title">
-                <i class="fas fa-calendar-alt"></i>
-                Quản lý Thời gian biểu
-            </h1>
-            <p class="page-subtitle">Quản lý lịch làm việc và chấm công nhân viên</p>
-        </div>
-        <div class="header-actions">
-            <button class="btn btn-success" id="checkinButton">
-                <i class="fas fa-clock"></i>
-                Chấm công
-            </button>
-            <button class="btn btn-primary" id="exportScheduleBtn">
+	<!-- Header Section -->
+	@*             <button class="btn btn-primary" id="exportScheduleBtn">
                 <i class="fas fa-download"></i>
                 Xuất Excel
-            </button>
-        </div>
-    </div>
+            </button> *@
 
-    <!-- Stats Cards -->
-    <div class="schedule-stats">
+	<div class="page-header">
+		<div class="header-content">
+			<div class="header-info">
+				<h1 class="page-title">
+					<i class="fas fa-calendar-alt"></i>
+					Quản lý Thời gian biểu
+				</h1>
+			</div>
+			<button id="checkinButton" class="btn btn-success btn-checkin">
+				<i class="fas fa-clock"></i>
+				Chấm công
+			</button>
+		</div>
+	</div>
+	<!-- Stats Cards -->
+	@*     <div class="schedule-stats">
         <div class="stat-card primary">
             <div class="stat-icon">
                 <i class="fas fa-users"></i>
@@ -309,206 +308,200 @@
             </div>
         </div>
     </div>
+ *@
+	<!-- Control Panel -->
+	<div class="content-card">
+		<div class="control-panel">
+			<div class="filter-section">
+				<div class="filter-group">
+					<div class="search-input-group">
+						<input class="form-control" list="staffList" id="staffFilterInput"
+							   placeholder="Nhập tên nhân viên...">
+						<datalist id="staffList"></datalist>
+@* 						<button class="search-btn" id="filterButton">
+							<i class="fas fa-search"></i>
+						</button> *@
+					</div>
+				</div>
+				@* <div class="filter-group">
+					<select class="form-select" id="shiftFilter">
+						<option value="">Tất cả ca</option>
+						<option value="1">Ca sáng</option>
+						<option value="2">Ca chiều</option>
+						<option value="3">Ca tối</option>
+					</select>
+				</div>
+				<div class="filter-group">
+					<select class="form-select" id="dayFilter">
+						<option value="">Tất cả ngày</option>
+						<option value="2">Thứ 2</option>
+						<option value="3">Thứ 3</option>
+						<option value="4">Thứ 4</option>
+						<option value="5">Thứ 5</option>
+						<option value="6">Thứ 6</option>
+						<option value="7">Thứ 7</option>
+						<option value="8">Chủ nhật</option>
+					</select>
+				</div> *@
+				 <button class="btn btn-secondary" id="resetFilterButton">
+					<i class="fas fa-times"></i>
+					Xóa lọc
+				</button> 
+			</div>
+		</div>
+	</div>
 
-    <!-- Control Panel -->
-    <div class="content-card">
-        <div class="card-header">
-            <h3><i class="fas fa-filter"></i> Bộ lọc và Tìm kiếm</h3>
-        </div>
-        <div class="control-panel">
-            <div class="filter-section">
-                <div class="filter-group">
-                    <label for="staffFilterInput">Tìm nhân viên:</label>
-                    <div class="search-input-group">
-                        <input class="form-control" list="staffList" id="staffFilterInput"
-                               placeholder="Nhập tên nhân viên...">
-                        <datalist id="staffList"></datalist>
-                        <button class="search-btn" id="filterButton">
-                            <i class="fas fa-search"></i>
-                        </button>
-                    </div>
-                </div>
-                <div class="filter-group">
-                    <label for="shiftFilter">Lọc theo ca:</label>
-                    <select class="form-select" id="shiftFilter">
-                        <option value="">Tất cả ca</option>
-                        <option value="1">Ca sáng</option>
-                        <option value="2">Ca chiều</option>
-                        <option value="3">Ca tối</option>
-                    </select>
-                </div>
-                <div class="filter-group">
-                    <label for="dayFilter">Lọc theo ngày:</label>
-                    <select class="form-select" id="dayFilter">
-                        <option value="">Tất cả ngày</option>
-                        <option value="2">Thứ 2</option>
-                        <option value="3">Thứ 3</option>
-                        <option value="4">Thứ 4</option>
-                        <option value="5">Thứ 5</option>
-                        <option value="6">Thứ 6</option>
-                        <option value="7">Thứ 7</option>
-                        <option value="8">Chủ nhật</option>
-                    </select>
-                </div>
-                <button class="btn btn-secondary" id="resetFilterButton">
-                    <i class="fas fa-times"></i>
-                    Xóa lọc
-                </button>
-            </div>
-        </div>
-    </div>
+	<!-- Current Week Display -->
+	<div class="week-display-card">
+		<div class="week-info">
+			<h4 id="currentWeekDisplay" class="week-title"></h4>
+			<div id="checkinMessage" class="checkin-message"></div>
+		</div>
+		@* <div class="week-navigation">
+			<button class="btn btn-outline-primary" id="prevWeekBtn">
+				<i class="fas fa-chevron-left"></i>
+				Tuần trước
+			</button>
+			<button class="btn btn-outline-primary" id="nextWeekBtn">
+				Tuần sau
+				<i class="fas fa-chevron-right"></i>
+			</button>
+		</div> *@
+	</div> 
 
-    <!-- Current Week Display -->
-    <div class="week-display-card">
-        <div class="week-info">
-            <h4 id="currentWeekDisplay" class="week-title"></h4>
-            <div id="checkinMessage" class="checkin-message"></div>
-        </div>
-        <div class="week-navigation">
-            <button class="btn btn-outline-primary" id="prevWeekBtn">
-                <i class="fas fa-chevron-left"></i>
-                Tuần trước
-            </button>
-            <button class="btn btn-outline-primary" id="nextWeekBtn">
-                Tuần sau
-                <i class="fas fa-chevron-right"></i>
-            </button>
-        </div>
-    </div>
-
-    <!-- Schedule Grid -->
-    <div class="content-card">
-        <div class="card-header">
-            <h3><i class="fas fa-table"></i> Lịch làm việc tuần</h3>
-            <div class="view-controls">
-                <button class="btn btn-sm btn-outline-primary" id="compactViewBtn">
-                    <i class="fas fa-compress"></i>
-                    Thu gọn
-                </button>
-                <button class="btn btn-sm btn-outline-primary" id="expandViewBtn">
-                    <i class="fas fa-expand"></i>
-                    Mở rộng
-                </button>
-            </div>
-        </div>
-        <div class="schedule-grid-container">
-            <div class="table-responsive">
-                <table class="table schedule-table">
-                    <thead class="table-dark">
-                        <tr>
-                            <th class="shift-header">Ca / Thứ</th>
-                            <th>Thứ 2</th>
-                            <th>Thứ 3</th>
-                            <th>Thứ 4</th>
-                            <th>Thứ 5</th>
-                            <th>Thứ 6</th>
-                            <th>Thứ 7</th>
-                            <th>Chủ nhật</th>
-                        </tr>
-                    </thead>
-                    <tbody id="scheduleGrid"></tbody>
-                </table>
-            </div>
-        </div>
-    </div>
+	<!-- Schedule Grid -->
+	<div class="content-card">
+		<div class="card-header">
+			<h3><i class="fas fa-table"></i> Lịch làm việc tuần</h3>
+			@* <div class="view-controls">
+				<button class="btn btn-sm btn-outline-primary" id="compactViewBtn">
+					<i class="fas fa-compress"></i>
+					Thu gọn
+				</button>
+				<button class="btn btn-sm btn-outline-primary" id="expandViewBtn">
+					<i class="fas fa-expand"></i>
+					Mở rộng
+				</button>
+			</div> *@
+		</div>
+		<div class="schedule-grid-container">
+			<div class="table-responsive">
+				<table class="table schedule-table">
+					<thead class="table-dark">
+						<tr>
+							<th class="shift-header">Ca / Thứ</th>
+							<th>Thứ 2</th>
+							<th>Thứ 3</th>
+							<th>Thứ 4</th>
+							<th>Thứ 5</th>
+							<th>Thứ 6</th>
+							<th>Thứ 7</th>
+							<th>Chủ nhật</th>
+						</tr>
+					</thead>
+					<tbody id="scheduleGrid"></tbody>
+				</table>
+			</div>
+		</div>
+	</div>
 </div>
 
 <!-- Enhanced Shift Detail Modal -->
 <div class="modal fade" id="shiftDetailModal" tabindex="-1">
-    <div class="modal-dialog modal-xl">
-        <div class="modal-content">
-            <div class="modal-header bg-primary text-white">
-                <h5 class="modal-title">
-                    <i class="fas fa-calendar-day"></i>
-                    Chi tiết ca: <span id="modalShiftName"></span> - <span id="modalDayName"></span>
-                </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <!-- Shift Info -->
-                <div class="shift-info-section">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="info-card">
-                                <h6><i class="fas fa-info-circle"></i> Thông tin ca làm</h6>
-                                <p><strong>Ca:</strong> <span id="modalShiftNameDetail"></span></p>
-                                <p><strong>Ngày:</strong> <span id="modalDayNameDetail"></span></p>
-                                <p><strong>Trạng thái:</strong> <span id="modalShiftStatus" class="badge"></span></p>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="info-card">
-                                <h6><i class="fas fa-chart-bar"></i> Thống kê</h6>
-                                <p><strong>Tổng nhân viên:</strong> <span id="modalTotalStaff">0</span></p>
-                                <p><strong>Có mặt:</strong> <span id="modalPresentStaff">0</span></p>
-                                <p><strong>Đi muộn:</strong> <span id="modalLateStaff">0</span></p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+	<div class="modal-dialog modal-xl">
+		<div class="modal-content">
+			<div class="modal-header bg-primary text-white">
+				<h5 class="modal-title">
+					<i class="fas fa-calendar-day"></i>
+					Chi tiết ca: <span id="modalShiftName"></span> - <span id="modalDayName"></span>
+				</h5>
+				<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+			</div>
+			<div class="modal-body">
+				<!-- Shift Info -->
+				<div class="shift-info-section">
+					<div class="row">
+						<div class="col-md-6">
+							<div class="info-card">
+								<h6><i class="fas fa-info-circle"></i> Thông tin ca làm</h6>
+								<p><strong>Ca:</strong> <span id="modalShiftNameDetail"></span></p>
+								<p><strong>Ngày:</strong> <span id="modalDayNameDetail"></span></p>
+								<p><strong>Trạng thái:</strong> <span id="modalShiftStatus" class="badge"></span></p>
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="info-card">
+								<h6><i class="fas fa-chart-bar"></i> Thống kê</h6>
+								<p><strong>Tổng nhân viên:</strong> <span id="modalTotalStaff">0</span></p>
+								<p><strong>Có mặt:</strong> <span id="modalPresentStaff">0</span></p>
+								<p><strong>Đi muộn:</strong> <span id="modalLateStaff">0</span></p>
+							</div>
+						</div>
+					</div>
+				</div>
 
-                <!-- Staff List -->
-                <div class="staff-list-section">
-                    <div class="section-header">
-                        <h6><i class="fas fa-users"></i> Danh sách nhân viên</h6>
-                        <button class="btn btn-outline-primary btn-sm" onclick="toggleAddStaff()" id="addStaffBtn">
-                            <i class="fas fa-plus"></i>
-                            Thêm nhân viên
-                        </button>
-                    </div>
+				<!-- Staff List -->
+				<div class="staff-list-section">
+					<div class="section-header">
+						<h6><i class="fas fa-users"></i> Danh sách nhân viên</h6>
+						<button class="btn btn-outline-primary btn-sm" onclick="toggleAddStaff()" id="addStaffBtn">
+							<i class="fas fa-plus"></i>
+							Thêm nhân viên
+						</button>
+					</div>
 
-                    <div class="table-responsive">
-                        <table class="table table-hover staff-table">
-                            <thead class="table-light">
-                                <tr>
-                                    <th>Họ tên</th>
-                                    <th>Chức vụ</th>
-                                    <th class="text-center">Có mặt</th>
-                                    <th class="text-center">Đi muộn</th>
-                                    <th class="text-center">Thao tác</th>
-                                </tr>
-                            </thead>
-                            <tbody id="shiftStaffTableBody"></tbody>
-                        </table>
-                    </div>
-                </div>
+					<div class="table-responsive">
+						<table class="table table-hover staff-table">
+							<thead class="table-light">
+								<tr>
+									<th>Họ tên</th>
+									<th>Chức vụ</th>
+									<th class="text-center">Có mặt</th>
+									<th class="text-center">Đi muộn</th>
+									<th class="text-center">Thao tác</th>
+								</tr>
+							</thead>
+							<tbody id="shiftStaffTableBody"></tbody>
+						</table>
+					</div>
+				</div>
 
-                <!-- Add Staff Section -->
-                <div id="addStaffArea" class="add-staff-section" style="display: none;">
-                    <div class="section-header">
-                        <h6><i class="fas fa-user-plus"></i> Thêm nhân viên vào ca</h6>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <input type="text" id="staffSearchInput" class="form-control"
-                                   placeholder="Tìm kiếm nhân viên...">
-                            <div id="staffSearchResults" class="search-results mt-2"></div>
-                        </div>
-                        <div class="col-md-6">
-                            <div id="selectedStaffPreview" class="selected-staff-preview"></div>
-                            <button class="btn btn-success mt-2" onclick="addStaffToShift()">
-                                <i class="fas fa-plus"></i>
-                                Thêm vào ca
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" data-bs-dismiss="modal">
-                    <i class="fas fa-times"></i>
-                    Đóng
-                </button>
-                <button class="btn btn-primary" id="saveShiftBtn">
-                    <i class="fas fa-save"></i>
-                    Lưu thay đổi
-                </button>
-            </div>
-        </div>
-    </div>
+				<!-- Add Staff Section -->
+				<div id="addStaffArea" class="add-staff-section" style="display: none;">
+					<div class="section-header">
+						<h6><i class="fas fa-user-plus"></i> Thêm nhân viên vào ca</h6>
+					</div>
+					<div class="row">
+						<div class="col-md-6">
+							<input type="text" id="staffSearchInput" class="form-control"
+								   placeholder="Tìm kiếm nhân viên...">
+							<div id="staffSearchResults" class="search-results mt-2"></div>
+						</div>
+						<div class="col-md-6">
+							<div id="selectedStaffPreview" class="selected-staff-preview"></div>
+							<button class="btn btn-success mt-2" onclick="addStaffToShift()">
+								<i class="fas fa-plus"></i>
+								Thêm vào ca
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button class="btn btn-secondary" data-bs-dismiss="modal">
+					<i class="fas fa-times"></i>
+					Đóng
+				</button>
+				@* <button class="btn btn-primary" id="saveShiftBtn">
+					<i class="fas fa-save"></i>
+					Lưu thay đổi
+				</button> *@
+			</div>
+		</div>
+	</div>
 </div>
 @section Styles {
-    <link href="~/css/schedule.css" rel="stylesheet" />
+	<link href="~/css/schedule.css" rel="stylesheet" />
 }
 
 <script src="~/js/schedule-enhanced.js"></script>

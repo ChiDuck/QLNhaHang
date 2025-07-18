@@ -4,6 +4,11 @@ const currentDetailModal = null
 const currentStaffId = null
 var staffList = []
 
+// Lấy token từ localStorage
+function getToken() {
+    return localStorage.getItem("token") || "";
+}
+
 async function loadStaffList() {
     showLoading(true);
     try {
@@ -90,12 +95,8 @@ function createStaffCard(staff) {
             </div>
         </div>
         <div class="staff-actions">
-            <button class="btn btn-info" onclick="showStaffDetail(${staff.idStaff})">
-                <i class="fas fa-eye"></i>
-            </button>
-            <button class="btn btn-danger" onclick="deleteStaff(${staff.idStaff})">
-                <i class="fas fa-trash"></i>
-                Xóa
+            <button class="btn-view" onclick="showStaffDetail(${staff.idStaff})">
+                <i class="fas fa-eye"></i>Chi tiết
             </button>
         </div>
     `
@@ -165,7 +166,7 @@ async function searchStaff() {
 
         staffList = data
         renderStaffList()
-        updateStats()
+       // updateStats()
 
         if (data.length === 0) {
             showNotification("Không tìm thấy nhân viên nào phù hợp", "error")
@@ -205,19 +206,19 @@ async function showStaffDetail(id) {
                         .split(" ")
                         .map((n) => n[0])
                         .join("")
-                        .toUpperCase()
-                    : "NV"
+                        : "NV"
             }
                                     </div>
                                     <div class="staff-detail-info">
-                                        <h3>${staff.name || "Nhân viên"}</h3>
+                                        <h3 id="staffName">${staff.name || "Nhân viên"}</h3>
                                         <p>${staff.staffType || "Chưa phân loại"}</p>
                                     </div>
                                 </div>
                                 <div class="staff-detail-body">
                                     <div class="detail-group">
                                         <label>ID:</label>
-                                        <span>${staff.idStaff}</span>
+									<span id="staffId">${staff.idStaff}</span>
+
                                     </div>
                                     <div class="detail-group">
                                         <label>Số điện thoại:</label>
@@ -247,9 +248,9 @@ async function showStaffDetail(id) {
                                 <i class="fas fa-edit"></i>
                                 Sửa
                             </button>
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                                <i class="fas fa-times"></i>
-                                Đóng
+                            <button type="button" class="btn btn-danger" id="deleteStaffBtn">
+                                <i class="fas fa-trash"></i>
+                                Xóa
                             </button>
                         </div>
                     </div>
@@ -269,6 +270,42 @@ async function showStaffDetail(id) {
         // Show modal
         const modal = new bootstrap.Modal(document.getElementById("staffModal"))
         modal.show()
+
+        // Gắn sự kiện cho nút xóa trong modal chi tiết
+        document.getElementById("deleteStaffBtn").addEventListener("click", function () {
+            const staffId = document.getElementById("staffId").textContent;
+            const staffName = document.getElementById("staffName").textContent;
+            document.getElementById("staffIdToDelete").textContent = staffId;
+            document.getElementById("staffNameToDelete").textContent = staffName;
+            new bootstrap.Modal(document.getElementById("confirmDeleteModal")).show();
+            bootstrap.Modal.getInstance(document.getElementById("staffModal")).hide();
+        });
+
+        // Gắn sự kiện xác nhận xóa
+        document.getElementById("confirmDeleteBtn").addEventListener("click", async function () {
+            const staffId = parseInt(document.getElementById("staffIdToDelete").textContent);
+            console.log(staffId === 2);
+            try {
+                const res = await fetch(`/api/staffapi/${staffId}`, {
+                    method: "DELETE",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": "Bearer " + getToken()
+                    },
+                });
+                if (res.ok) {
+                    showNotification("Xóa nhân viên thành công!");
+                    bootstrap.Modal.getInstance(document.getElementById("confirmDeleteModal")).hide();
+                    //bootstrap.Modal.getInstance(document.getElementById("staffModal")).hide();
+                    loadStaffList();
+                } else {
+                    const err = await res.text();
+                    showNotification("Không thể xóa nhân viên: " + err, "error");
+                }
+            } catch (error) {
+                showNotification("Lỗi khi xóa nhân viên", "error");
+            }
+        });
     } catch (error) {
         console.error("Error showing staff detail:", error)
         showNotification("Có lỗi xảy ra khi tải thông tin nhân viên", "error")
@@ -276,31 +313,45 @@ async function showStaffDetail(id) {
 }
 
 async function editStaff(id) {
-    // Implementation for edit staff
-    showNotification("Chức năng sửa nhân viên đang được phát triển", "error")
+    try {
+        // Lấy thông tin nhân viên từ API
+        const res = await fetch(`/api/staffapi/${id}`);
+        if (!res.ok) throw new Error("Không tìm thấy nhân viên");
+        const staff = await res.json();
+
+        await populateStaffTypeDropdown(staff.idStafftype);
+
+        // Điền dữ liệu vào form
+        document.getElementById("editIdStaff").value = staff.idStaff;
+        document.getElementById("editName").value = staff.name || "";
+        document.getElementById("editCitizenId").value = staff.citizenid || "";
+        document.getElementById("editPhone").value = staff.phone || "";
+        document.getElementById("editEmail").value = staff.email || "";
+        document.getElementById("editPasswordHash").value = ""; // Để trống, chỉ nhập nếu muốn đổi mật khẩu
+        document.getElementById("editGender").value = staff.gender === true ? "true" : "false";
+        document.getElementById("editBirthday").value = staff.birthday ? staff.birthday.split("T")[0] : "";
+        document.getElementById("staffPhotoPath").value = staff.photo || "";
+        document.getElementById("editAddress").value = staff.address || "";
+        document.getElementById("editStartDate").value = staff.startdate ? staff.startdate.split("T")[0] : "";
+        document.getElementById("editHourlySalary").value = staff.hourlysalary || "";
+        document.getElementById("editStaffType").value = staff.idStafftype || "";
+
+        // Đặt tiêu đề modal
+        document.getElementById("staffEditModalLabel").textContent = "Chỉnh Sửa Nhân Viên";
+
+        // Hiển thị modal
+        new bootstrap.Modal(document.getElementById("staffEditModal")).show();
+        bootstrap.Modal.getInstance(document.getElementById("staffModal")).hide();
+    } catch (error) {
+        showNotification("Không thể tải thông tin nhân viên", "error");
+    }
 }
 
-async function deleteStaff(id) {
-    if (!confirm("Bạn có chắc chắn muốn xóa nhân viên này?")) {
-        return
-    }
-
-    try {
-        const response = await fetch(`${apiUrl}/${id}`, {
-            method: "DELETE",
-        })
-
-        if (response.ok) {
-            showNotification("Xóa nhân viên thành công")
-            loadStaffList()
-        } else {
-            const error = await response.text()
-            showNotification("Không thể xóa nhân viên: " + error, "error")
-        }
-    } catch (error) {
-        console.error("Error deleting staff:", error)
-        showNotification("Có lỗi xảy ra khi xóa nhân viên", "error")
-    }
+function resetStaffForm() {
+    document.getElementById("staffForm").reset();
+    document.getElementById("editIdStaff").value = "";
+    document.getElementById("staffPhotoPath").value = "";
+    // Nếu có preview ảnh, xóa preview ở đây
 }
 
 // Initialize
@@ -325,7 +376,44 @@ document.addEventListener("DOMContentLoaded", () => {
             })
         })
     }
+
+    document.getElementById("addStaffBtn").addEventListener("click", async function () {
+        resetStaffForm();
+        document.getElementById("staffEditModalLabel").textContent = "Thêm Nhân Viên";
+        await populateStaffTypeDropdown();
+        new bootstrap.Modal(document.getElementById("staffEditModal")).show();
+    });
+
+    document.getElementById("editStaffBtn").addEventListener("click", function () {
+        const staffId = document.getElementById("editIdStaff").value || document.getElementById("staffId").textContent;
+        editStaff(staffId);
+   });
 })
+
+async function loadStaffTypes() {
+    try {
+        const response = await fetch('/api/stafftypeapi');
+        if (!response.ok) throw new Error('Failed to load staff types');
+        return await response.json();
+    } catch (error) {
+        console.error('Error loading staff types:', error);
+        return [];
+    }
+}
+
+async function populateStaffTypeDropdown(selectedId = null) {
+    const types = await loadStaffTypes();
+    const select = document.getElementById("editStaffType");
+    if (!select) return;
+    select.innerHTML = '<option value="">-- Chọn vị trí --</option>';
+    types.forEach(type => {
+        const option = document.createElement("option");
+        option.value = type.idStafftype;
+        option.textContent = type.name;
+        if (selectedId && selectedId == type.idStafftype) option.selected = true;
+        select.appendChild(option);
+    });
+}
 
 // Add notification styles if not already added
 //if (!document.querySelector("#staff-notification-styles")) {
@@ -435,3 +523,79 @@ styleSheet.id = "staff-notification-styles"
 styleSheet.textContent = notificationStyles
 document.head.appendChild(styleSheet)
 //}
+
+async function submitStaff() {
+    const form = document.getElementById("staffForm");
+    const formData = new FormData(form);
+
+    // Validate cơ bản
+    if (!formData.get("Name") || !formData.get("Citizenid") || !formData.get("Phone") || !formData.get("Email") || !formData.get("Address") || !formData.get("IdStafftype")) {
+        showNotification("Vui lòng nhập đầy đủ thông tin bắt buộc", "error");
+        return;
+    }
+
+    // Chuẩn bị dữ liệu gửi lên API
+    const staffData = {
+        IdStaff: formData.get("IdStaff") ? parseInt(formData.get("IdStaff")) : undefined,
+        Name: formData.get("Name"),
+        Citizenid: formData.get("Citizenid"),
+        Phone: formData.get("Phone"),
+        Email: formData.get("Email"),
+        PasswordHash: formData.get("PasswordHash") || "",
+        Gender: formData.get("Gender") === "true",
+        Birthday: formData.get("Birthday") || null,
+        Photo: formData.get("Photo") || document.getElementById("staffPhotoPath").value || null,
+        Address: formData.get("Address"),
+        Startdate: formData.get("Startdate") || null,
+        Hourlysalary: formData.get("Hourlysalary") ? parseFloat(formData.get("Hourlysalary")) : null,
+        IdStafftype: parseInt(formData.get("IdStafftype"))
+    };
+
+
+    console.log(staffData.IdStaff);
+    // Thêm mới nhân viên (POST)
+    if (!formData.get("IdStaff")) {
+        try {
+            const res = await fetch("/api/staffapi", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + getToken()
+                },
+                body: JSON.stringify(staffData)
+            });
+            if (res.ok) {
+                showNotification("Thêm nhân viên thành công!");
+                bootstrap.Modal.getInstance(document.getElementById("staffEditModal")).hide();
+                loadStaffList();
+            } else {
+                const err = await res.text();
+                showNotification("Không thể thêm nhân viên: " + err, "error");
+            }
+        } catch (error) {
+            showNotification("Lỗi khi thêm nhân viên", "error");
+        }
+    } else {
+        // Sửa nhân viên (PUT)
+        try {
+            const res = await fetch(`/api/staffapi/${staffData.IdStaff}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + getToken()
+                },
+                body: JSON.stringify(staffData)
+            });
+            if (res.ok) {
+                showNotification("Cập nhật nhân viên thành công!");
+                bootstrap.Modal.getInstance(document.getElementById("staffEditModal")).hide();
+                loadStaffList();
+            } else {
+                const err = await res.text();
+                showNotification("Không thể cập nhật nhân viên: " + err, "error");
+            }
+        } catch (error) {
+            showNotification("Lỗi khi cập nhật nhân viên", "error");
+        }
+    }
+}

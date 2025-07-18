@@ -17,31 +17,31 @@ class ScheduleManager {
         this.displayCurrentWeek()
         this.loadSchedule()
         this.populateStaffFilter()
-        this.updateStats()
+      //  this.updateStats()
     }
 
     bindEvents() {
         // Main buttons
         document.getElementById("checkinButton").addEventListener("click", () => this.checkIn())
-        document.getElementById("filterButton").addEventListener("click", () => this.applyScheduleFilter())
+        //document.getElementById("filterButton").addEventListener("click", () => this.applyScheduleFilter())
         document.getElementById("resetFilterButton").addEventListener("click", () => this.resetScheduleFilter())
-        document.getElementById("exportScheduleBtn").addEventListener("click", () => this.exportSchedule())
+        //document.getElementById("exportScheduleBtn").addEventListener("click", () => this.exportSchedule())
 
         // Week navigation
-        document.getElementById("prevWeekBtn")?.addEventListener("click", () => this.navigateWeek(-1))
-        document.getElementById("nextWeekBtn")?.addEventListener("click", () => this.navigateWeek(1))
+        //document.getElementById("prevWeekBtn")?.addEventListener("click", () => this.navigateWeek(-1))
+        //document.getElementById("nextWeekBtn")?.addEventListener("click", () => this.navigateWeek(1))
 
-        // View controls
-        document.getElementById("compactViewBtn")?.addEventListener("click", () => this.toggleView("compact"))
-        document.getElementById("expandViewBtn")?.addEventListener("click", () => this.toggleView("expand"))
+        //// View controls
+        //document.getElementById("compactViewBtn")?.addEventListener("click", () => this.toggleView("compact"))
+        //document.getElementById("expandViewBtn")?.addEventListener("click", () => this.toggleView("expand"))
 
         // Filter inputs
         document.getElementById("staffFilterInput").addEventListener(
             "input",
-            this.debounce(() => this.handleStaffSearch(), 300),
+            this.debounce(() => this.applyScheduleFilter(), 300),
         )
-        document.getElementById("shiftFilter").addEventListener("change", () => this.applyFilters())
-        document.getElementById("dayFilter").addEventListener("change", () => this.applyFilters())
+        //document.getElementById("shiftFilter").addEventListener("change", () => this.applyFilters())
+        //document.getElementById("dayFilter").addEventListener("change", () => this.applyFilters())
 
         // Staff search in modal
         document.getElementById("staffSearchInput").addEventListener("input", () => this.updateStaffSearchResults())
@@ -124,7 +124,7 @@ class ScheduleManager {
 
             this.renderScheduleGrid()
             this.populateStaffFilter()
-            this.updateStats()
+         //   this.updateStats()
             this.hideLoading()
         } catch (err) {
             console.error("Lỗi tải thời gian biểu:", err)
@@ -196,11 +196,13 @@ class ScheduleManager {
     // Filter Functions
     handleStaffSearch() {
         const searchTerm = document.getElementById("staffFilterInput").value.toLowerCase()
+        console.log("Searching for:", searchTerm)
         if (searchTerm.length < 2) {
             this.filteredData = [...this.scheduleData]
         } else {
+            console.log("Filtering data with search term:", this.scheduleData)
             this.filteredData = this.scheduleData.filter(
-                (item) => item.name.toLowerCase().includes(searchTerm) || item.staffType.toLowerCase().includes(searchTerm),
+                (item) => item.name.toLowerCase().includes(searchTerm) /*|| item.staffType.toLowerCase().includes(searchTerm),*/
             )
         }
         this.renderScheduleGrid()
@@ -217,7 +219,7 @@ class ScheduleManager {
         })
 
         this.renderScheduleGrid()
-        this.updateStats()
+       // this.updateStats()
     }
 
     applyScheduleFilter() {
@@ -257,12 +259,12 @@ class ScheduleManager {
         })
 
         document.getElementById("staffFilterInput").value = ""
-        document.getElementById("shiftFilter").value = ""
-        document.getElementById("dayFilter").value = ""
+        //document.getElementById("shiftFilter").value = ""
+        //document.getElementById("dayFilter").value = ""
 
         this.filteredData = [...this.scheduleData]
         this.renderScheduleGrid()
-        this.updateStats()
+        //this.updateStats()
     }
 
     // Modal Functions
@@ -634,7 +636,7 @@ class ScheduleManager {
             month: "long",
             day: "numeric",
         })
-        document.getElementById("currentWeekDisplay").textContent = `Tuần ${this.currentWeek} - ${formattedDate}`
+        //document.getElementById("currentWeekDisplay").textContent = `Tuần ${this.currentWeek} - ${formattedDate}`
     }
 
     // Navigation Functions

@@ -290,7 +290,7 @@ body {
   font-weight: 600;
   color: var(--text-primary);
   margin: 0;
-  font-family: "Poppins", sans-serif;
+  font-family: sans-serif;
 }
 
 .header-right {
@@ -365,7 +365,6 @@ body {
 /* Page Content */
 .page-content {
   flex: 1;
-  padding: 2rem;
   background-color: var(--bg-secondary);
 }
 

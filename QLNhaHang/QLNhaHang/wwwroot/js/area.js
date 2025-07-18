@@ -8,7 +8,7 @@ async function getAllAreas() {
         if (!res.ok) throw new Error("Lỗi khi tải danh sách khu vực")
         areasData = await res.json()
         await loadAreas()
-        updateStats()
+       // updateStats()
     } catch (error) {
         console.error("Error:", error)
         showNotification("Lỗi khi tải dữ liệu", "error")

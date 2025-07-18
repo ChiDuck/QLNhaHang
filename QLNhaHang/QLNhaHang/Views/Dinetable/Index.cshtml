@@ -1,5 +1,5 @@
 ﻿@{
-	ViewData["Title"] = "Quản lý Bàn ăn";
+	ViewData["Title"] = "Bàn ăn";
 	Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -14,7 +14,6 @@
 					<i class="fas fa-chair"></i>
 					Quản lý Bàn ăn
 				</h1>
-				<p class="page-subtitle">Quản lý thông tin bàn ăn trong nhà hàng</p>
 			</div>
 			<div class="header-right">
 				<button class="btn btn-primary add-btn" onclick="showAddForm()">
@@ -23,9 +22,9 @@
 				</button>
 			</div>
 		</div>
-
-		<!-- Stats Cards -->
-		<div class="stats-grid">
+	</div>
+	<!-- Stats Cards -->
+	@* 		<div class="stats-grid">
 			<div class="stat-card">
 				<div class="stat-icon">
 					<i class="fas fa-chair"></i>
@@ -63,7 +62,7 @@
 				</div>
 			</div>
 		</div>
-	</div>
+ *@	
 
 	<!-- Controls Section -->
 	<div class="controls-section">
@@ -79,11 +78,11 @@
 				<select id="typeFilter" class="form-select">
 					<option value="">Tất cả loại bàn</option>
 				</select>
-				<select id="statusFilter" class="form-select">
+				@* 				<select id="statusFilter" class="form-select">
 					<option value="">Tất cả trạng thái</option>
 					<option value="available">Trống</option>
 					<option value="occupied">Có khách</option>
-				</select>
+				</select> *@
 			</div>
 		</div>
 		<div class="view-controls">
@@ -93,10 +92,10 @@
 			<button class="btn btn-outline view-btn" data-view="list">
 				<i class="fas fa-list"></i>
 			</button>
-			<button class="btn btn-outline" onclick="exportData()">
+			@* 			<button class="btn btn-outline" onclick="exportData()">
 				<i class="fas fa-download"></i>
 				Xuất Excel
-			</button>
+			</button> *@
 		</div>
 	</div>
 
@@ -120,7 +119,7 @@
 							<th>Số ghế</th>
 							<th>Khu vực</th>
 							<th>Loại bàn</th>
-							<th>Trạng thái</th>
+							@* <th>Trạng thái</th> *@
 							<th>Thao tác</th>
 						</tr>
 					</thead>
@@ -135,7 +134,7 @@
 
 <!-- Add/Edit Modal -->
 <div class="modal fade" id="dinetableModal" tabindex="-1">
-	<div class="modal-dialog modal-lg">
+	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
 				<h5 class="modal-title" id="dinetableModalTitle">
@@ -148,64 +147,52 @@
 				<div class="modal-body">
 					<input type="hidden" id="dinetableId" />
 
-					<div class="row">
-						<div class="col-md-6">
-							<div class="form-group">
-								<label class="form-label">
-									<i class="fas fa-tag"></i>
-									Tên bàn
-								</label>
-								<input type="text" class="form-control" id="dinetableName" required />
-								<div class="form-text">Nhập tên bàn (VD: Bàn 01, Bàn VIP 1)</div>
-							</div>
-						</div>
-						<div class="col-md-6">
-							<div class="form-group">
-								<label class="form-label">
-									<i class="fas fa-map-marker-alt"></i>
-									Khu vực
-								</label>
-								<select class="form-select" id="dinetableArea" required>
-									<option value="">Chọn khu vực</option>
-								</select>
-							</div>
-						</div>
+					<div class="form-group">
+						<label class="form-label">
+							<i class="fas fa-tag"></i>
+							Tên bàn
+						</label>
+						<input type="text" class="form-control" id="dinetableName" required />
+						<div class="form-text">Nhập tên bàn (VD: Bàn 01, Bàn VIP 1)</div>
 					</div>
-
-					<div class="row">
-						<div class="col-md-6">
-							<div class="form-group">
-								<label class="form-label">
-									<i class="fas fa-chair"></i>
-									Loại bàn
-								</label>
-								<select class="form-select" id="dinetableType" required>
-									<option value="">Chọn loại bàn</option>
-								</select>
-							</div>
-						</div>
-						<div class="col-md-6">
-							<div class="form-group">
-								<label class="form-label">
-									<i class="fas fa-info-circle"></i>
-									Trạng thái
-								</label>
-								<select class="form-select" id="dinetableStatus">
-									<option value="available">Trống</option>
-									<option value="occupied">Có khách</option>
-									<option value="maintenance">Bảo trì</option>
-								</select>
-							</div>
-						</div>
+					<div class="form-group">
+						<label class="form-label">
+							<i class="fas fa-map-marker-alt"></i>
+							Khu vực
+						</label>
+						<select class="form-select" id="dinetableArea" required>
+							<option value="">Chọn khu vực</option>
+						</select>
 					</div>
 
 					<div class="form-group">
+						<label class="form-label">
+							<i class="fas fa-chair"></i>
+							Loại bàn
+						</label>
+						<select class="form-select" id="dinetableType" required>
+							<option value="">Chọn loại bàn</option>
+						</select>
+					</div>
+					@* <div class="form-group">
+						<label class="form-label">
+							<i class="fas fa-info-circle"></i>
+							Trạng thái
+						</label>
+						<select class="form-select" id="dinetableStatus">
+							<option value="available">Trống</option>
+							<option value="occupied">Có khách</option>
+							<option value="maintenance">Bảo trì</option>
+						</select>
+					</div>
+ *@
+					@* <div class="form-group">
 						<label class="form-label">
 							<i class="fas fa-sticky-note"></i>
 							Ghi chú
 						</label>
 						<textarea class="form-control" id="dinetableNote" rows="3" placeholder="Ghi chú thêm về bàn..."></textarea>
-					</div>
+					</div> *@
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">

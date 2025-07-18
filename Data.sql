@@ -73,28 +73,49 @@ INSERT INTO INVENTORYITEMTYPE VALUES
 (N'Nguyên liệu'),
 (N'Dụng cụ')
 
-INSERT INTO INVENTORYITEM (NAME, UNIT, AMOUNT, ID_INVENTORYITEMTYPE) VALUES 
-(N'Thịt gà', N'gram', 5000, 1),			--1
-(N'Thịt bò', N'gram', 5000, 1),			--2
-(N'Cá hồi', N'gram', 3000, 1),			--3
-(N'Cơm trắng', N'gram', 10000, 1),		--4
-(N'Trứng', N'quả', 200, 1),				--5
-(N'Rau cải', N'gram', 3000, 1),			--6
-(N'Cà chua', N'gram', 2000, 1),			--7
-(N'Hành lá', N'gram', 1500, 1),			--8
-(N'Tỏi', N'gram', 1000, 1),				--9
-(N'Miến', N'gram', 2000, 1),			--10
-(N'Rau xà lách', N'gram', 2000, 1),		--11
-(N'Khoai tây', N'gram', 3000, 1),		--12
-(N'Dĩa lớn', N'cái', 100, 2),			--13
-(N'Dĩa nhỏ', N'cái', 200, 2),			--14
-(N'Bát', N'cái', 200, 2),				--15
-(N'Tô nhỏ', N'cái', 150, 2),			--16
-(N'Tô lớn', N'cái', 80, 2),				--17
-(N'Đũa', N'đôi', 300, 2),				--18
-(N'Muỗng', N'cái', 200, 2),				--19
-(N'Khăn lạnh', N'cái', 400, 2)			--20
-
+--INSERT INTO INVENTORYITEM (NAME, UNIT, AMOUNT, ID_INVENTORYITEMTYPE) VALUES 
+--(N'Thịt gà', N'gram', 5000, 1),			--1
+--(N'Thịt bò', N'gram', 5000, 1),			--2
+--(N'Cá hồi', N'gram', 3000, 1),			--3
+--(N'Cơm trắng', N'gram', 10000, 1),		--4
+--(N'Trứng', N'quả', 200, 1),				--5
+--(N'Rau cải', N'gram', 3000, 1),			--6
+--(N'Cà chua', N'gram', 2000, 1),			--7
+--(N'Hành lá', N'gram', 1500, 1),			--8
+--(N'Tỏi', N'gram', 1000, 1),				--9
+--(N'Miến', N'gram', 2000, 1),				--10
+--(N'Rau xà lách', N'gram', 2000, 1),		--11
+--(N'Khoai tây', N'gram', 3000, 1),			--12
+INSERT INTO Inventoryitem (Name, Unit, Amount, ID_INVENTORYITEMTYPE)
+VALUES
+(N'Tôm tươi', N'gram', 10000, 1),				--1
+(N'Trứng gà', N'quả', 500, 1),					--2
+(N'Thịt bò', N'gram', 8000, 1),				--3
+(N'Rau xà lách', N'gram', 3000, 1),			--4
+(N'Khoai tây', N'gram', 5000, 1),				--5
+(N'Bơ', N'gram', 2000, 1),						--6
+(N'Phô mai', N'gram', 1500, 1),				--7
+(N'Sữa tươi', N'ml', 3000, 1),					--8
+(N'Chanh', N'quả', 200, 1),					--9
+(N'Mì Ý', N'gram', 4000, 1),					--10
+(N'Cà chua', N'gram', 2000, 1),				--11
+(N'Dưa hấu', N'gram', 2500, 1),				--12
+(N'Nho', N'gram', 2000, 1),					--13
+(N'Cà phê', N'gram', 1500, 1),					--14
+(N'Trà xanh', N'gram', 1000, 1),				--15
+(N'Sốt mayonnaise', N'ml', 1000, 1),			--16
+(N'Thịt gà', N'gram', 6000, 1),				--17
+(N'Nước khoáng', N'ml', 5000, 1),				--18
+(N'Sô-cô-la', N'gram', 1000, 1),				--19
+(N'Mật ong', N'ml', 800, 1),					--20
+(N'Dĩa lớn', N'cái', 100, 2),			
+(N'Dĩa nhỏ', N'cái', 200, 2),			
+(N'Bát', N'cái', 200, 2),				
+(N'Tô nhỏ', N'cái', 150, 2),			
+(N'Tô lớn', N'cái', 80, 2),				
+(N'Đũa', N'đôi', 300, 2),				
+(N'Muỗng', N'cái', 200, 2),				
+(N'Khăn lạnh', N'cái', 400, 2)			
 
 INSERT INTO DISHCATEGORY VALUES
 (N'Khai vị'),
@@ -103,60 +124,152 @@ INSERT INTO DISHCATEGORY VALUES
 (N'Tráng miệng'),
 (N'Đồ uống')
 
-INSERT INTO DISH (NAME, PRICE, DISCOUNT, ISSOLDOUT, PHOTO, DESCRIPTION, ID_DISHCATEGORY)
-VALUES 
-(N'Cơm gà',			65000,		10, 0, NULL, N'Cơm trắng ăn kèm thịt gà luộc', 2),			--1
-(N'Cơm bò lúc lắc', 130000,		NULL, 0, NULL, N'Cơm với bò lúc lắc sốt tiêu', 2),			--2
-(N'Miến gà',		80000,		5, 0, NULL, N'Miến gà thơm ngon', 2),						--3
-(N'Cơm cá hồi áp chảo', 75000,	NULL, 0, NULL, N'Cá hồi tươi áp chảo cùng cơm', 2),			--4
-(N'Trứng chiên',	50000,		NULL, 0, NULL, N'Trứng gà chiên giòn', 3),					--5
-(N'Rau luộc',		35000,		NULL, 0, NULL, N'Rau cải, cà rốt luộc chấm mắm', 3),		--6
-(N'Cơm trứng cà chua', 30000,	5, 0, NULL, N'Trứng chiên, sốt cà chua, cơm', 2),			--7
-(N'Bò xào rau cải',	60000,		NULL, 0, NULL, N'Thịt bò xào với rau cải', 2),				--8
-(N'Miến xào thập cẩm', 70000,	10, 0, NULL, N'Miến xào với trứng, thịt và rau', 2),		--9
-(N'Salad rau trộn', 65000,		NULL, 0, NULL, N'Xà lách, cà chua, nước sốt', 1),			--10
-(N'Súp gà',         120000,		NULL, 0, NULL, N'Súp gà nóng hổi', 1),						--11
-(N'Khoai tây chiên',35000,		5, 0, NULL, N'Khoai tây chiên giòn', 1)						--12
+INSERT INTO Dish (Name, Price, Issoldout, ID_DISHCATEGORY, Description)
+VALUES
+-- Khai vị (1)
+(N'Salad tôm bơ', 150000, 0, 1, N'Khai vị với tôm và bơ tươi.'),
+(N'Súp trứng gà', 120000, 0, 1, N'Súp nhẹ với trứng và rau.'),
+(N'Súp gà ngô non', 125000, 0, 1, N'Súp nóng với thịt gà.'),
+
+-- Món chính (2)
+(N'Bò nướng phô mai', 320000, 0, 2, N'Món chính đậm đà với bò và phô mai.'),
+(N'Mỳ Ý sốt bò', 280000, 0, 2, N'Mì Ý kết hợp sốt cà chua và thịt bò.'),
+(N'Gà quay mật ong', 300000, 0, 2, N'Thịt gà quay sốt mật ong đặc biệt.'),
+(N'Bít tết bò', 350000, 0, 2, N'Món chính cao cấp.'),
+
+-- Món phụ (3)
+(N'Khoai tây nghiền', 80000, 0, 3, N'Món phụ mềm mịn.'),
+(N'Rau xào bơ tỏi', 100000, 0, 3, N'Món rau nhẹ nhàng.'),
+(N'Rau củ hấp', 90000, 0, 3, N'Món phụ dinh dưỡng.'),
+
+-- Tráng miệng (4)
+(N'Bánh panna cotta', 110000, 0, 4, N'Món tráng miệng kiểu Ý.'),
+(N'Kem sô-cô-la', 90000, 0, 4, N'Kem lạnh vị sô-cô-la đậm đà.'),
+(N'Bánh flan', 95000, 0, 4, N'Flan mềm mịn, ngọt dịu.'),
+(N'Bánh tart trái cây', 120000, 0, 4, N'Tráng miệng nhiều loại trái cây.'),
+
+-- Đồ uống (5)
+(N'Sinh tố bơ', 60000, 0, 5, N'Bơ xay tươi ngon.'),
+(N'Nước ép dưa hấu', 55000, 0, 5, N'Mát lạnh giải khát.'),
+(N'Nước ép nho', 58000, 0, 5, N'Dinh dưỡng, tươi ngon.'),
+(N'Cà phê đen', 45000, 0, 5, N'Cà phê nguyên chất.'),
+(N'Trà xanh mật ong', 50000, 0, 5, N'Trà dịu nhẹ kết hợp mật ong.'),
+(N'Sữa tươi đánh bọt', 50000, 0, 5, N'Đơn giản nhưng ngon.');
+
+-- Salad tôm bơ
+INSERT INTO Dishingredient VALUES (1, 1, 150), (1, 4, 50), (1, 6, 30);
+
+-- Súp trứng gà
+INSERT INTO Dishingredient VALUES (2, 2, 2), (2, 4, 30);
+
+-- Bò nướng phô mai
+INSERT INTO Dishingredient VALUES (3, 3, 200), (3, 7, 50);
+
+-- Mỳ Ý sốt bò
+INSERT INTO Dishingredient VALUES (4, 10, 100), (4, 3, 100), (4, 11, 50);
+
+-- Gà quay mật ong
+INSERT INTO Dishingredient VALUES (5, 17, 200), (5, 20, 20);
+
+-- Khoai tây nghiền
+INSERT INTO Dishingredient VALUES (6, 5, 150), (6, 6, 20);
+
+-- Rau xào bơ tỏi
+INSERT INTO Dishingredient VALUES (7, 4, 100), (7, 6, 10);
+
+-- Panna cotta
+INSERT INTO Dishingredient VALUES (8, 8, 100), (8, 7, 20);
+
+-- Kem sô-cô-la
+INSERT INTO Dishingredient VALUES (9, 8, 50), (9, 19, 30);
+
+-- Bánh flan
+INSERT INTO Dishingredient VALUES (10, 2, 2), (10, 8, 50);
+
+-- Sinh tố bơ
+INSERT INTO Dishingredient VALUES (11, 6, 100), (11, 8, 50);
+
+-- Nước ép dưa hấu
+INSERT INTO Dishingredient VALUES (12, 12, 150);
+
+-- Nước ép nho
+INSERT INTO Dishingredient VALUES (13, 13, 150);
+
+-- Cà phê đen
+INSERT INTO Dishingredient VALUES (14, 14, 15);
+
+-- Trà xanh mật ong
+INSERT INTO Dishingredient VALUES (15, 15, 10), (15, 20, 10);
+
+-- Súp gà ngô non
+INSERT INTO Dishingredient VALUES (16, 17, 100), (16, 2, 1);
+
+-- Bít tết bò
+INSERT INTO Dishingredient VALUES (17, 3, 250);
+
+-- Rau củ hấp
+INSERT INTO Dishingredient VALUES (18, 4, 50), (18, 5, 50), (18, 11, 20);
+
+-- Bánh tart trái cây
+INSERT INTO Dishingredient VALUES (19, 12, 30), (19, 13, 30), (19, 8, 20);
+
+-- Sữa tươi đánh bọt
+INSERT INTO Dishingredient VALUES (20, 8, 100);
+
+--INSERT INTO DISH (NAME, PRICE, DISCOUNT, ISSOLDOUT, PHOTO, DESCRIPTION, ID_DISHCATEGORY)
+--VALUES 
+--(N'Cơm gà',			65000,		10, 0, NULL, N'Cơm trắng ăn kèm thịt gà luộc', 2),			--1
+--(N'Cơm bò lúc lắc', 130000,		NULL, 0, NULL, N'Cơm với bò lúc lắc sốt tiêu', 2),			--2
+--(N'Miến gà',		80000,		5, 0, NULL, N'Miến gà thơm ngon', 2),						--3
+--(N'Cơm cá hồi áp chảo', 75000,	NULL, 0, NULL, N'Cá hồi tươi áp chảo cùng cơm', 2),			--4
+--(N'Trứng chiên',	50000,		NULL, 0, NULL, N'Trứng gà chiên giòn', 3),					--5
+--(N'Rau luộc',		35000,		NULL, 0, NULL, N'Rau cải, cà rốt luộc chấm mắm', 3),		--6
+--(N'Cơm trứng cà chua', 30000,	5, 0, NULL, N'Trứng chiên, sốt cà chua, cơm', 2),			--7
+--(N'Bò xào rau cải',	60000,		NULL, 0, NULL, N'Thịt bò xào với rau cải', 2),				--8
+--(N'Miến xào thập cẩm', 70000,	10, 0, NULL, N'Miến xào với trứng, thịt và rau', 2),		--9
+--(N'Salad rau trộn', 65000,		NULL, 0, NULL, N'Xà lách, cà chua, nước sốt', 1),			--10
+--(N'Súp gà',         120000,		NULL, 0, NULL, N'Súp gà nóng hổi', 1),						--11
+--(N'Khoai tây chiên',35000,		5, 0, NULL, N'Khoai tây chiên giòn', 1)						--12
 																								
- INSERT INTO DISHINGREDIENT VALUES
--- Cơm gà (DISH.ID = 1)
-(1, 1, 200), -- Thịt gà
-(1, 4, 150), -- Cơm trắng
--- Cơm bò lúc lắc (DISH.ID = 2)
-(2, 2, 200), -- Thịt bò
-(2, 4, 150), -- Cơm trắng
-(2, 7, 50),  -- Cà chua
--- Miến gà (3)
-(3, 1, 150),
-(3, 10, 100),
--- Cá hồi áp chảo (4)
-(4, 3, 200),
-(4, 4, 150),
--- Trứng chiên (5)
-(5, 5, 2),
--- Rau luộc (6)
-(6, 6, 100),
-(6, 7, 50),
--- Cơm trứng cà chua (7)
-(7, 4, 150),
-(7, 5, 1),
-(7, 7, 50),
--- Bò xào rau cải (8)
-(8, 2, 150),
-(8, 6, 100),
--- Miến xào thập cẩm (9)
-(9, 10, 100),
-(9, 5, 1),
-(9, 1, 50),
-(9, 6, 50),
- -- Salad rau trộn (10)
-(10, 11, 100),   -- Rau xà lách
-(10, 7,  30),    -- Cà chua 
--- Súp gà (11)
-(11, 1, 100),    -- Thịt gà
-(11, 6,  20),    -- Rau cải
--- Khoai tây chiên (12)
-(12, 12, 150)	-- Khoai tây
+-- INSERT INTO DISHINGREDIENT VALUES
+---- Cơm gà (DISH.ID = 1)
+--(1, 1, 200), -- Thịt gà
+--(1, 4, 150), -- Cơm trắng
+---- Cơm bò lúc lắc (DISH.ID = 2)
+--(2, 2, 200), -- Thịt bò
+--(2, 4, 150), -- Cơm trắng
+--(2, 7, 50),  -- Cà chua
+---- Miến gà (3)
+--(3, 1, 150),
+--(3, 10, 100),
+---- Cá hồi áp chảo (4)
+--(4, 3, 200),
+--(4, 4, 150),
+---- Trứng chiên (5)
+--(5, 5, 2),
+---- Rau luộc (6)
+--(6, 6, 100),
+--(6, 7, 50),
+---- Cơm trứng cà chua (7)
+--(7, 4, 150),
+--(7, 5, 1),
+--(7, 7, 50),
+---- Bò xào rau cải (8)
+--(8, 2, 150),
+--(8, 6, 100),
+---- Miến xào thập cẩm (9)
+--(9, 10, 100),
+--(9, 5, 1),
+--(9, 1, 50),
+--(9, 6, 50),
+-- -- Salad rau trộn (10)
+--(10, 11, 100),   -- Rau xà lách
+--(10, 7,  30),    -- Cà chua 
+---- Súp gà (11)
+--(11, 1, 100),    -- Thịt gà
+--(11, 6,  20),    -- Rau cải
+---- Khoai tây chiên (12)
+--(12, 12, 150)	-- Khoai tây
 
 INSERT INTO TABLETYPE (NAME, SEATS) VALUES 
 (N'Bàn vuông', 4),

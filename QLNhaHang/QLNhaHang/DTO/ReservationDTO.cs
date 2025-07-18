@@ -12,6 +12,7 @@
 		public double? Reservationprice { get; set; }
 		public string? Note { get; set; }
 		public string? Transactionid { get; set; }
+		public int? IdReservationstatus { get; set; }
 		public string? Status { get; set; }
         public string? CustomerName { get; set; }
         public string? TableName { get; set; }

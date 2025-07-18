@@ -89,6 +89,13 @@ namespace QLNhaHang.Controllers.API
             if (dinetable == null)
                 return NotFound();
 
+            // Kiểm tra xem có reservation nào sử dụng bàn này không
+            bool hasReservation = await db.Reservations.AnyAsync(r => r.IdDinetable == id);
+            if (hasReservation)
+            {
+                return Conflict("Không thể xóa bàn này vì đã có đặt bàn sử dụng.");
+            }
+
             db.Dinetables.Remove(dinetable);
             await db.SaveChangesAsync();
 

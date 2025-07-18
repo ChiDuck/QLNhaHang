@@ -8,7 +8,7 @@ async function initializePayrollPage() {
     showLoadingState()
     await loadPayrolls()
     hideLoadingState()
-    updateStats()
+   // updateStats()
     loadYearFilter()
 }
 
@@ -84,7 +84,6 @@ function createPayrollCard(payroll) {
                 <span class="month-badge">${monthNames[payroll.month]}</span>
                 <span class="year-badge">${payroll.year}</span>
             </div>
-            <span class="payroll-status">Hoàn thành</span>
         </div>
         
         <div class="payroll-info">
@@ -102,23 +101,8 @@ function createPayrollCard(payroll) {
                     Số nhân viên
                 </span>
                 <span class="info-value">${payroll.employeeCount || 0} người</span>
-            </div>
-            
-            <div class="info-row">
-                <span class="info-label">
-                    <i class="fas fa-money-bill-wave"></i>
-                    Tổng lương
-                </span>
-                <span class="info-value">${formatCurrency(payroll.totalSalary || 0)}</span>
-            </div>
-            
-            <div class="info-row">
-                <span class="info-label">
-                    <i class="fas fa-clock"></i>
-                    Ngày tạo
-                </span>
-                <span class="info-value">${formatDate(payroll.createdDate)}</span>
-            </div>
+            </div>       
+           
         </div>
         
         <div class="payroll-actions">
@@ -126,14 +110,6 @@ function createPayrollCard(payroll) {
                 <i class="fas fa-eye"></i>
                 Chi tiết
             </a>
-            <button class="btn btn-edit" onclick="editPayroll(${payroll.id})" title="Chỉnh sửa">
-                <i class="fas fa-edit"></i>
-                Sửa
-            </button>
-            <button class="btn btn-delete" onclick="deletePayroll(${payroll.id})" title="Xóa">
-                <i class="fas fa-trash"></i>
-                Xóa
-            </button>
         </div>
     `
 

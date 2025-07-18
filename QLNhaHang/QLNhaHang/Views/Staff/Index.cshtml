@@ -1,5 +1,5 @@
 ﻿@{
-	ViewData["Title"] = "Quản lý nhân sự";
+	ViewData["Title"] = "Nhân sự";
 }
 
 <link rel="stylesheet" href="~/css/staff.css" asp-append-version="true" />
@@ -13,15 +13,13 @@
 					<i class="fas fa-user-tie"></i>
 					Quản lý nhân sự
 				</h1>
-				<p class="page-subtitle">Quản lý thông tin và lịch làm việc của nhân viên</p>
 			</div>
 			<button id="addStaffBtn" class="btn btn-primary btn-add-staff">
-				<i class="fas fa-user-plus"></i>
+				<i class="fas fa-plus"></i>
 				Thêm nhân viên
 			</button>
 		</div>
 	</div>
-
 	<!-- Search and Stats Section -->
 	<div class="search-stats-section">
 		<div class="search-container">
@@ -33,8 +31,8 @@
 				</button>
 			</div>
 		</div>
-
-		<div class="stats-cards">
+	</div>
+@* 		<div class="stats-cards">
 			<div class="stat-card">
 				<div class="stat-icon">
 					<i class="fas fa-users"></i>
@@ -63,7 +61,7 @@
 				</div>
 			</div>
 		</div>
-	</div>
+ *@	
 
 	<!-- Staff Grid -->
 	<div class="staff-container">
@@ -156,10 +154,6 @@
 				</div>
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-danger me-auto" id="deleteStaffBtn">
-					<i class="fas fa-trash"></i>
-					Xóa
-				</button>
 				<button type="button" class="btn btn-warning" id="editStaffBtn">
 					<i class="fas fa-edit"></i>
 					Sửa thông tin
@@ -186,7 +180,6 @@
 					<input type="hidden" id="editIdStaff" name="IdStaff" />
 					<div class="form-grid">
 						<div class="form-section">
-							<h6 class="section-title">Thông tin cá nhân</h6>
 							<div class="form-group">
 								<label class="form-label">Họ và tên *</label>
 								<input type="text" class="form-control" id="editName" name="Name" required>
@@ -216,7 +209,6 @@
 							</div>
 						</div>
 						<div class="form-section">
-							<h6 class="section-title">Thông tin công việc</h6>
 							<div class="form-group">
 								<label class="form-label">Ảnh đại diện</label>
 								<input type="file" accept="image/*" class="form-control" id="staffPhotoInput" />
@@ -248,11 +240,7 @@
 					</div>
 				</form>
 			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-secondary" id="backToDetailBtn">
-					<i class="fas fa-arrow-left"></i>
-					Quay lại
-				</button>
+			<div class="modal-footer">	
 				<button class="btn btn-success" onclick="submitStaff()">
 					<i class="fas fa-save"></i>
 					Xác nhận

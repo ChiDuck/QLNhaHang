@@ -18,7 +18,7 @@ namespace QLNhaHang.Controllers.API
 
 		[HttpGet]
 		public async Task<IActionResult> GetPayrolls() => Ok(await _context.Payrolls
-		.Select(p => new { id = p.IdPayroll, p.Month, p.Year })
+		.Select(p => new { id = p.IdPayroll, p.Month, p.Year, EmployeeCount = p.Payrolldetails.Count })
 		.OrderByDescending(p => p.Year).ThenByDescending(p => p.Month)
 		.ToListAsync());
 

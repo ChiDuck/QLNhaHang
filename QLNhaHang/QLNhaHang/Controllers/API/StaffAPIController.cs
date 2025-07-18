@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Humanizer;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -22,7 +23,6 @@ namespace QLNhaHang.Controllers.API
 		public async Task<ActionResult<IEnumerable<object>>> GetStaffList()
 		{
 			return await db.Staff
-				.Where(s => s.Isactive)
 				.Select(s => new
 				{
 					s.IdStaff,
@@ -120,35 +120,33 @@ namespace QLNhaHang.Controllers.API
 		}
 
 		[HttpPut("{id}")]
-		public async Task<IActionResult> UpdateStaff(int id, [FromBody] Staff staff)
+		public async Task<IActionResult> UpdateStaff(int id, [FromBody] Staff editstaff)
 		{
-			if (id != staff.IdStaff)
-			{
-				return BadRequest();
-			}
+			var staff = await db.Staff.FindAsync(id);
+			if (staff == null) return NotFound();
 
-			if (!staff.PasswordHash.IsNullOrEmpty())
-				staff.PasswordHash = BCrypt.Net.BCrypt.HashPassword(staff.PasswordHash);
-			else
-			{
-				// Giữ nguyên PasswordHash nếu không có thay đổi
-				var existingStaff = await db.Staff.FindAsync(id);
-				if (existingStaff == null)
-				{
-					return NotFound();
-				}
-				staff.PasswordHash = existingStaff.PasswordHash;
-			}
+			if (!editstaff.PasswordHash.IsNullOrEmpty())
+				staff.PasswordHash = BCrypt.Net.BCrypt.HashPassword(editstaff.PasswordHash);
+			staff.Name = editstaff.Name;
+			staff.Citizenid = editstaff.Citizenid;
+			staff.Phone = editstaff.Phone;
+			staff.Email = editstaff.Email;
+			staff.Gender = editstaff.Gender;
+			staff.Birthday = editstaff.Birthday;
+			staff.Photo = editstaff.Photo;
+			staff.Address = editstaff.Address;
+			staff.Startdate = editstaff.Startdate;
+			staff.Hourlysalary = editstaff.Hourlysalary;
+			staff.IdStafftype = editstaff.IdStafftype;
 
 			await db.SaveChangesAsync();
 
-			return NoContent();
+			return Ok();
 		}
 
 		[HttpDelete("{id}")]
 		public async Task<IActionResult> DeleteStaff(int id)
 		{
-			using var transaction = await db.Database.BeginTransactionAsync();
 			try
 			{
 				var staff = await db.Staff.FindAsync(id);
@@ -157,18 +155,16 @@ namespace QLNhaHang.Controllers.API
 					return NotFound();
 				}
 
-				// Kiểm tra các ràng buộc quan trọng (Importtickets và Payrolldetails)
-				var hasCriticalRelatedData = await db.Payrolldetails.AnyAsync(p => p.IdStaff == id);
-
-				if (hasCriticalRelatedData)
-				{
-					return BadRequest("Không thể xóa nhân viên vì có dữ liệu quan trọng liên quan (hóa đơn nhập hoặc bảng lương)");
-				}
-
 				if (staff.IdStafftype == 1)
 				{
 					return BadRequest("Không thể xóa quản lý.");
 				}
+
+				// Xóa tất cả Payrolldetails liên quan
+				var payrollDetails = await db.Payrolldetails
+					.Where(p => p.IdStaff == id)
+					.ToListAsync();
+				db.Payrolldetails.RemoveRange(payrollDetails);
 
 				// Xóa tất cả Weeklyshifts liên quan
 				var weeklyShifts = await db.Weeklyshifts
@@ -181,14 +177,17 @@ namespace QLNhaHang.Controllers.API
 				db.Staff.Remove(staff);
 
 				await db.SaveChangesAsync();
-				await transaction.CommitAsync();
 
-				return NoContent();
+				return Ok();
 			}
 			catch (Exception ex)
 			{
-				await transaction.RollbackAsync();
-				return StatusCode(500, $"Đã xảy ra lỗi khi xóa nhân viên: {ex.Message}");
+				return StatusCode(500, new
+				{
+					message = "Lỗi khi xóa nhân viên",
+					error = ex.Message,
+					inner = ex.InnerException?.Message
+				});
 			}
 		}
 

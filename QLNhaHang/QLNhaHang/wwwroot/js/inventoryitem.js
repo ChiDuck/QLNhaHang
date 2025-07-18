@@ -7,13 +7,17 @@ var bootstrap = window.bootstrap // Declare the bootstrap variable
 
 document.addEventListener("DOMContentLoaded", () => {
     initializeInventoryPage()
+    document.getElementById("refreshData").addEventListener("click", () => {
+        showLoadingState()
+        getAllInventoryitems()
+    })
 })
 
 async function initializeInventoryPage() {
     showLoadingState()
     await Promise.all([getAllInventoryitems(), loadInventoryTypes()])
     hideLoadingState()
-    updateStats()
+  //  updateStats()
 }
 
 function showLoadingState() {
@@ -157,7 +161,7 @@ async function searchInventoryItems() {
 
         inventoryitemlist = data
         renderInventoryGrid()
-        updateStats()
+       // updateStats()
 
         if (data.length === 0) {
             showNotification("Không tìm thấy nguyên liệu nào", "info")
@@ -183,7 +187,7 @@ async function deleteInventoryitem(id) {
         if (response.ok) {
             showNotification("Xóa thành công!", "success")
             await getAllInventoryitems()
-            updateStats()
+        //    updateStats()
         } else {
             const errorText = await response.text()
             throw new Error(errorText)
@@ -297,7 +301,7 @@ async function updateInventoryitem() {
             showNotification(id ? "Cập nhật thành công!" : "Thêm mới thành công!", "success")
             bootstrap.Modal.getInstance(document.getElementById("editModal")).hide()
             await getAllInventoryitems()
-            updateStats()
+        //    updateStats()
         } else {
             const error = await res.text()
             throw new Error(error)

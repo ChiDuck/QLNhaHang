@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = "Quản lý đặt bàn";
+    ViewData["Title"] = "Đặt bàn";
 }
 
 <div class="reservation-container">
@@ -11,38 +11,6 @@
                     <i class="fas fa-calendar-check"></i>
                     Quản lý đặt bàn
                 </h1>
-                <p class="page-subtitle">Theo dõi và xử lý các đơn đặt bàn</p>
-            </div>
-            <div class="header-right">
-                <div class="stats-cards">
-                    <div class="stat-card">
-                        <div class="stat-icon pending">
-                            <i class="fas fa-clock"></i>
-                        </div>
-                        <div class="stat-info">
-                            <span class="stat-number" id="pendingCount">0</span>
-                            <span class="stat-label">Chờ xác nhận</span>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon confirmed">
-                            <i class="fas fa-check"></i>
-                        </div>
-                        <div class="stat-info">
-                            <span class="stat-number" id="confirmedCount">0</span>
-                            <span class="stat-label">Đã xác nhận</span>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon today">
-                            <i class="fas fa-calendar-day"></i>
-                        </div>
-                        <div class="stat-info">
-                            <span class="stat-number" id="todayCount">0</span>
-                            <span class="stat-label">Hôm nay</span>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
@@ -72,12 +40,6 @@
                     <option value="tomorrow">Ngày mai</option>
                     <option value="week">Tuần này</option>
                     <option value="month">Tháng này</option>
-                </select>
-                <select id="sortOrder" class="filter-select">
-                    <option value="newest">Mới nhất</option>
-                    <option value="oldest">Cũ nhất</option>
-                    <option value="reservation-time">Theo giờ đặt</option>
-                    <option value="party-size">Theo số người</option>
                 </select>
             </div>
             <button class="refresh-btn" id="refreshData">
@@ -120,7 +82,7 @@
 
 <!-- Reservation Detail Modal -->
 <div class="modal fade" id="reservationDetailModal" tabindex="-1">
-    <div class="modal-dialog modal-xl">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <div class="modal-title-section">
@@ -130,7 +92,8 @@
                     </h5>
                     <span class="reservation-status-badge" id="resStatusBadge"></span>
                 </div>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal">
+                </button>
             </div>
             <div class="modal-body">
                 <div class="reservation-detail-content">

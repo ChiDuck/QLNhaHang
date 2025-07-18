@@ -2,102 +2,194 @@
 @model OrderConfirmationModel
 @{
 	ViewData["Title"] = "Xác nhận đơn hàng";
+	Layout = "~/Views/Shared/_RestaurantLayout.cshtml";
 }
 
-<style>
-	.order-confirmation-container {
-		max-width: 700px;
-		margin: 40px auto;
-		background: #fff;
-		border-radius: 10px;
-		box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-		padding: 32px 24px;
-	}
+@section Styles {
+	<link rel="stylesheet" href="~/css/confirmation-pages.css" asp-append-version="true" />
+}
 
-		.order-confirmation-container h2 {
-			text-align: center;
-			color: #2d7a2d;
-			margin-bottom: 24px;
+<div class="confirmation-wrapper">
+	<div class="confirmation-container">
+		@if (Model.ShipOrder != null)
+		{
+			<!-- Success Header -->
+			<div class="success-header">
+				<div class="success-icon">
+					<i class="fas fa-check-circle"></i>
+				</div>
+				<h1 class="success-title">Đặt hàng thành công!</h1>
+				<p class="success-subtitle">
+					Cảm ơn bạn đã tin tưởng và đặt hàng tại nhà hàng của chúng tôi.
+					Đơn hàng của bạn đã được ghi nhận và sẽ được xử lý trong thời gian sớm nhất.
+				</p>
+			</div>
+
+			<!-- Order Information Card -->
+			<div class="info-card">
+				<div class="card-header">
+					<i class="fas fa-receipt"></i>
+					<h3>Thông tin đơn hàng</h3>
+				</div>
+				<div class="card-body">
+					<div class="info-grid">
+						<div class="info-item">
+							<div class="info-label">
+								<i class="fas fa-hashtag"></i>
+								Mã đơn hàng
+							</div>
+							<div class="info-value order-id">#@Model.ShipOrder.IdShiporder</div>
+						</div>
+						<div class="info-item">
+							<div class="info-label">
+								<i class="fas fa-user"></i>
+								Khách hàng
+							</div>
+							<div class="info-value">@Model.ShipOrder.Customername</div>
+						</div>
+						<div class="info-item">
+							<div class="info-label">
+								<i class="fas fa-phone"></i>
+								Số điện thoại
+							</div>
+							<div class="info-value">@Model.ShipOrder.Phone</div>
+						</div>
+						<div class="info-item">
+							<div class="info-label">
+								<i class="fas fa-envelope"></i>
+								Email
+							</div>
+							<div class="info-value">@Model.ShipOrder.Email</div>
+						</div>
+						<div class="info-item">
+							<div class="info-label">
+								<i class="fas fa-calendar-alt"></i>
+								Ngày đặt
+							</div>
+							<div class="info-value">@Model.ShipOrder.Orderdate.ToString("dd/MM/yyyy HH:mm")</div>
+						</div>
+						@if (!string.IsNullOrEmpty(Model.ShipOrder.Shipaddress))
+						{
+							<div class="info-item full-width">
+								<div class="info-label">
+									<i class="fas fa-map-marker-alt"></i>
+									Địa chỉ giao hàng
+								</div>
+								<div class="info-value">@Model.ShipOrder.Shipaddress</div>
+							</div>
+						}
+						@if (!string.IsNullOrEmpty(Model.ShipOrder.Note))
+						{
+							<div class="info-item full-width">
+								<div class="info-label">
+									<i class="fas fa-sticky-note"></i>
+									Ghi chú
+								</div>
+								<div class="info-value">@Model.ShipOrder.Note</div>
+							</div>
+						}
+						<div class="info-item">
+							<div class="info-label">
+								<i class="fas fa-info-circle"></i>
+								Trạng thái
+							</div>
+							<div class="info-value">
+								<span class="status-badge status-pending">
+									@Model.ShipOrder.IdOrderstatusNavigation?.Name
+								</span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- Order Details Card -->
+			<div class="info-card">
+				<div class="card-header">
+					<i class="fas fa-list-ul"></i>
+					<h3>Chi tiết đơn hàng</h3>
+				</div>
+				<div class="card-body">
+					<div class="order-items">
+						@foreach (var item in Model.OrderItems)
+						{
+							<div class="order-item">
+								<div class="item-info">
+									<div class="item-name">@item.IdDishNavigation?.Name</div>
+									<div class="item-quantity">Số lượng: @item.Quantity</div>
+								</div>
+								<div class="item-price">@item.Subtotal.ToString("N0") ₫</div>
+							</div>
+						}
+					</div>
+					<div class="order-total">
+						<div class="total-label">Tổng cộng:</div>
+						<div class="total-amount">@Model.OrderItems.Sum(x => x.Subtotal).ToString("N0") ₫</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- Next Steps Card -->
+			<div class="info-card next-steps">
+				<div class="card-header">
+					<i class="fas fa-clock"></i>
+					<h3>Các bước tiếp theo</h3>
+				</div>
+				<div class="card-body">
+					<div class="steps-list">
+						<div class="step-item">
+							<div class="step-icon">
+								<i class="fas fa-check"></i>
+							</div>
+							<div class="step-content">
+								<div class="step-title">Đơn hàng đã được tiếp nhận</div>
+								<div class="step-desc">Chúng tôi đã ghi nhận đơn hàng của bạn</div>
+							</div>
+						</div>
+						<div class="step-item pending">
+							<div class="step-icon">
+								<i class="fas fa-utensils"></i>
+							</div>
+							<div class="step-content">
+								<div class="step-title">Chuẩn bị món ăn</div>
+								<div class="step-desc">Đầu bếp sẽ bắt đầu chuẩn bị món ăn</div>
+							</div>
+						</div>
+						<div class="step-item pending">
+							<div class="step-icon">
+								<i class="fas fa-shipping-fast"></i>
+							</div>
+							<div class="step-content">
+								<div class="step-title">Giao hàng</div>
+								<div class="step-desc">Đơn hàng sẽ được giao đến địa chỉ của bạn</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- Action Buttons -->
+			<div class="action-buttons">
+				<a href="/" class="btn btn-primary">
+					<i class="fas fa-home"></i>
+					Về trang chủ
+				</a>
+				<a href="/Home/Menu" class="btn btn-outline">
+					<i class="fas fa-utensils"></i>
+					Đặt thêm món
+				</a>
+			</div>
 		}
-
-	.order-info-list {
-		list-style: none;
-		padding: 0;
-		margin-bottom: 24px;
-	}
-
-		.order-info-list li {
-			margin-bottom: 8px;
-			font-size: 1.05rem;
+		else
+		{
+			<div class="error-state">
+				<div class="error-icon">
+					<i class="fas fa-exclamation-triangle"></i>
+				</div>
+				<h2>Không tìm thấy đơn hàng</h2>
+				<p>Xin lỗi, chúng tôi không thể tìm thấy thông tin đơn hàng của bạn.</p>
+				<a href="/" class="btn btn-primary">Về trang chủ</a>
+			</div>
 		}
-
-	.table-order-details th, .table-order-details td {
-		text-align: center;
-		vertical-align: middle;
-	}
-
-	.table-order-details th {
-		background: #f0f0f0;
-	}
-
-	.btn-back-home {
-		display: block;
-		margin: 32px auto 0 auto;
-		width: 200px;
-		font-size: 1.1rem;
-	}
-
-	.alert-success {
-		text-align: center;
-		font-size: 1.1rem;
-	}
-</style>
-
-<div class="order-confirmation-container">
-	@if (Model.ShipOrder != null)
-	{
-		<div class="alert alert-success">
-			<strong>Đặt hàng thành công!</strong><br />
-			Đơn hàng của bạn đã được ghi nhận. Vui lòng chờ nhà hàng xác nhận và tiếp tục theo dõi đơn hàng.
-		</div>
-		<h4>Thông tin đơn hàng</h4>
-		<ul class="order-info-list">
-			<li><strong>Mã đơn hàng:</strong> @Model.ShipOrder.IdShiporder</li>
-			<li><strong>Khách hàng:</strong> @Model.ShipOrder.Customername</li>
-			<li><strong>Số điện thoại:</strong> @Model.ShipOrder.Phone</li>
-			<li><strong>Email:</strong> @Model.ShipOrder.Email</li>
-			<li><strong>Ngày đặt:</strong> @Model.ShipOrder.Orderdate.ToString("g")</li>
-			@if (Model.ShipOrder.Shipaddress != null)
-			{
-				<li><strong>Địa chỉ giao hàng:</strong> @Model.ShipOrder.Shipaddress</li>
-			}
-			<li><strong>Ghi chú:</strong> @Model.ShipOrder.Note</li>
-			<li><strong>Trạng thái:</strong> @Model.ShipOrder.IdOrderstatusNavigation?.Name</li>
-		</ul>
-		<h4>Chi tiết đơn hàng</h4>
-		<table class="table table-bordered table-order-details">
-			<thead>
-				<tr>
-					<th>Món ăn</th>
-					<th>Số lượng</th>
-					<th>Thành tiền</th>
-				</tr>
-			</thead>
-			<tbody>
-				@foreach (var item in Model.OrderItems)
-				{
-					<tr>
-						<td>@item.IdDishNavigation?.Name</td>
-						<td>@item.Quantity</td>
-						<td>@item.Subtotal.ToString("N0") VNĐ</td>
-					</tr>
-				}
-			</tbody>
-		</table>
-		<a class="btn btn-success btn-back-home" href="/">Quay về trang chủ</a>
-	}
-	else
-	{
-		<div class="alert alert-danger text-center">Không tìm thấy đơn hàng.</div>
-	}
+	</div>
 </div>

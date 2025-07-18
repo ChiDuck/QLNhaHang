@@ -1,29 +1,28 @@
 ﻿@{
-    ViewData["Title"] = "Quản lý món ăn";
+	ViewData["Title"] = "Món ăn";
 }
 
 <link rel="stylesheet" href="~/css/dish.css" asp-append-version="true" />
 
 <div class="dish-management">
-    <!-- Header Section -->
-    <div class="page-header">
-        <div class="header-content">
-            <div class="header-info">
-                <h1 class="page-title">
-                    <i class="fas fa-utensils"></i>
-                    Quản lý món ăn
-                </h1>
-                <p class="page-subtitle">Quản lý thực đơn và món ăn của nhà hàng</p>
-            </div>
-            <button class="btn btn-primary btn-add-dish" onclick="openAddDishModal()">
-                <i class="fas fa-plus"></i>
-                Thêm món mới
-            </button>
-        </div>
-    </div>
+	<!-- Header Section -->
+	<div class="page-header">
+		<div class="header-content">
+			<div class="header-info">
+				<h1 class="page-title">
+					<i class="fas fa-utensils"></i>
+					Quản lý món ăn
+				</h1>
+			</div>
+			<button class="btn btn-primary btn-add-dish" onclick="openAddDishModal()">
+				<i class="fas fa-plus"></i>
+				Thêm món mới
+			</button>
+		</div>
+	</div>
 
-    <!-- Stats Section -->
-    <div class="stats-section">
+	<!-- Stats Section -->
+	@*     <div class="stats-section">
         <div class="stat-card">
             <div class="stat-icon">
                 <i class="fas fa-utensils"></i>
@@ -61,75 +60,81 @@
             </div>
         </div>
     </div>
+ *@
+	<!-- Search and Filter Section -->
+	<div class="search-section">
+		<div class="search-filters">
+			<div class="search-container">
+				<div class="search-input-wrapper">
+					<i class="fas fa-search search-icon"></i>
+					<input type="text" id="dishSearchInput" class="search-input" placeholder="Tìm kiếm món ăn...">
+					<button class="search-btn" onclick="searchDishes()">
+						<i class="fas fa-search"></i>
+					</button>
+				</div>
+			</div>
 
-    <!-- Search and Filter Section -->
-    <div class="search-section">
-        <div class="search-container">
-            <div class="search-input-wrapper">
-                <i class="fas fa-search search-icon"></i>
-                <input type="text" id="dishSearchInput" class="search-input" placeholder="Tìm kiếm món ăn...">
-                <button class="search-btn" onclick="searchDishes()">
-                    <i class="fas fa-search"></i>
-                </button>
-            </div>
-        </div>
+			<div class="filter-section">
+				<div class="filter-group">
+					<label class="filter-label">Lọc theo:</label>
+					<select class="filter-select" id="categoryFilter" onchange="filterDishes()">
+						<option value="">Tất cả danh mục</option>
+					</select>
+				</div>
+				<div class="filter-group">
+					<select class="filter-select" id="statusFilter" onchange="filterDishes()">
+						<option value="">Tất cả trạng thái</option>
+						<option value="available">Còn hàng</option>
+						<option value="unavailable">Hết hàng</option>
+					</select>
+				</div>
+			</div>
+			<button class="refresh-btn" id="refreshData">
+				<i class="fas fa-sync-alt"></i>
+				Làm mới
+			</button>
+		</div>
+	</div>
 
-        <div class="filter-section">
-            <div class="filter-group">
-                <label class="filter-label">Lọc theo:</label>
-                <select class="filter-select" id="categoryFilter" onchange="filterDishes()">
-                    <option value="">Tất cả danh mục</option>
-                </select>
-            </div>
-            <div class="filter-group">
-                <select class="filter-select" id="statusFilter" onchange="filterDishes()">
-                    <option value="">Tất cả trạng thái</option>
-                    <option value="available">Còn hàng</option>
-                    <option value="unavailable">Hết hàng</option>
-                </select>
-            </div>
-        </div>
-    </div>
+	<!-- Loading State -->
+	<div class="loading-state" id="loadingState" style="display: none;">
+		<div class="spinner"></div>
+		<p>Đang tải dữ liệu...</p>
+	</div>
 
-    <!-- Loading State -->
-    <div class="loading-state" id="loadingState" style="display: none;">
-        <div class="spinner"></div>
-        <p>Đang tải dữ liệu...</p>
-    </div>
+	<!-- Dishes Grid -->
+	<div class="dishes-container">
+		<div class="dishes-grid" id="dishTableBody">
+			<!-- Dishes will be loaded here -->
+		</div>
+	</div>
 
-    <!-- Dishes Grid -->
-    <div class="dishes-container">
-        <div class="dishes-grid" id="dishTableBody">
-            <!-- Dishes will be loaded here -->
-        </div>
-    </div>
-
-    <!-- Empty State -->
-    <div class="empty-state" id="emptyState" style="display: none;">
-        <i class="fas fa-utensils"></i>
-        <h3>Chưa có món ăn nào</h3>
-        <p>Hãy thêm món ăn đầu tiên cho nhà hàng của bạn</p>
-        <button class="btn btn-primary" onclick="openAddDishModal()">
-            <i class="fas fa-plus"></i>
-            Thêm món mới
-        </button>
-    </div>
+	<!-- Empty State -->
+	<div class="empty-state" id="emptyState" style="display: none;">
+		<i class="fas fa-utensils"></i>
+		<h3>Chưa có món ăn nào</h3>
+		<p>Hãy thêm món ăn đầu tiên cho nhà hàng của bạn</p>
+		<button class="btn btn-primary" onclick="openAddDishModal()">
+			<i class="fas fa-plus"></i>
+			Thêm món mới
+		</button>
+	</div>
 </div>
 
 <!-- Modal chi tiết món ăn -->
 <div class="modal fade" id="dishDetailModal" tabindex="-1" aria-labelledby="dishDetailLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content" id="dishDetailContent">
-            <!-- Nội dung chi tiết sẽ được load tại đây -->
-        </div>
-    </div>
+	<div class="modal-dialog modal-lg modal-dialog-centered">
+		<div class="modal-content" id="dishDetailContent">
+			<!-- Nội dung chi tiết sẽ được load tại đây -->
+		</div>
+	</div>
 </div>
 
 <!-- Modal sửa món -->
 <div class="modal fade" id="editDishModal" tabindex="-1">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content" id="editDishModalContent"></div>
-    </div>
+	<div class="modal-dialog modal-lg modal-dialog-centered">
+		<div class="modal-content" id="editDishModalContent"></div>
+	</div>
 </div>
 
 <script src="~/js/upload.js"></script>

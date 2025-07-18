@@ -128,7 +128,7 @@ function updateCartModal() {
             const tr = document.createElement('tr');
             tr.innerHTML = `
         <td>
-          <div class="d-flex align-items-center">
+          <div class="d-flex align-items-center me-5">
             <img src="${item.photo}" alt="${item.name}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 5px;">
             <span class="ms-3">${item.name}</span>
           </div>

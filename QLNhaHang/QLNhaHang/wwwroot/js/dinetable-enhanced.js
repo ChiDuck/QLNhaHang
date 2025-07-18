@@ -13,7 +13,7 @@ class DinetableManager {
   async init() {
     await this.loadInitialData()
     this.setupEventListeners()
-    this.updateStats()
+   // this.updateStats()
     this.renderTables()
   }
 
@@ -71,7 +71,7 @@ class DinetableManager {
       })
 
     // Filter functionality
-    ;["areaFilter", "typeFilter", "statusFilter"].forEach((id) => {
+    ;["areaFilter", "typeFilter"].forEach((id) => {
       document.getElementById(id).addEventListener("change", () => {
         this.filterTables()
       })
@@ -105,7 +105,7 @@ class DinetableManager {
     const searchTerm = document.getElementById("searchInput").value.toLowerCase()
     const areaFilter = document.getElementById("areaFilter").value
     const typeFilter = document.getElementById("typeFilter").value
-    const statusFilter = document.getElementById("statusFilter").value
+    //const statusFilter = document.getElementById("statusFilter").value
 
     this.filteredTables = this.tables.filter((table) => {
       const matchesSearch =
@@ -115,13 +115,13 @@ class DinetableManager {
 
       const matchesArea = !areaFilter || table.idArea == areaFilter
       const matchesType = !typeFilter || table.idTabletype == typeFilter
-      const matchesStatus = !statusFilter || table.status === statusFilter
+     // const matchesStatus = !statusFilter || table.status === statusFilter
 
-      return matchesSearch && matchesArea && matchesType && matchesStatus
+      return matchesSearch && matchesArea && matchesType //&& matchesStatus
     })
 
     this.renderTables()
-    this.updateStats()
+   // this.updateStats()
   }
 
   switchView(view) {
@@ -162,19 +162,18 @@ class DinetableManager {
     }
 
     this.filteredTables.forEach((table) => {
-      const status = table.status || "available"
-      const statusText = {
-        available: "Trống",
-        occupied: "Có khách",
-        maintenance: "Bảo trì",
-      }
+      //const status = table.status || "available"
+      //const statusText = {
+      //  available: "Trống",
+      //  occupied: "Có khách",
+      //  maintenance: "Bảo trì",
+      //}
 
       const card = document.createElement("div")
-      card.className = `table-card ${status}`
+      card.className = `table-card`
       card.innerHTML = `
                 <div class="table-header">
                     <div class="table-name">${table.name}</div>
-                    <span class="table-status ${status}">${statusText[status]}</span>
                 </div>
                 <div class="table-info">
                     <div class="info-row">
@@ -192,10 +191,10 @@ class DinetableManager {
                 </div>
                 <div class="table-actions">
                     <button class="btn btn-sm btn-outline-primary" onclick="dinetableManager.showEditForm(${table.idDinetable})">
-                        <i class="fas fa-edit"></i> Sửa
+                        <i class="fas fa-edit"></i>
                     </button>
                     <button class="btn btn-sm btn-outline-danger" onclick="dinetableManager.showDeleteModal(${table.idDinetable}, '${table.name}')">
-                        <i class="fas fa-trash"></i> Xóa
+                        <i class="fas fa-trash"></i>
                     </button>
                 </div>
             `
@@ -220,12 +219,12 @@ class DinetableManager {
     }
 
     this.filteredTables.forEach((table) => {
-      const status = table.status || "available"
-      const statusText = {
-        available: "Trống",
-        occupied: "Có khách",
-        maintenance: "Bảo trì",
-      }
+      //const status = table.status || "available"
+      //const statusText = {
+      //  available: "Trống",
+      //  occupied: "Có khách",
+      //  maintenance: "Bảo trì",
+      //}
 
       const row = document.createElement("tr")
       row.innerHTML = `
@@ -236,9 +235,7 @@ class DinetableManager {
                 <td>${table.seats}</td>
                 <td>${table.area}</td>
                 <td>${table.type}</td>
-                <td>
-                    <span class="table-status ${status}">${statusText[status]}</span>
-                </td>
+
                 <td>
                     <div class="btn-group" role="group">
                         <button class="btn btn-sm btn-outline-primary" onclick="dinetableManager.showEditForm(${table.idDinetable})">
@@ -269,7 +266,7 @@ class DinetableManager {
   showAddForm() {
     document.getElementById("dinetableModalTitle").innerHTML = '<i class="fas fa-chair"></i> Thêm bàn mới'
     this.resetForm()
-    window.bootstrap.Modal(document.getElementById("dinetableModal")).show()
+    new bootstrap.Modal(document.getElementById("dinetableModal")).show()
   }
 
   async showEditForm(id) {
@@ -282,10 +279,10 @@ class DinetableManager {
       document.getElementById("dinetableName").value = table.name
       document.getElementById("dinetableArea").value = table.idArea
       document.getElementById("dinetableType").value = table.idTabletype
-      document.getElementById("dinetableStatus").value = table.status || "available"
-      document.getElementById("dinetableNote").value = table.note || ""
+      //document.getElementById("dinetableStatus").value = table.status || "available"
+      //document.getElementById("dinetableNote").value = table.note || ""
 
-      window.bootstrap.Modal(document.getElementById("dinetableModal")).show()
+      new bootstrap.Modal(document.getElementById("dinetableModal")).show()
     } catch (error) {
       this.showError("Lỗi khi tải thông tin bàn: " + error.message)
     }
@@ -294,7 +291,7 @@ class DinetableManager {
   showDeleteModal(id, name) {
     document.getElementById("deleteTableName").textContent = name
     document.getElementById("confirmDelete").dataset.tableId = id
-    window.bootstrap.Modal(document.getElementById("deleteModal")).show()
+    new bootstrap.Modal(document.getElementById("deleteModal")).show()
   }
 
   async submitForm() {
@@ -304,8 +301,8 @@ class DinetableManager {
         Name: document.getElementById("dinetableName").value.trim(),
         IdArea: Number.parseInt(document.getElementById("dinetableArea").value),
         IdTabletype: Number.parseInt(document.getElementById("dinetableType").value),
-        Status: document.getElementById("dinetableStatus").value,
-        Note: document.getElementById("dinetableNote").value.trim(),
+      //  Status: document.getElementById("dinetableStatus").value,
+      //  Note: document.getElementById("dinetableNote").value.trim(),
       }
 
       // Validation
@@ -330,7 +327,7 @@ class DinetableManager {
         this.showSuccess(isEdit ? "Cập nhật bàn thành công!" : "Thêm bàn mới thành công!")
         window.bootstrap.Modal.getInstance(document.getElementById("dinetableModal")).hide()
         await this.loadInitialData()
-        this.updateStats()
+        //this.updateStats()
         this.renderTables()
       } else {
         const error = await response.text()
@@ -352,7 +349,7 @@ class DinetableManager {
         this.showSuccess("Xóa bàn thành công!")
         window.bootstrap.Modal.getInstance(document.getElementById("deleteModal")).hide()
         await this.loadInitialData()
-        this.updateStats()
+       // this.updateStats()
         this.renderTables()
       } else {
         const error = await response.text()

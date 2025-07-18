@@ -16,8 +16,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: url("/placeholder.svg?height=1080&width=1920") center / cover;
-  opacity: 0.3;
+  background: url("/photo/client/home-background.jpg") center / cover;
   z-index: 1;
 }
 

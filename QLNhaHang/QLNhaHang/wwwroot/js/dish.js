@@ -6,6 +6,10 @@ var originalDishlist = []
 document.addEventListener("DOMContentLoaded", () => {
     getAllDishes()
     loadDishCategories()
+    document.getElementById("refreshData").addEventListener("click", () => {
+        showLoading(true)
+        getAllDishes()
+    })
 })
 
 async function getAllDishes() {
@@ -16,7 +20,7 @@ async function getAllDishes() {
         dishlist = await res.json()
         originalDishlist = [...dishlist]
         loadDishes()
-        updateStats()
+       // updateStats()
     } catch (error) {
         console.error("Lỗi khi lấy danh sách món ăn:", error)
         showNotification("Lỗi khi tải dữ liệu món ăn", "error")
@@ -77,7 +81,7 @@ function createDishCard(dish) {
     card.innerHTML = `
         <div class="dish-image">
             ${dish.photo
-            ? `<img src="${dish.photo}" alt="${dish.name}" onerror="this.parentElement.innerHTML='<div class=\\"no-image\\"><i class=\\"fas fa-utensils\\"></i></div>'">`
+            ? `<img src="${dish.photo}" alt="${dish.name}" onerror="this.parentElement.innerHTML='<div class=\\"no-image\\"><i class=\\"fas fa-utensils\\"></i></div>`
             : `<div class="no-image"><i class="fas fa-utensils"></i></div>`
         }
             ${discountBadge}
@@ -95,17 +99,9 @@ function createDishCard(dish) {
             ${dish.description ? `<div class="dish-description">${dish.description}</div>` : ""}
             ${priceDisplay}
             <div class="dish-actions">
-                <button class="action-btn view" onclick="showDishDetail(${dish.idDish})">
+                <button class="btn-view" onclick="showDishDetail(${dish.idDish})">
                     <i class="fas fa-eye"></i>
                     Chi tiết
-                </button>
-                <button class="action-btn edit" onclick="openEditDishModal(${dish.idDish})">
-                    <i class="fas fa-edit"></i>
-                    Sửa
-                </button>
-                <button class="action-btn delete" onclick="deleteDish(${dish.idDish})">
-                    <i class="fas fa-trash"></i>
-                    Xóa
                 </button>
             </div>
         </div>
@@ -175,7 +171,7 @@ async function searchDishes() {
     if (!keyword) {
         dishlist = [...originalDishlist]
         loadDishes()
-        updateStats()
+       // updateStats()
         return
     }
 
@@ -191,7 +187,7 @@ async function searchDishes() {
 
         dishlist = data
         loadDishes()
-        updateStats()
+      //  updateStats()
 
         if (data.length === 0) {
             showNotification("Không tìm thấy món ăn nào phù hợp", "error")
@@ -224,7 +220,7 @@ function filterDishes() {
 
     dishlist = filteredDishes
     loadDishes()
-    updateStats()
+   // updateStats()
 }
 
 async function deleteDish(id) {

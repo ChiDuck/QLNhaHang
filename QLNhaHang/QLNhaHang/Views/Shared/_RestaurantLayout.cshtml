@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<title>@ViewData["Title"] - Nhà Hàng Đức Phát</title>
+	<title>@ViewData["Title"] - Nhà Hàng Delicious</title>
 
 	<!-- Bootstrap CSS -->
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -16,6 +16,7 @@
 	<link rel="stylesheet" href="~/css/client.css" asp-append-version="true" />
 	<link rel="stylesheet" href="~/css/home-customer.css" asp-append-version="true" />
 	<link rel="stylesheet" href="~/css/restaurant-layout.css" asp-append-version="true" />
+	<link rel="stylesheet" href="~/css/booking-modal.css" asp-append-version="true" />
 	<link rel="stylesheet" href="~/QLNhaHang.styles.css" asp-append-version="true" />
 	@await RenderSectionAsync("Styles", required: false)
 </head>
@@ -27,7 +28,7 @@
 				<div class="brand-icon">
 					<i class="fas fa-utensils"></i>
 				</div>
-				<span class="brand-text">Đức Phát</span>
+				<span class="brand-text">Delicious</span>
 			</a>
 
 			<button class="navbar-toggler modern-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -71,9 +72,8 @@
 						<i class="fas fa-shopping-cart"></i>
 						<span id="cartBadge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill modern-badge">0</span>
 					</button>
-					
 					<!-- Account Dropdown -->
-					<div class="nav-item dropdown ms-3">
+					<div class="nav-item dropdown me-3">
 						<a class="nav-link dropdown-toggle modern-account-btn" href="#" id="accountDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
 							<div class="account-avatar">
 								<i class="fa fa-user"></i>
@@ -84,6 +84,13 @@
 							<!-- Content will be updated by JS -->
 						</ul>
 					</div>
+
+@* 					<!-- Reservation Button -->
+					<button class="btn modern-reservation-btn me-3 book-now-btn">
+						<i class="fas fa-calendar-check me-2"></i>Đặt bàn
+					</button> *@
+
+					
 				</div>
 			</div>
 		</div>
@@ -102,7 +109,7 @@
 					<div class="col-lg-4 col-md-6 mb-4">
 						<div class="footer-brand">
 							<h5 class="footer-title">
-								<i class="fas fa-utensils me-2"></i>Nhà Hàng Đức Phát
+								<i class="fas fa-utensils me-2"></i>Nhà Hàng Delicious
 							</h5>
 							<p class="footer-description">Trải nghiệm ẩm thực tuyệt vời với những món ăn được chế biến từ nguyên liệu tươi ngon nhất.</p>
 							<div class="social-links">
@@ -129,7 +136,6 @@
 						<ul class="footer-contact">
 							<li><i class="fas fa-map-marker-alt"></i>123 Đường ABC, Quận 1, TP.HCM</li>
 							<li><i class="fas fa-phone"></i>(028) 1234 5678</li>
-							<li><i class="fas fa-envelope"></i>info@ducphat.com</li>
 						</ul>
 					</div>
 
@@ -170,7 +176,7 @@
 					<h5 class="modal-title">
 						<i class="fas fa-sign-in-alt me-2"></i>Đăng nhập
 					</h5>
-					<button class="btn-close modern-btn-close" data-bs-dismiss="modal"></button>
+					<button class="btn-close" data-bs-dismiss="modal"></button>
 				</div>
 				<div class="modal-body modern-modal-body">
 					<form class="modern-form">
@@ -206,7 +212,7 @@
 					<h5 class="modal-title">
 						<i class="fas fa-user-plus me-2"></i>Đăng ký
 					</h5>
-					<button class="btn-close modern-btn-close" data-bs-dismiss="modal"></button>
+					<button class="btn-close" data-bs-dismiss="modal"></button>
 				</div>
 				<div class="modal-body modern-modal-body">
 					<form id="registerForm" class="modern-form" onsubmit="event.preventDefault(); registerCustomer()">
@@ -250,7 +256,7 @@
 					<h5 class="modal-title">
 						<i class="fas fa-shopping-cart me-2"></i>Giỏ Hàng Của Bạn
 					</h5>
-					<button type="button" class="btn-close modern-btn-close" data-bs-dismiss="modal"></button>
+					<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
 				</div>
 				<div class="modal-body modern-modal-body">
 					<div id="emptyCartMessage" class="empty-state">
@@ -292,7 +298,7 @@
 					<h5 class="modal-title">
 						<i class="fas fa-credit-card me-2"></i>Thông Tin Thanh Toán
 					</h5>
-					<button type="button" class="btn-close modern-btn-close" data-bs-dismiss="modal"></button>
+					<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
 				</div>
 				<div class="modal-body modern-modal-body">
 					<form id="checkoutForm" class="modern-form">
@@ -420,12 +426,324 @@
 		</div>
 	</div>
 
+	<!-- Modern Booking Modal -->
+	<div class="modal fade booking-modal" id="bookingModal" tabindex="-1" aria-hidden="true">
+		<div class="modal-dialog modal-xl modal-dialog-centered">
+			<div class="modal-content booking-modal-content">
+				<div class="modal-header booking-modal-header">
+					<div class="booking-header-content">
+						<div class="booking-icon">
+							<i class="fas fa-calendar-check"></i>
+						</div>
+						<div class="booking-title-section">
+							<h4 class="booking-title">Đặt bàn nhà hàng</h4>
+							<p class="booking-subtitle">Đặt bàn dễ dàng chỉ trong vài bước</p>
+						</div>
+					</div>
+					<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+				</div>
+
+				<div class="modal-body booking-modal-body">
+					<!-- Progress Steps -->
+					<div class="booking-progress">
+						<div class="progress-step active" data-step="1">
+							<div class="step-circle">
+								<i class="fas fa-calendar-alt"></i>
+							</div>
+							<span class="step-label">Chọn thời gian</span>
+						</div>
+						<div class="progress-line"></div>
+						<div class="progress-step" data-step="2">
+							<div class="step-circle">
+								<i class="fas fa-utensils"></i>
+							</div>
+							<span class="step-label">Chọn món ăn</span>
+						</div>
+						<div class="progress-line"></div>
+						<div class="progress-step" data-step="3">
+							<div class="step-circle">
+								<i class="fas fa-table"></i>
+							</div>
+							<span class="step-label">Chọn bàn</span>
+						</div>
+						<div class="progress-line"></div>
+						<div class="progress-step" data-step="4">
+							<div class="step-circle">
+								<i class="fas fa-user"></i>
+							</div>
+							<span class="step-label">Thông tin</span>
+						</div>
+					</div>
+
+					<!-- Step 1: Date & Time Selection -->
+					<div class="booking-step" id="bookingStep1">
+						<div class="step-content">
+							<div class="step-header">
+								<h5 class="step-title">
+									<i class="fas fa-calendar-alt me-2"></i>
+									Chọn ngày và giờ đặt bàn
+								</h5>
+								<p class="step-description">Vui lòng chọn thời gian phù hợp cho bữa ăn của bạn</p>
+							</div>
+
+							<div class="row">
+								<div class="col-md-6">
+									<div class="form-group">
+										<label class="form-label">
+											<i class="fas fa-calendar me-2"></i>Ngày đặt bàn
+										</label>
+										<input type="date" class="form-control booking-input" id="bookingDate" required>
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="form-group">
+										<label class="form-label">
+											<i class="fas fa-clock me-2"></i>Giờ đặt bàn
+										</label>
+										<select class="form-control booking-input" id="bookingTime" required>
+											<!-- Time options will be populated by JS -->
+										</select>
+									</div>
+								</div>
+							</div>
+
+							<div class="row mt-3">
+								<div class="col-md-6">
+									<div class="form-group">
+										<label class="form-label">
+											<i class="fas fa-users me-2"></i>Số lượng khách
+										</label>
+										<select class="form-control booking-input" id="partySize" required>
+											<option value="1">1 người</option>
+											<option value="2" selected>2 người</option>
+											<option value="3">3 người</option>
+											<option value="4">4 người</option>
+											<option value="5">5 người</option>
+											<option value="6">6 người</option>
+											<option value="7">7 người</option>
+											<option value="8">8 người</option>
+											<option value="9">9 người</option>
+											<option value="10">10 người</option>
+											<option value="11">11 người</option>
+											<option value="12">12 người</option>
+											<option value="13">13 người</option>
+											<option value="14">14 người</option>
+											<option value="15">15 người</option>
+										</select>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<!-- Step 2: Dish Selection -->
+					<div class="booking-step" id="bookingStep2" style="display: none;">
+						<div class="step-content">
+							<div class="step-header">
+								<h5 class="step-title">
+									<i class="fas fa-utensils me-2"></i>
+									Chọn món ăn (Tùy chọn)
+								</h5>
+								<p class="step-description">Bạn có thể đặt trước một số món ăn hoặc bỏ qua bước này</p>
+							</div>
+
+							<div class="dish-selection-container">
+								@* <div class="dish-search-bar">
+									<div class="search-input-group">
+										<i class="fas fa-search"></i>
+										<input type="text" class="form-control" id="dishSearchInput" placeholder="Tìm kiếm món ăn...">
+									</div>
+								</div>
+
+								<div class="dish-categories">
+									<button class="category-btn active" data-category="all">Tất cả</button>
+									<button class="category-btn" data-category="appetizer">Khai vị</button>
+									<button class="category-btn" data-category="main">Món chính</button>
+									<button class="category-btn" data-category="dessert">Tráng miệng</button>
+									<button class="category-btn" data-category="drink">Đồ uống</button>
+								</div> *@
+
+								<div class="dishes-grid" id="dishesGrid">
+									<!-- Dishes will be populated by JS -->
+								</div>
+
+								<div class="selected-dishes-summary" id="selectedDishesSummary" style="display: none;">
+									<h6 class="summary-title">
+										<i class="fas fa-check-circle me-2"></i>
+										Món ăn đã chọn
+									</h6>
+									<div class="selected-dishes-list" id="selectedDishesList">
+										<!-- Selected dishes will be shown here -->
+									</div>
+									<div class="summary-total">
+										<span class="total-label">Tổng cộng:</span>
+										<span class="total-amount" id="dishesTotal">0 ₫</span>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<!-- Step 3: Table Selection -->
+					<div class="booking-step" id="bookingStep3" style="display: none;">
+						<div class="step-content">
+							<div class="step-header">
+								<h5 class="step-title">
+									<i class="fas fa-table me-2"></i>
+									Chọn loại bàn
+								</h5>
+							</div>
+
+							<div class="booking-summary-info">
+								<div class="summary-item">
+									<i class="fas fa-calendar-alt"></i>
+									<span id="summaryDateTime">--</span>
+								</div>
+								<div class="summary-item">
+									<i class="fas fa-users"></i>
+									<span id="summaryPartySize">-- người</span>
+								</div>
+								<div class="summary-item">
+									<i class="fas fa-utensils"></i>
+									<span id="summaryDishCount">-- món ăn</span>
+								</div>
+							</div>
+
+							<div class="table-types-container" id="tableTypesContainer">
+								<!-- Available table types will be populated by JS -->
+							</div>
+						</div>
+					</div>
+
+					<!-- Step 4: Customer Information -->
+					<div class="booking-step" id="bookingStep4" style="display: none;">
+						<div class="step-content">
+							<div class="step-header">
+								<h5 class="step-title">
+									<i class="fas fa-user me-2"></i>
+									Thông tin khách hàng
+								</h5>
+								<p class="step-description">Vui lòng điền thông tin để hoàn tất đặt bàn</p>
+							</div>
+
+							<div class="row">
+								<div class="col-md-6">
+									<div class="form-group">
+										<label class="form-label">
+											<i class="fas fa-user me-2"></i>Họ và tên *
+										</label>
+										<input type="text" class="form-control booking-input" id="customerBookName" required>
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="form-group">
+										<label class="form-label">
+											<i class="fas fa-phone me-2"></i>Số điện thoại *
+										</label>
+										<input type="tel" class="form-control booking-input" id="customerPhone" required>
+									</div>
+								</div>
+							</div>
+
+							<div class="row">
+								<div class="col-md-12">
+									<div class="form-group">
+										<label class="form-label">
+											<i class="fas fa-envelope me-2"></i>Email
+										</label>
+										<input type="email" class="form-control booking-input" id="customerEmail">
+									</div>
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label class="form-label">
+									<i class="fas fa-sticky-note me-2"></i>Ghi chú đặc biệt
+								</label>
+								<textarea class="form-control booking-input" id="bookingNote" rows="3" placeholder="Yêu cầu đặc biệt, dị ứng thực phẩm, v.v..."></textarea>
+							</div>
+
+							<!-- Final Summary -->
+							<div class="final-booking-summary">
+								<h6 class="summary-title">
+									<i class="fas fa-receipt me-2"></i>
+									Tóm tắt đặt bàn
+								</h6>
+								<div class="summary-details">
+									<div class="summary-row">
+										<span class="label">Thời gian:</span>
+										<span class="value" id="finalDateTime">--</span>
+									</div>
+									<div class="summary-row">
+										<span class="label">Số khách:</span>
+										<span class="value" id="finalPartySize">--</span>
+									</div>
+									<div class="summary-row">
+										<span class="label">Loại bàn:</span>
+										<span class="value" id="finalTableType">--</span>
+									</div>
+									<div class="summary-row">
+										<span class="label">Món ăn:</span>
+										<span class="value" id="finalDishCount">--</span>
+									</div>
+									<div class="summary-row total-row">
+										<span class="label">Tổng tiền:</span>
+										<span class="value" id="finalTotalAmount">0 ₫</span>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="modal-footer booking-modal-footer">
+					<div class="footer-actions">
+						<button type="button" class="btn booking-btn-secondary" id="bookingPrevBtn" style="display: none;">
+							<i class="fas fa-arrow-left me-2"></i>Quay lại
+						</button>
+						<button type="button" class="btn booking-btn-primary" id="bookingNextBtn">
+							Tiếp tục
+							<i class="fas fa-arrow-right ms-2"></i>
+						</button>
+						<button type="button" class="btn booking-btn-success" id="bookingConfirmBtn" style="display: none;">
+							<i class="fas fa-check me-2"></i>Xác nhận đặt bàn
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Booking Success Modal -->
+	<div class="modal fade" id="bookingSuccessModal" tabindex="-1" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content success-modal-content">
+				<div class="modal-body text-center p-5">
+					<div class="success-icon">
+						<i class="fas fa-check-circle"></i>
+					</div>
+					<h4 class="success-title">Đặt bàn thành công!</h4>
+					<p class="success-message">Cảm ơn bạn đã đặt bàn tại nhà hàng của chúng tôi.</p>
+					<div class="booking-code">
+						<span class="code-label">Mã đặt bàn:</span>
+						<span class="code-value" id="bookingCode">#000000</span>
+					</div>
+					<p class="success-note">Vui lòng đến đúng giờ đã đặt. Chúng tôi sẽ liên hệ với bạn để xác nhận.</p>
+					<button type="button" class="btn booking-btn-primary" data-bs-dismiss="modal">
+						<i class="fas fa-home me-2"></i>Về trang chủ
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
 	<!-- Scripts -->
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 	<script src="~/js/clientsite.js" asp-append-version="true"></script>
 	<script src="~/js/menu.js" asp-append-version="true"></script>
-	<script src="~/js/cart.js" asp-append-version="true"></script>
-	<script src="~/js/ordering.js" asp-append-version="true"></script>
+ 	<script src="~/js/cart.js" asp-append-version="true"></script>
+ 	<script src="~/js/ordering.js" asp-append-version="true"></script>
+	<script src="~/js/booking-enhanced.js" asp-append-version="true"></script>
 	<script src="~/js/restaurant-layout.js" asp-append-version="true"></script>
 
 	@await RenderSectionAsync("Scripts", required: false)
