@@ -339,7 +339,7 @@
 
 .footer-bottom {
   border-top: 1px solid rgba(255, 255, 255, 0.1);
-  padding: 1.5rem 0;
+  padding: 1rem 0;
 }
 
 .copyright {
@@ -430,7 +430,6 @@
 }
 
 .modern-checkbox {
-  padding: 1rem;
   background: #f8f9fa;
   border-radius: var(--border-radius);
   margin-bottom: 1rem;
@@ -677,7 +676,6 @@
   background: #f8f9fa;
   border-radius: var(--border-radius);
   padding: 1.5rem;
-  margin-bottom: 2rem;
 }
 
 .section-title {
@@ -767,10 +765,6 @@
   align-items: center;
   padding: 0.75rem 0;
   border-bottom: 1px solid #e9ecef;
-}
-
-.order-item:last-child {
-  border-bottom: none;
 }
 
 .order-item-info {

@@ -72,17 +72,20 @@
 						<div class="info-item">
 							<div class="info-label">
 								<i class="fas fa-calendar"></i>
-								Ngày đặt
+								Thời gian đặt
 							</div>
-							<div class="info-value highlight-date">@r.Reservationdate.ToString("dd/MM/yyyy")</div>
+							<div class="info-value highlight-date">
+								@r.Reservationdate.ToString("dd/MM/yyyy") -
+								@r.Reservationtime.ToString(@"hh\:mm")
+							</div>
 						</div>
-						<div class="info-item">
+					@* 	<div class="info-item">
 							<div class="info-label">
 								<i class="fas fa-clock"></i>
 								Giờ
 							</div>
-							<div class="info-value highlight-time">@r.Reservationtime.ToString(@"hh\:mm")</div>
-						</div>
+							<div class="info-value highlight-time"></div>
+						</div> *@
 						<div class="info-item">
 							<div class="info-label">
 								<i class="fas fa-users"></i>

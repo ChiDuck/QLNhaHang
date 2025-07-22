@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<title>@ViewData["Title"] - Nhà Hàng Delicious</title>
+	<title>@ViewData["Title"] - Nhà Hàng Đức Phát</title>
 
 	<!-- Bootstrap CSS -->
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -28,7 +28,7 @@
 				<div class="brand-icon">
 					<i class="fas fa-utensils"></i>
 				</div>
-				<span class="brand-text">Delicious</span>
+				<span class="brand-text">Đức Phát</span>
 			</a>
 
 			<button class="navbar-toggler modern-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -60,7 +60,7 @@
 						</a>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link modern-nav-link" asp-area="" asp-controller="Dish" asp-action="Index">
+						<a class="nav-link modern-nav-link" asp-area="" asp-controller="Home" asp-action="AdminIndex">
 							<i class="fas fa-cog me-1"></i>Quản lý
 						</a>
 					</li>
@@ -106,12 +106,12 @@
 		<div class="footer-content">
 			<div class="container">
 				<div class="row">
-					<div class="col-lg-4 col-md-6 mb-4">
+					<div class="col-lg-5 col-md-6 mb-4">
 						<div class="footer-brand">
 							<h5 class="footer-title">
-								<i class="fas fa-utensils me-2"></i>Nhà Hàng Delicious
+								<i class="fas fa-utensils me-2"></i>Nhà Hàng Đức Phát
 							</h5>
-							<p class="footer-description">Trải nghiệm ẩm thực tuyệt vời với những món ăn được chế biến từ nguyên liệu tươi ngon nhất.</p>
+							<p class="footer-description" style="max-width:400px">Trải nghiệm ẩm thực tuyệt vời với những món ăn được chế biến từ nguyên liệu tươi ngon nhất.</p>
 							<div class="social-links">
 								<a href="#" class="social-link"><i class="fab fa-facebook"></i></a>
 								<a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
@@ -121,7 +121,7 @@
 						</div>
 					</div>
 
-					<div class="col-lg-2 col-md-6 mb-4">
+			@* 		<div class="col-lg-2 col-md-6 mb-4">
 						<h6 class="footer-heading">Menu</h6>
 						<ul class="footer-links">
 							<li><a href="@Url.Action("Index", "Home")">Trang chủ</a></li>
@@ -129,9 +129,9 @@
 							<li><a href="@Url.Action("About", "Home")">Giới thiệu</a></li>
 							<li><a href="@Url.Action("Contact", "Home")">Liên hệ</a></li>
 						</ul>
-					</div>
+					</div> *@
 
-					<div class="col-lg-3 col-md-6 mb-4">
+					<div class="col-lg-4 col-md-6 mb-4">
 						<h6 class="footer-heading">Liên hệ</h6>
 						<ul class="footer-contact">
 							<li><i class="fas fa-map-marker-alt"></i>123 Đường ABC, Quận 1, TP.HCM</li>
@@ -142,8 +142,7 @@
 					<div class="col-lg-3 col-md-6 mb-4">
 						<h6 class="footer-heading">Giờ mở cửa</h6>
 						<ul class="footer-hours">
-							<li><span>Thứ 2 - Thứ 6:</span> 10:00 - 22:00</li>
-							<li><span>Thứ 7 - Chủ nhật:</span> 9:00 - 23:00</li>
+							<li><span>Thứ 2 - Chủ nhật:</span> 10:00 - 22:00</li>
 							<li class="special"><span>Nghỉ lễ:</span> Liên hệ trước</li>
 						</ul>
 					</div>
@@ -280,7 +279,7 @@
 				</div>
 				<div class="modal-footer modern-modal-footer">
 					<a class="btn modern-btn-outline" asp-area="" asp-controller="Home" asp-action="Menu">
-						<i class="fas fa-arrow-left me-2"></i>Tiếp tục mua sắm
+						<i class="fas fa-arrow-left me-2"></i>Tiếp tục chọn món
 					</a>
 					<button id="checkoutButton" type="button" class="btn modern-btn-primary">
 						<i class="fas fa-credit-card me-2"></i>Thanh toán
@@ -372,10 +371,10 @@
 											<input class="form-check-input" type="radio" name="paymentMethod" id="vnpayPayment" value="vnpay">
 											<label class="payment-label" for="vnpayPayment">
 												<div class="payment-icon">
-													<img src="https://sandbox.vnpayment.vn/apis/assets/images/logo.svg" alt="VNPay" style="height: 24px;">
+													<img src="~/images/Icon-VNPAY-QR.webp" alt="VNPay" style="height: 24px;">
 												</div>
 												<div class="payment-info">
-													<span class="payment-name">VNPay</span>
+													<span class="payment-name">Cổng thanh toán VNPay</span>
 													<small class="payment-desc">Thanh toán online</small>
 												</div>
 											</label>
@@ -741,10 +740,9 @@
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 	<script src="~/js/clientsite.js" asp-append-version="true"></script>
 	<script src="~/js/menu.js" asp-append-version="true"></script>
- 	<script src="~/js/cart.js" asp-append-version="true"></script>
- 	<script src="~/js/ordering.js" asp-append-version="true"></script>
 	<script src="~/js/booking-enhanced.js" asp-append-version="true"></script>
 	<script src="~/js/restaurant-layout.js" asp-append-version="true"></script>
+ 	<script src="~/js/ordering.js" asp-append-version="true"></script>
 
 	@await RenderSectionAsync("Scripts", required: false)
 </body>

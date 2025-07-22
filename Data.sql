@@ -30,7 +30,8 @@ DELETE FROM ORDERITEM
 DELETE FROM DISHINGREDIENT				
 DELETE FROM IMPORTTICKETDETAIL				
 DELETE FROM PAYROLLDETAIL				
-DELETE FROM WEEKLYSHIFT				
+DELETE FROM WEEKLYSHIFT	
+DELETE FROM SHIPORDER	
 DELETE FROM CART
 DELETE FROM RESERVATION
 DELETE FROM CUSTOMER		
@@ -39,7 +40,6 @@ DELETE FROM DISHCATEGORY
 DELETE FROM IMPORTTICKET				
 DELETE FROM INVENTORYITEM		
 DELETE FROM INVENTORYITEMTYPE		
-DELETE FROM SHIPORDER	
 DELETE FROM ORDERSTATUS		
 DELETE FROM PAYMENT		
 DELETE FROM PAYROLL		
@@ -124,37 +124,37 @@ INSERT INTO DISHCATEGORY VALUES
 (N'Tráng miệng'),
 (N'Đồ uống')
 
-INSERT INTO Dish (Name, Price, Issoldout, ID_DISHCATEGORY, Description)
+INSERT INTO Dish (Name, Price, Issoldout, ID_DISHCATEGORY, Description, PHOTO)
 VALUES
 -- Khai vị (1)
-(N'Salad tôm bơ', 150000, 0, 1, N'Khai vị với tôm và bơ tươi.'),
-(N'Súp trứng gà', 120000, 0, 1, N'Súp nhẹ với trứng và rau.'),
-(N'Súp gà ngô non', 125000, 0, 1, N'Súp nóng với thịt gà.'),
+(N'Salad tôm bơ', 150000, 0, 1, N'Khai vị với tôm và bơ tươi.', '/photo/dish/photo_00b5d7f790a34c0caa5f47a4892f9771.jpg'),
+(N'Súp trứng gà', 120000, 0, 1, N'Súp nhẹ với trứng và rau.', '/photo/dish/sup-trung-ga-voi-nam-huong-845x564_95735bbb05af48e28893856a46af2b69.jpg'),
+(N'Súp gà ngô non', 125000, 0, 1, N'Súp nóng với thịt gà.', '/photo/dish/Thanh-pham-3-3-8670-1650018610_7af547f5cb934cc09d4c52d225980271.jpg'),
 
 -- Món chính (2)
-(N'Bò nướng phô mai', 320000, 0, 2, N'Món chính đậm đà với bò và phô mai.'),
-(N'Mỳ Ý sốt bò', 280000, 0, 2, N'Mì Ý kết hợp sốt cà chua và thịt bò.'),
-(N'Gà quay mật ong', 300000, 0, 2, N'Thịt gà quay sốt mật ong đặc biệt.'),
-(N'Bít tết bò', 350000, 0, 2, N'Món chính cao cấp.'),
+(N'Bò nướng phô mai', 320000, 0, 2, N'Món chính đậm đà với bò và phô mai.', '/photo/dish/so-che-va-tam-uop-thit-bo_9db9_0508e752e8e8493ea0354ea2d52f8279.webp'),
+(N'Mỳ Ý sốt bò', 280000, 0, 2, N'Mì Ý kết hợp sốt cà chua và thịt bò.', '/photo/dish/cach-lam-mi-y-sot-thit-bo-bam-ngon-chuan-vi-Y-1_c9623d5fb2a04bbb95578b8f5c5a0079.jpg'),
+(N'Gà quay mật ong', 300000, 0, 2, N'Thịt gà quay sốt mật ong đặc biệt.', '/photo/dish/ga-nuong-mat-ong_f310304ea9e24a4980736339f0ddf019.webp'),
+(N'Bít tết bò', 350000, 0, 2, N'Món chính cao cấp.', '/photo/dish/bo-bit-tet-va-khoai-tay-chien (2)-1_ac1e67ba43c44468822803ee3676c5ac.png'),
 
 -- Món phụ (3)
-(N'Khoai tây nghiền', 80000, 0, 3, N'Món phụ mềm mịn.'),
-(N'Rau xào bơ tỏi', 100000, 0, 3, N'Món rau nhẹ nhàng.'),
-(N'Rau củ hấp', 90000, 0, 3, N'Món phụ dinh dưỡng.'),
+(N'Khoai tây nghiền', 80000, 0, 3, N'Món phụ mềm mịn.', '/photo/dish/khoaitay-1633657549-9352-1633657656_9314fb6b443c469ab98e8e5fcb657d46.jpg'),
+(N'Rau xào bơ tỏi', 100000, 0, 3, N'Món rau nhẹ nhàng.', '/photo/dish/1632277823-416-thumbnail-width640height480_86301bd89b834eea99e281edbb4f7d93.jpg'),
+(N'Rau củ hấp', 90000, 0, 3, N'Món phụ dinh dưỡng.', '/photo/dish/unnamed_3d18a04ce9dd44dabe464741a21278fe.png'),
 
 -- Tráng miệng (4)
-(N'Bánh panna cotta', 110000, 0, 4, N'Món tráng miệng kiểu Ý.'),
-(N'Kem sô-cô-la', 90000, 0, 4, N'Kem lạnh vị sô-cô-la đậm đà.'),
-(N'Bánh flan', 95000, 0, 4, N'Flan mềm mịn, ngọt dịu.'),
-(N'Bánh tart trái cây', 120000, 0, 4, N'Tráng miệng nhiều loại trái cây.'),
+(N'Bánh panna cotta', 110000, 0, 4, N'Món tráng miệng kiểu Ý.', '/photo/dish/coffee-panna-cotta-1-scaled_53771ab9a4b24a729afcd54bdebbf3a2.jpg'),
+(N'Kem sô-cô-la', 90000, 0, 4, N'Kem lạnh vị sô-cô-la đậm đà.' , null),
+(N'Bánh flan', 95000, 0, 4, N'Flan mềm mịn, ngọt dịu.', '/photo/dish/banh-flan-socola-2_71a4b9be8ddc459c9be9a7226ae74476_525c8617f006450bb7a5e27f7117f16b.jpg'),
+(N'Bánh tart trái cây', 120000, 0, 4, N'Tráng miệng nhiều loại trái cây.', '/photo/dish/1a-1200x676-2_be273c6b12a04ddca5a781e444f98335.jpg'),
 
 -- Đồ uống (5)
-(N'Sinh tố bơ', 60000, 0, 5, N'Bơ xay tươi ngon.'),
-(N'Nước ép dưa hấu', 55000, 0, 5, N'Mát lạnh giải khát.'),
-(N'Nước ép nho', 58000, 0, 5, N'Dinh dưỡng, tươi ngon.'),
-(N'Cà phê đen', 45000, 0, 5, N'Cà phê nguyên chất.'),
-(N'Trà xanh mật ong', 50000, 0, 5, N'Trà dịu nhẹ kết hợp mật ong.'),
-(N'Sữa tươi đánh bọt', 50000, 0, 5, N'Đơn giản nhưng ngon.');
+(N'Sinh tố bơ', 60000, 0, 5, N'Bơ xay tươi ngon.', '/photo/dish/sinh-to-bo_d649106efd3c463981f024a144d2e933.jpg'),
+(N'Nước ép dưa hấu', 55000, 0, 5, N'Mát lạnh giải khát.', null),
+(N'Nước ép nho', 58000, 0, 5, N'Dinh dưỡng, tươi ngon.', null),
+(N'Cà phê đen', 45000, 0, 5, N'Cà phê nguyên chất.', '/photo/dish/Ca-Phe-Den-scaled_6b4fd13ee36d44fab439083f20411c80.jpg'),
+(N'Trà xanh mật ong', 50000, 0, 5, N'Trà dịu nhẹ kết hợp mật ong.', '/photo/dish/shutterstock-134444405-8182-1644678448_ea9b71c3d40c4b13b757103326978ccb.jpg'),
+(N'Sữa tươi đánh bọt', 50000, 0, 5, N'Đơn giản nhưng ngon.', null);
 
 -- Salad tôm bơ
 INSERT INTO Dishingredient VALUES (1, 1, 150), (1, 4, 50), (1, 6, 30);
@@ -390,6 +390,7 @@ select * from WORKSHIFT
 select * from weeklySHIFT
 select * from INVENTORYITEM
 select * from SHIPORDER
+select * from ORDERITEM 
 select * from RESERVATION
 select * from RESERVATION re where re.ID_CUSTOMER = 17
 select * from RESERVATIONORDER r Where r.ID_RESERVATION = 10

@@ -22,40 +22,21 @@ async function loadCart() {
 }
 
 // Save cart to localStorage or server
-async function saveCart() {
-    if (isLoggedIn()) {
-        // Save cart to server
-        await fetch('/api/cartapi', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + localStorage.getItem('customertoken')
-            },
-            body: JSON.stringify(cart)
-        });
-    } else {
-        localStorage.setItem('cart', JSON.stringify(cart));
-    }
-}
-
-// Add to cart
-async function addToCart(dish) {
-    const existingItem = cart.find(item => item.id === dish.idDish);
-    if (existingItem) {
-        existingItem.quantity += 1;
-    } else {
-        cart.push({
-            id: dish.idDish,
-            name: dish.name,
-            price: (dish.price - dish.price * dish.discount / 100) || dish.price,
-            quantity: 1,
-            photo: dish.photo
-        });
-    }
-    await saveCart();
-    updateCartBadge();
-    showToast(`${dish.name} đã được thêm vào giỏ hàng`);
-}
+//async function saveCart() {
+//    if (isLoggedIn()) {
+//        // Save cart to server
+//        await fetch('/api/cartapi', {
+//            method: 'POST',
+//            headers: {
+//                'Content-Type': 'application/json',
+//                'Authorization': 'Bearer ' + localStorage.getItem('customertoken')
+//            },
+//            body: JSON.stringify(cart)
+//        });
+//    } else {
+//        localStorage.setItem('cart', JSON.stringify(cart));
+//    }
+//}
 
 // Remove from cart
 async function removeFromCart(id) {

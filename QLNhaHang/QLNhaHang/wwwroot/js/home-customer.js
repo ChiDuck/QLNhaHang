@@ -241,8 +241,4 @@ style.textContent = `
 `
 document.head.appendChild(style)
 
-// Declare addToCart function
-function addToCart(dish) {
-  // Placeholder for addToCart logic
-  return Promise.resolve()
-}
+

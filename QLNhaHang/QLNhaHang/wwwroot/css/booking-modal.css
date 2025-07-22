@@ -135,12 +135,13 @@
 }
 
 .progress-line {
-  flex: 1;
-  height: 2px;
-  background: #e9ecef;
-  margin: 0 1rem;
-  position: relative;
-  z-index: 1;
+    flex: 1;
+    height: 2px;
+    background: #e9ecef;
+    margin: 0 1rem;
+    margin-bottom: 1.5em;
+    position: relative;
+    z-index: 1;
 }
 
 .progress-line.completed {
@@ -289,7 +290,7 @@
 
 .dish-image {
   width: 100%;
-  height: 120px;
+  height: 200px;
   object-fit: cover;
   border-radius: 8px;
   margin-bottom: 0.75rem;

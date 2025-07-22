@@ -28,7 +28,7 @@ namespace QLNhaHang.Service
 				.Where(ws => ws.IdWorkday == today-1 &&
 							 endedShifts.Contains(ws.IdWorkshift) &&
 							 !ws.Attended &&
-							 ws.Processed == false) // ✅ chỉ lấy ca chưa xử lý
+							 ws.Processed == false) // chỉ lấy ca chưa xử lý
 				.ToListAsync();
 			Console.WriteLine($"Missed shifts: {missed.Count}");
 			var payroll = await _context.Payrolls
@@ -36,7 +36,7 @@ namespace QLNhaHang.Service
 			Console.WriteLine("Payroll for this month: " + (payroll));
 			foreach (var ws in missed)
 			{
-				ws.Processed = true; // ✅ đánh dấu đã xử lý
+				ws.Processed = true; // đánh dấu đã xử lý
 
 				if (payroll != null)
 				{

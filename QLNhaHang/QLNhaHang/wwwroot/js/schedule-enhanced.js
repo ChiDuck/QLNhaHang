@@ -284,7 +284,7 @@ class ScheduleManager {
 
             // Update shift status
             const statusBadge = document.getElementById("modalShiftStatus")
-            statusBadge.textContent = data.shiftStatus === "future" ? "Chưa diễn ra" : "Đã diễn ra"
+            statusBadge.textContent = data.shiftStatus === "future" ? "Chưa đến ca" : (data.shiftStatus === "ongoing" ? "Đang trong ca" : "Đã kết thúc")
             statusBadge.className = `badge ${data.shiftStatus === "future" ? "bg-warning" : "bg-success"}`
 
             // Update stats

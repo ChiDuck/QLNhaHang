@@ -16,7 +16,8 @@ class PayrollDetailManager {
     this.loadPayrollDetails()
   }
 
-  bindEvents() {
+    bindEvents() {
+        console.log(this.payrollId);
     // Search and filter
     document.getElementById("employeeSearch").addEventListener(
       "input",
@@ -104,7 +105,7 @@ class PayrollDetailManager {
   }
 
   // Data Loading Functions
-  async loadPayrollDetails() {
+    async loadPayrollDetails() {
     if (!this.payrollId) {
       this.showToast("Không tìm thấy ID bảng lương", "error")
       return
@@ -171,7 +172,7 @@ class PayrollDetailManager {
     const startIndex = (this.currentPage - 1) * this.itemsPerPage
     const endIndex = startIndex + this.itemsPerPage
     const pageData = this.filteredData.slice(startIndex, endIndex)
-
+      console.log("Rendering grid view with data:", pageData)
     if (pageData.length === 0) {
       container.innerHTML = `
                 <div class="col-12 text-center py-5">

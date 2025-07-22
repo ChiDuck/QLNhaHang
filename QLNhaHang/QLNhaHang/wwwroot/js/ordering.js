@@ -40,7 +40,18 @@ document.addEventListener('DOMContentLoaded', async function () {
     checkoutModal = new bootstrap.Modal(document.getElementById('checkoutModal'));
 
     // Xử lý nút thanh toán trong modal giỏ hàng
-    document.getElementById('checkoutButton').addEventListener('click', openCheckoutModal);
+    document.getElementById('checkoutButton').addEventListener('click', function () {
+        if (customertoken == null) {
+            // Nếu chưa đăng nhập, lưu giỏ hàng vào localStorage và mở modal đăng nhập
+            showModernNotification('info', 'Chưa đăng nhập', 'Vui lòng đăng nhập để đặt hàng');
+            bootstrap.Modal.getInstance(document.getElementById('cartModal'))?.hide();
+            new bootstrap.Modal(document.getElementById('loginModal')).show();
+
+        } else {
+            // Nếu đã đăng nhập, mở modal thanh toán    
+            openCheckoutModal();
+        }
+    });
 
     document.getElementById('backToCartBtn').addEventListener('click', checkoutModal.hide());
     // Xử lý checkbox giao hàng

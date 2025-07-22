@@ -51,6 +51,7 @@ class ModernBookingManager {
         // Form inputs
         document.getElementById("bookingDate").addEventListener("change", (e) => {
             this.bookingData.reservationDate = e.target.value
+            this.populateTimeSlots();
         })
 
         document.getElementById("bookingTime").addEventListener("change", (e) => {
@@ -94,6 +95,7 @@ class ModernBookingManager {
     openBookingModal() {
         const modal = new this.bootstrap.Modal(document.getElementById("bookingModal"))
         modal.show()
+        document.getElementById("bookingDate").value = '';
         this.resetBooking()
     }
 
@@ -126,42 +128,38 @@ class ModernBookingManager {
     }
 
     populateTimeSlots() {
-        const timeSelect = document.getElementById("bookingTime")
-        timeSelect.innerHTML = '<option value="">Chọn giờ</option>'
+        const timeSelect = document.getElementById("bookingTime");
+        timeSelect.innerHTML = '<option value="">Chọn giờ</option>';
 
         const timeSlots = [
-            "10:00",
-            "10:30",
-            "11:00",
-            "11:30",
-            "12:00",
-            "12:30",
-            "13:00",
-            "13:30",
-            "14:00",
-            "14:30",
-            "15:00",
-            "15:30",
-            "16:00",
-            "16:30",
-            "17:00",
-            "17:30",
-            "18:00",
-            "18:30",
-            "19:00",
-            "19:30",
-            "20:00",
-            "20:30",
-            "21:00",
-            "21:30",
-        ]
+            "10:00", "10:30", "11:00", "11:30", "12:00", "12:30",
+            "13:00", "13:30", "14:00", "14:30", "15:00", "15:30",
+            "16:00", "16:30", "17:00", "17:30", "18:00", "18:30",
+            "19:00", "19:30", "20:00", "20:30", "21:00",
+        ];
 
-        timeSlots.forEach((time) => {
-            const option = document.createElement("option")
-            option.value = time
-            option.textContent = time
-            timeSelect.appendChild(option)
-        })
+        const selectedDate = document.getElementById("bookingDate").value;
+        const today = new Date();
+        const todayStr = today.toISOString().split("T")[0];
+
+        let filteredSlots = timeSlots;
+
+        if (selectedDate === todayStr) {
+            const nowMinutes = today.getHours() * 60 + today.getMinutes();
+
+            filteredSlots = timeSlots.filter(slot => {
+                const [hour, minute] = slot.split(":").map(Number);
+                const slotMinutes = hour * 60 + minute;
+                return slotMinutes > nowMinutes;
+            });
+        }
+
+        filteredSlots.forEach(time => {
+            const option = document.createElement("option");
+            option.value = time;
+            option.textContent = time;
+            timeSelect.appendChild(option);
+        });
     }
 
     async loadDishes() {
@@ -214,7 +212,7 @@ class ModernBookingManager {
             card.classList.add("selected")
         }
 
-        const imageUrl = dish.image || "/images/placeholder.png"
+        const imageUrl = dish.photo || "/images/placeholder.png"
         const formattedPrice = this.formatCurrency(dish.price - dish.price * dish.discount / 100)
 
         card.innerHTML = `
@@ -388,8 +386,7 @@ class ModernBookingManager {
         }
 
         // Simulate availability (in real app, this would come from API)
-        const availableCount = Math.floor(Math.random() * 10) + 1
-        const availabilityStatus = availableCount > 2 ? "available" : availableCount > 0 ? "limited" : "unavailable"
+        const availabilityStatus = tableType.availableCount > 2 ? "available" : tableType.availableCount > 0 ? "limited" : "unavailable"
         const statusText =
             availabilityStatus === "available" ? "Còn trống" : availabilityStatus === "limited" ? "Sắp hết" : "Hết chỗ"
         const statusIcon =
@@ -409,7 +406,7 @@ class ModernBookingManager {
           <i class="fas fa-${statusIcon}"></i>
           ${statusText}
         </div>
-        <div class="availability-count">${availableCount} bàn</div>
+        <div class="availability-count">Còn ${tableType.availableCount} bàn</div>
       </div>
     `
 
@@ -467,6 +464,7 @@ class ModernBookingManager {
     }
 
     validateCurrentStep() {
+        console.log(this.currentStep)
         switch (this.currentStep) {
             case 1:
                 if (!this.bookingData.reservationDate) {
@@ -485,10 +483,12 @@ class ModernBookingManager {
                 }
                 break
             case 4:
+                console.log(this.bookingData.customerName.trim())
                 if (!this.bookingData.customerName.trim()) {
                     this.showError("Vui lòng nhập họ tên")
                     return false
                 }
+                console.log(this.bookingData.phone.trim())
                 if (!this.bookingData.phone.trim()) {
                     this.showError("Vui lòng nhập số điện thoại")
                     return false
