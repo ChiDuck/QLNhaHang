@@ -14,6 +14,7 @@ class ModernBookingManager {
             email: "",
             note: "",
             reservationPrice: 0,
+            idCustomer: null,
         }
         this.availableDishes = []
         this.availableTableTypes = []
@@ -96,6 +97,7 @@ class ModernBookingManager {
         const modal = new this.bootstrap.Modal(document.getElementById("bookingModal"))
         modal.show()
         document.getElementById("bookingDate").value = '';
+        document.getElementById("partySize").value = 2;
         this.resetBooking()
     }
 
@@ -596,7 +598,7 @@ class ModernBookingManager {
         try {
             const response = await fetch("/api/reservationapi/noorder", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: { "Content-Type": "application/json", "Authorization": `Bearer ${customertoken}` },
                 body: JSON.stringify(bookingPayload)
             });
 
@@ -621,7 +623,7 @@ class ModernBookingManager {
 
             const response = await fetch("/api/reservationapi/vnpay", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: { "Content-Type": "application/json", "Authorization": `Bearer ${customertoken}` },
                 body: JSON.stringify(bookingPayload)
             });
 

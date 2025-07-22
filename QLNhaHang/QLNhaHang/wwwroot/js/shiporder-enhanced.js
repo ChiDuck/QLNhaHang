@@ -55,6 +55,18 @@ class ShiporderManager {
                 this.updateStatus(this.currentOrderId, 2)
             }
         })
+
+        document.getElementById("btnDelivering").addEventListener("click", () => {
+            if (this.currentOrderId) {
+                this.updateStatus(this.currentOrderId, 4)
+            }
+        })
+
+        document.getElementById("btnCompleted").addEventListener("click", () => {
+            if (this.currentOrderId) {
+                this.updateStatus(this.currentOrderId, 5)
+            }
+        })
     }
 
     async loadOrders() {
@@ -377,14 +389,30 @@ class ShiporderManager {
     setupActionButtons(orderStatus) {
         const btnAccept = document.getElementById("btnAccept")
         const btnReject = document.getElementById("btnReject")
+        const btnDelivering = document.getElementById("btnDelivering")
+        const btnCompleted = document.getElementById("btnCompleted")
 
         if (orderStatus === 1) {
             // Chờ thanh toán
             btnAccept.style.display = "inline-flex"
             btnReject.style.display = "inline-flex"
+            btnDelivering.style.display = "none"
+            btnCompleted.style.display = "none"
         } else {
+            console.log("Order status:", orderStatus)
             btnAccept.style.display = "none"
             btnReject.style.display = "none"
+            btnDelivering.style.display = "none"
+            btnCompleted.style.display = "none"
+            if (orderStatus === 3) {
+                // Đang thực hiện
+                btnDelivering.style.display = "inline-flex"
+                btnCompleted.style.display = "none"
+            }
+            else if (orderStatus === 4) {
+                btnDelivering.style.display = "none"
+                btnCompleted.style.display = "inline-flex"
+            }
         }
     }
 

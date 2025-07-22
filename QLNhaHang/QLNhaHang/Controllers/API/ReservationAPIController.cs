@@ -21,35 +21,35 @@ namespace QLNhaHang.Controllers.API
 			_config = config;
 		}
 
-		 //GET: api/Reservations
+		//GET: api/Reservations
 		[HttpGet]
 		public async Task<ActionResult<IEnumerable<object>>> GetAllReservations()
 		{
-		    return await db.Reservations
-		        .Include(r => r.IdReservationstatusNavigation)
-		        .Include(r => r.IdDinetableNavigation)
-		        .Include(r => r.IdCustomerNavigation)
-		        .OrderByDescending(r => r.IdReservationstatus == 1)
-		        .ThenByDescending(r => r.Reservationdate)
-		        .ThenByDescending(r => r.Reservationtime)
-		        .Select(r => new
-		        {
-		            r.IdReservation,
+			return await db.Reservations
+				.Include(r => r.IdReservationstatusNavigation)
+				.Include(r => r.IdDinetableNavigation)
+				.Include(r => r.IdCustomerNavigation)
+				.OrderByDescending(r => r.IdReservationstatus == 1)
+				.ThenByDescending(r => r.Reservationdate)
+				.ThenByDescending(r => r.Reservationtime)
+				.Select(r => new
+				{
+					r.IdReservation,
 					r.Bookdate,
 					r.Phone,
-		            r.Email,
-		            r.Reservationdate,
-		            r.Reservationtime,
-		            r.Partysize,
+					r.Email,
+					r.Reservationdate,
+					r.Reservationtime,
+					r.Partysize,
 					r.Reservationprice,
 					r.Note,
 					r.Transactionid,
 					r.IdReservationstatus,
-		            Status = r.IdReservationstatusNavigation.Name,
-		            CustomerName = r.IdCustomerNavigation != null ? r.IdCustomerNavigation.Name : "Khách vãng lai",
-		            TableName = r.IdDinetableNavigation != null ? r.IdDinetableNavigation.Name : "Chưa chọn bàn",
-		        })
-		        .ToListAsync();
+					Status = r.IdReservationstatusNavigation.Name,
+					CustomerName = r.IdCustomerNavigation != null ? r.IdCustomerNavigation.Name : "Khách vãng lai",
+					TableName = r.IdDinetableNavigation != null ? r.IdDinetableNavigation.Name : "Chưa chọn bàn",
+				})
+				.ToListAsync();
 		}
 
 		//[HttpGet]
@@ -251,11 +251,15 @@ namespace QLNhaHang.Controllers.API
 				// Tạo mã đặt bàn
 				//var reservationCode = $"R{reservation.IdReservation.ToString().PadLeft(6, '0')}";
 
-				return Ok(new ReservationResultDto
+				return Ok(new
 				{
-					ReservationId = reservation.IdReservation,
-					//ReservationCode = reservationCode,
-					//  TableName = availableTable.Name
+					ReservationResultDto = new ReservationResultDto
+					{
+						ReservationId = reservation.IdReservation,
+						//ReservationCode = reservationCode,
+						//  TableName = availableTable.Name
+					},
+					reservation.IdCustomer
 				});
 			}
 			catch (Exception ex)

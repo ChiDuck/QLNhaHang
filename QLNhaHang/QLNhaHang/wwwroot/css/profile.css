@@ -205,6 +205,17 @@
   background: rgba(255, 255, 255, 0.3);
 }
 
+.filter-select {
+    padding: 0.75rem 1rem;
+    border: 2px solid #e9ecef;
+    border-radius: 12px;
+    background: white;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 150px;
+}
+
 /* Profile Sections */
 .profile-section {
   display: none;
@@ -353,7 +364,7 @@
   color: #ef4444;
 }
 
-.status-delivered {
+.status-delivering {
   background: rgba(16, 185, 129, 0.1);
   color: #10b981;
 }
@@ -362,7 +373,6 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 1rem;
-  margin-bottom: 1rem;
 }
 
 .detail-item {

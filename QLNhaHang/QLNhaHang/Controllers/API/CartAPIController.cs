@@ -73,15 +73,15 @@ namespace QLNhaHang.Controllers.API
             }
 
             // Kiểm tra nếu cart đã có item thì không cho ghi đè
-            var oldDetails = _context.Cartdetails.Where(cd => cd.IdCart == cart.IdCart).ToList();
-            if (oldDetails.Count > 0)
-            {
-                // Đã có item, không ghi đè, trả về thông báo
-                return Conflict(new { message = "Cart already has items. Merge not allowed." });
-            }
-
-            // Nếu cart rỗng, thêm mới
-            double total = 0;
+            //var oldDetails = _context.Cartdetails.Where(cd => cd.IdCart == cart.IdCart).ToList();
+            //if (oldDetails.Count > 0)
+            //{
+            //    // Đã có item, không ghi đè, trả về thông báo
+            //    return Conflict(new { message = "Cart already has items. Merge not allowed." });
+            //}
+            _context.Cartdetails.RemoveRange(_context.Cartdetails.Where(cd => cd.IdCart == cart.IdCart)); 
+			// Nếu cart rỗng, thêm mới
+			double total = 0;
             foreach (var item in items)
             {
                 var dish = _context.Dishes.Find(item.id);

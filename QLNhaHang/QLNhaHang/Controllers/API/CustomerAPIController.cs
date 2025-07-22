@@ -148,10 +148,13 @@ namespace QLNhaHang.Controllers.API
 				.Select(r => new
 				{
 					tableName = r.IdDinetableNavigation.Name,
-					date = r.Reservationdate.ToString("dd/MM/yyyy"),
+					date = r.Reservationdate.ToString("dd/MM/yyyy HH:mm"),
+					reservationdate = r.Reservationdate,
 					time = r.Reservationtime.ToString(@"hh\:mm"),
 					partySize = r.Partysize
-				}).ToListAsync();
+				})
+				.OrderByDescending(r => r.reservationdate)
+				.ToListAsync();
 			return Ok(reservations);
 		}
 
@@ -166,10 +169,14 @@ namespace QLNhaHang.Controllers.API
 				.Select(o => new
 				{
 					id = o.IdShiporder,
-					date = o.Orderdate.ToString("dd/MM/yyyy"),
+					date = o.Orderdate.ToString("dd/MM/yyyy HH:mm"),
+					orderdate = o.Orderdate,
 					total = o.Orderprice,
-					isShipping = o.Isshipping
-				}).ToListAsync();
+					isShipping = o.Isshipping,
+					idOrderstatus = o.IdOrderstatus
+				})
+				.OrderByDescending(o => o.orderdate)
+				.ToListAsync();
 
 			return Ok(orders);
 		}

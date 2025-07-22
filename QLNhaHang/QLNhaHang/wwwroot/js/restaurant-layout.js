@@ -1,19 +1,20 @@
 let cart = []
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async function() {
     // Initialize modern layout features
-    loadCart();
     initializeNavbar()
     initializeModals()
     initializeAnimations()
     initializeNotifications()
+    await loadCart();
 })
 
 async function loadCart() {
     if (isLoggedIn()) {
+
         // Fetch cart from server
         const res = await fetch('/api/cartapi', {
-            headers: { 'Authorization': 'Bearer ' + localStorage.getItem('customertoken') }
+            headers: { 'Authorization': 'Bearer ' + customertoken }
         });
         if (res.ok) {
             cart = await res.json();
@@ -499,12 +500,13 @@ async function setCartItemQuantity(id, quantity) {
 
 async function saveCart() {
     if (isLoggedIn()) {
+        console.log(customertoken)
         // Save cart to server
         await fetch('/api/cartapi', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + localStorage.getItem('customertoken')
+                'Authorization': 'Bearer ' + customertoken
             },
             body: JSON.stringify(cart)
         });
@@ -529,7 +531,7 @@ async function addToCartGlobal(dish) {
     }
     await saveCart()
     updateCartBadge();
-    return Promise.resolve()
+  //  return Promise.resolve()
 }
 
 
