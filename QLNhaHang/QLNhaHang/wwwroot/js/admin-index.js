@@ -2,10 +2,10 @@
 const token = localStorage.getItem("token");
 
 document.addEventListener("DOMContentLoaded", () => {
-    besttoday()
+    //besttoday()
     initializeDashboard()
     loadDashboardData()
-    //initializeChart()
+    loadTopDishesChart()
     drawChart("revenueWeekChart", "/api/statisticapi/revenue/week", "Doanh thu tuần", "rgba(255, 99, 132, 0.6)");
     drawChart("revenueMonthChart", "/api/statisticapi/revenue/month", "Doanh thu tháng", "rgba(54, 162, 235, 0.6)");
     drawChart("revenueYearChart", "/api/statisticapi/revenue/year", "Doanh thu năm", "rgba(75, 192, 192, 0.6)");
@@ -352,3 +352,53 @@ document.addEventListener("click", (e) => {
         }, 150)
     }
 })
+
+let topDishesChart;
+
+async function loadTopDishesChart() {
+    const period = document.getElementById("periodSelect").value;
+    try {
+        const response = await fetch(`/api/statisticapi/top-dishes?period=${period}`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        const data = await response.json();
+        const labels = data.map(item => item.dish);
+        const quantities = data.map(item => item.quantity);
+
+        renderPieChart(labels, quantities);
+    } catch (error) {
+        console.error('Lỗi khi tải biểu đồ:', error);
+    }
+}
+
+function renderPieChart(labels, data) {
+    const ctx = document.getElementById("topDishesChart").getContext("2d");
+
+    if (topDishesChart) {
+        topDishesChart.destroy();
+    }
+
+    topDishesChart = new Chart(ctx, {
+        type: "pie",
+        data: {
+            labels: labels,
+            datasets: [{
+                data: data,
+                backgroundColor: [
+                    "#FF6384", "#36A2EB", "#FFCE56", "#8E44AD", "#2ECC71"
+                ]
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: "bottom"
+                }
+            }
+        }
+    });
+}

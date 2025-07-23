@@ -148,7 +148,7 @@ namespace QLNhaHang.Controllers.API
 				.Select(r => new
 				{
 					tableName = r.IdDinetableNavigation.Name,
-					date = r.Reservationdate.ToString("dd/MM/yyyy HH:mm"),
+					date = r.Reservationdate.ToString("dd/MM/yyyy"),
 					reservationdate = r.Reservationdate,
 					time = r.Reservationtime.ToString(@"hh\:mm"),
 					partySize = r.Partysize

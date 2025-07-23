@@ -694,6 +694,17 @@
         box-shadow: 0 8px 25px rgba(0, 184, 148, 0.3);
     }
 
+.btn-process {
+    background: linear-gradient(135deg, #74b9ff, #0984e3);
+    color: white;
+}
+
+    .btn-process:hover {
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(0, 184, 148, 0.3);
+    }
+
 .btn-danger {
     background: linear-gradient(135deg, #fd79a8, #e84393);
     color: white;

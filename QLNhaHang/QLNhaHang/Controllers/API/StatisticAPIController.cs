@@ -183,6 +183,59 @@ namespace QLNhaHang.Controllers.API
 			});
 		}
 
+		[HttpGet("top-dishes")]
+		public IActionResult GetTopDishes([FromQuery] string period)
+		{
+			var now = DateTime.Now;
+			DateTime startDate;
 
+			switch (period.ToLower())
+			{
+				case "day":
+					startDate = now.Date;
+					break;
+				case "week":
+					int diff = (7 + (now.DayOfWeek - DayOfWeek.Monday)) % 7;
+					startDate = now.AddDays(-1 * diff).Date;
+					break;
+				case "month":
+					startDate = new DateTime(now.Year, now.Month, 1);
+					break;
+				default:
+					return BadRequest("Invalid period");
+			}
+
+			// Query món ăn trong đơn giao hàng
+			var shipItems = _context.Orderitems
+				.Where(oi => oi.IdShiporderNavigation.Orderdate >= startDate && oi.IdShiporderNavigation.IdOrderstatus >= 3)
+				.GroupBy(oi => oi.IdDishNavigation.Name)
+				.Select(g => new {
+					Dish = g.Key,
+					Quantity = g.Sum(oi => oi.Quantity)
+				});
+
+			// Query món ăn trong đơn đặt bàn
+			var resItems = _context.Reservationorders
+				.Where(ro => ro.IdReservationNavigation.Reservationdate >= startDate 
+				&& (ro.IdReservationNavigation.IdReservationstatus == 2 || ro.IdReservationNavigation.IdReservationstatus == 4))
+				.GroupBy(ro => ro.IdDishNavigation.Name)
+				.Select(g => new {
+					Dish = g.Key,
+					Quantity = g.Sum(ro => ro.Quantity)
+				});
+
+			// Gộp 2 kết quả
+			var combined = shipItems.Concat(resItems)
+				.GroupBy(x => x.Dish)
+				.Select(g => new {
+					Dish = g.Key,
+					Quantity = g.Sum(x => x.Quantity)
+				})
+				.OrderByDescending(x => x.Quantity)
+				.Take(5)
+				.ToList();
+
+			return Ok(combined);
+		}
 	}
 }

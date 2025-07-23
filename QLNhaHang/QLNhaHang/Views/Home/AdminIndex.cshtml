@@ -7,7 +7,7 @@
 <div class="dashboard-container">
 	<!-- Stats Cards -->
 	<div class="stats-grid">
-		<div class="stat-card">
+		@* <div class="stat-card">
 			<div class="stat-header">
 				<div class="stat-icon-wrapper success">
 					<i class="fas fa-utensils"></i>
@@ -17,7 +17,7 @@
 					<p class="stat-label">Món đặt nhiều nhất hôm nay</p>
 				</div>
 			</div>
-		</div>
+		</div> *@
 
 		<div class="stat-card">
 			<div class="stat-header">
@@ -29,7 +29,7 @@
 					<p class="stat-label">Lượt đặt bàn hôm nay</p>
 				</div>
 			</div>
-@* 			<div class="stat-footer">
+			@* 			<div class="stat-footer">
 				<span class="stat-change positive">
 					<i class="fas fa-arrow-up"></i>
 					+8% so với hôm qua
@@ -47,7 +47,7 @@
 					<p class="stat-label">Số đơn giao hàng hôm nay</p>
 				</div>
 			</div>
-@* 			<div class="stat-footer">
+			@* 			<div class="stat-footer">
 				<span class="stat-change negative">
 					<i class="fas fa-arrow-down"></i>
 					-3% so với hôm qua
@@ -65,7 +65,7 @@
 					<p class="stat-label">Doanh thu hôm nay</p>
 				</div>
 			</div>
-@* 			<div class="stat-footer">
+			@* 			<div class="stat-footer">
 				<span class="stat-change positive">
 					<i class="fas fa-arrow-up"></i>
 					+15% so với hôm qua
@@ -73,9 +73,8 @@
 			</div> *@
 		</div>
 	</div>
-
 	<!-- Main Content Grid -->
-@* 	<div class="dashboard-grid">
+	@* 	<div class="dashboard-grid">
 		<!-- Recent Activities -->
 		<div class="dashboard-card">
 			<div class="card-header">
@@ -122,7 +121,7 @@
 	</div>
  *@
 	<!-- Chart Section -->
-@* 	<div class="dashboard-card full-width">
+	@* 	<div class="dashboard-card full-width">
 		<div class="card-header">
 			<h4 class="card-title">
 				<i class="fas fa-chart-line me-2"></i>
@@ -140,12 +139,26 @@
 			<canvas id="revenueChart" height="100"></canvas>
 		</div>
 	</div> *@
-	
+
 	<div class="row g-4">
-		<div class="col-md-6">
+		<div class="col-md-7">
 			<div class="card p-3">
 				<h5>Doanh thu tuần này</h5>
 				<canvas id="revenueWeekChart"></canvas>
+			</div>
+		</div>
+
+		<div class="col-md-5">
+			<div class="card p-3">
+				<h5>Top 5 món được đặt nhiều nhất</h5>
+				<div class="mb-3">
+					<select id="periodSelect" class="form-select" onchange="loadTopDishesChart()">
+						<option value="day" selected>Hôm nay</option>
+						<option value="week">Tuần này</option>
+						<option value="month">Tháng này</option>
+					</select>
+				</div>
+				<canvas id="topDishesChart"></canvas>
 			</div>
 		</div>
 
@@ -163,10 +176,7 @@
 			</div>
 		</div>
 	</div>
-
 </div>
-
-
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="~/js/admin-index.js" asp-append-version="true"></script>

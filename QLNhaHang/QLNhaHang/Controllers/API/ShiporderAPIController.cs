@@ -134,10 +134,10 @@ namespace QLNhaHang.Controllers.API
 			var ingredients = ingredientMap.Select(kvp => new
 			{
 				IdInventoryitem = kvp.Key,
-				Name = kvp.Value.Name,
-				Unit = kvp.Value.Unit,
-				Required = kvp.Value.Required,
-				Available = kvp.Value.Available,
+				kvp.Value.Name,
+				kvp.Value.Unit,
+				kvp.Value.Required,
+				kvp.Value.Available,
 				Sufficient = kvp.Value.Available >= kvp.Value.Required
 			}).ToList();
 
@@ -159,7 +159,7 @@ namespace QLNhaHang.Controllers.API
 				Items = order.Orderitems.Select(i => new
 				{
 					DishName = i.IdDishNavigation.Name,
-					Quantity = i.Quantity,
+					i.Quantity,
 					Price = i.Subtotal
 				}),
 				Ingredients = ingredients

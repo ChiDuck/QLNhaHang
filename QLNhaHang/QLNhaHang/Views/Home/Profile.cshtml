@@ -348,20 +348,112 @@
     </section>
 </div>
 
-<!-- Order Detail Modal -->
-<div class="modal fade modern-modal" id="orderDetailModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content modern-modal-content">
-            <div class="modal-header modern-modal-header">
-                <h5 class="modal-title">
-                    <i class="fas fa-receipt me-2"></i>Chi tiết đơn hàng
-                </h5>
-                <button type="button" class="btn-close modern-btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body modern-modal-body">
-                <div id="orderDetailContent">
-                    <!-- Content will be loaded by JS -->
+<div class="modal fade" id="orderDetailModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title-section">
+                    <h5 class="modal-title">
+                        <i class="fas fa-receipt"></i>
+                        Chi tiết đơn hàng #<span id="detailId"></span>
+                    </h5>
+                    <span class="order-status-badge" id="detailStatusBadge"></span>
                 </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="order-detail-content">
+                    <!-- Customer Info -->
+                    <div class="detail-section">
+                        <h6 class="section-title">
+                            <i class="fas fa-user"></i>
+                            Thông tin khách hàng
+                        </h6>
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <label>Tên khách hàng:</label>
+                                <span id="detailCustomer"></span>
+                            </div>
+                            <div class="info-item">
+                                <label>Số điện thoại:</label>
+                                <span id="detailPhone"></span>
+                            </div>
+                            <div class="info-item">
+                                <label>Email:</label>
+                                <span id="detailEmail"></span>
+                            </div>
+                            <div class="info-item">
+                                <label>Thời gian đặt:</label>
+                                <span id="detailDate"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Delivery Info -->
+                    <div class="detail-section">
+                        <h6 class="section-title">
+                            <i class="fas fa-shipping-fast"></i>
+                            Thông tin giao hàng
+                        </h6>
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <label>Hình thức:</label>
+                                <span id="detailShippingType"></span>
+                            </div>
+                            <div class="info-item" id="detailAddressRow">
+                                <label>Địa chỉ:</label>
+                                <span id="detailAddress"></span>
+                            </div>
+                            <div class="info-item">
+                                <label>Phí giao hàng:</label>
+                                <span id="detailShipFee"></span>
+                            </div>
+                            <div class="info-item">
+                                <label>Ghi chú:</label>
+                                <span id="detailNote"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Payment Info -->
+                    <div class="detail-section">
+                        <h6 class="section-title">
+                            <i class="fas fa-credit-card"></i>
+                            Thông tin thanh toán
+                        </h6>
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <label>Phương thức:</label>
+                                <span id="detailPaymentMethod"></span>
+                            </div>
+                            <div class="info-item" id="detailTransidRow">
+                                <label>Mã giao dịch:</label>
+                                <span id="detailTransid"></span>
+                            </div>
+                            <div class="info-item total-price">
+                                <label>Tổng cộng:</label>
+                                <span id="detailTotal"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Order Items -->
+                    <div class="detail-section">
+                        <h6 class="section-title">
+                            <i class="fas fa-utensils"></i>
+                            Danh sách món ăn
+                        </h6>
+                        <div class="items-list" id="detailItems">
+                            <!-- Items will be populated here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times"></i>
+                    Đóng
+                </button>
             </div>
         </div>
     </div>

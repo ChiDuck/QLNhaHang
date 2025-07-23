@@ -366,7 +366,7 @@ class ProfileManager {
         container.innerHTML = reservations
             .map(
                 (reservation) => `
-      <div class="item-card" onclick="profileManager.showReservationDetail(${reservation.id})">
+      <div class="item-list-card" onclick="profileManager.showReservationDetail(${reservation.id})">
         <div class="item-header">
           <div>
             <div class="item-title">${reservation.tableName || reservation.tableId}</div>
@@ -424,7 +424,7 @@ class ProfileManager {
         container.innerHTML = orders
             .map(
                 (order) => `
-      <div class="item-card" onclick="profileManager.showOrderDetail(${order.id})">
+      <div class="item-list-card" onclick="profileManager.showOrderDetail(${order.id})">
         <div class="item-header">
           <div>
             <div class="item-title">Đơn hàng #${order.id}</div>
@@ -529,9 +529,131 @@ class ProfileManager {
         }
     }
 
-    showOrderDetail(orderId) {
+    async showOrderDetail(orderId) {
         // Implementation for showing order detail modal
         console.log("Show order detail:", orderId)
+        try {
+            const response = await fetch(`/api/shiporderapi/${orderId}`, {
+                method: "GET",
+                headers: {
+                    "Authorization": `Bearer ${customertoken}`,
+                    "Accept": "application/json"
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error("Không lấy được dữ liệu đơn hàng.");
+            }
+
+            const data = await response.json();
+
+            document.getElementById("detailId").textContent = data.idShiporder
+            document.getElementById("detailCustomer").textContent = data.customername
+            document.getElementById("detailPhone").textContent = data.phone || "Không có"
+            document.getElementById("detailEmail").textContent = data.email || "Không có"
+            document.getElementById("detailDate").textContent = new Date(data.orderdate).toLocaleString("vi-VN")
+            document.getElementById("detailNote").textContent = data.note || "Không có"
+            document.getElementById("detailTotal").textContent = this.formatCurrency(data.orderprice)
+            document.getElementById("detailShipFee").textContent = this.formatCurrency(data.shipfee || 0)
+
+            // Status badge
+            const statusBadge = document.getElementById("detailStatusBadge")
+            statusBadge.textContent = this.getStatusText(data.idOrderstatus)
+            statusBadge.className = `order-status-badge ${this.getStatusClass(data.idOrderstatus)}`
+
+            // Shipping info
+            const shippingType = data.isshipping ? "Giao đến địa chỉ" : "Nhận tại nhà hàng"
+            document.getElementById("detailShippingType").textContent = shippingType
+
+            const addressRow = document.getElementById("detailAddressRow")
+            if (data.isshipping) {
+                addressRow.style.display = "flex"
+                document.getElementById("detailAddress").textContent = data.shipaddress
+            } else {
+                addressRow.style.display = "none"
+            }
+
+            // Payment info
+            const transidRow = document.getElementById("detailTransidRow")
+            if (data.transactionid) {
+                document.getElementById("detailPaymentMethod").textContent = "Thanh toán VNPay"
+                document.getElementById("detailTransid").textContent = data.transactionid
+                transidRow.style.display = "flex"
+            } else {
+                document.getElementById("detailPaymentMethod").textContent = "Thanh toán tiền mặt"
+                transidRow.style.display = "none"
+            }
+
+            // Order items
+            this.renderOrderItems(data.items)
+
+            // Hiện modal
+            const modal = new bootstrap.Modal(document.getElementById("orderDetailModal"));
+            modal.show();
+
+        } catch (error) {
+            alert("Lỗi khi lấy chi tiết đơn hàng: " + error.message);
+        }
+    }
+
+    renderOrderItems(items) {
+        const itemsList = document.getElementById("detailItems")
+        itemsList.innerHTML = ""
+
+        items.forEach((item) => {
+            const itemCard = document.createElement("div")
+            itemCard.className = "item-card"
+            itemCard.innerHTML = `
+                <div class="item-info">
+                    <div class="item-name">${item.dishName}</div>
+                    <div class="item-quantity">Số lượng: ${item.quantity}</div>
+                </div>
+                <div class="item-price">${this.formatCurrency(item.price)}</div>
+            `
+            itemsList.appendChild(itemCard)
+        })
+    }
+
+    getStatusClass(status) {
+        switch (status) {
+            case 1:
+                return "status-pending"
+            case 2:
+                return "status-rejected"
+            case 3:
+            case 4:
+                return "status-processing"
+            case 5:
+                return "status-completed"
+            default:
+                return "status-pending"
+        }
+    }
+
+    getStatusText(status) {
+        switch (status) {
+            case 1:
+                return "Chờ xác nhận"
+            case 2:
+                return "Đã từ chối"
+            case 3:
+                return "Đang thực hiện"
+            case 4:
+                return "Đang giao"
+            case 5:
+                return "Đã hoàn thành"
+            case 6:
+                return "Đã hủy"
+            default:
+                return "Không xác định"
+        }
+    }
+
+    formatCurrency(amount) {
+        return new Intl.NumberFormat("vi-VN", {
+            style: "currency",
+            currency: "VND",
+        }).format(amount)
     }
 
     showReservationDetail(reservationId) {
