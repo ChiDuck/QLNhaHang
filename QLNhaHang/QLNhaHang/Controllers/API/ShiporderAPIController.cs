@@ -30,7 +30,6 @@ namespace QLNhaHang.Controllers.API
 			var shiporders = await db.Shiporders
 				.Include(s => s.IdCartNavigation)
 				.Include(s => s.IdOrderstatusNavigation)
-				.Include(s => s.IdPaymentNavigation)
 				.Select(s => new
 				{
 					s.IdShiporder,
@@ -46,7 +45,6 @@ namespace QLNhaHang.Controllers.API
 					s.IdOrderstatus,
 					OrderstatusName = s.IdOrderstatusNavigation.Name,
 					s.IdCart,
-					s.IdPayment
 				})
 				.OrderByDescending(s => s.Orderdate)
 				.ToListAsync();
@@ -76,7 +74,6 @@ namespace QLNhaHang.Controllers.API
 					s.IdOrderstatus,
 					OrderstatusName = s.IdOrderstatusNavigation.Name,
 					s.IdCart,
-					s.IdPayment
 				})
 				.OrderByDescending(s => s.Orderdate)
 				.ToListAsync();

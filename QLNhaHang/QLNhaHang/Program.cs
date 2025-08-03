@@ -14,6 +14,7 @@ builder.Services.AddDbContext<QLNhaHangContext>(options =>
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddScoped<EmailService>();
 builder.Services.AddHostedService<PendingOrderCleanupService>();
 builder.Services.AddRazorPages();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

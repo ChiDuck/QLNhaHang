@@ -10,53 +10,6 @@ GO
 ALTER AUTHORIZATION ON DATABASE::QLNhaHang TO sa;
 GO
 
---/*==============================================================*/
---/* Table: MANAGER                                               */
---/*==============================================================*/
---CREATE TABLE MANAGER 
---(
---	ID_MANAGER		INT				IDENTITY(1,1) NOT NULL,
---	NAME			VARCHAR(20)		NOT NULL,
---	PASSWORD_HASH	VARCHAR(50)		NOT NULL,
---	PHONE			VARCHAR(13)		NULL,
---	EMAIL			VARCHAR(35)		NOT NULL,
---	PRIMARY KEY(ID_MANAGER)
---);
-
---/*==============================================================*/
---/* Table: BRANCH	                                            */
---/*==============================================================*/
---CREATE TABLE BRANCH 
---(
---	ID_RESTAURANT	INT				NULL FOREIGN KEY(ID_RESTAURANT) REFERENCES RESTAURANT(ID_RESTAURANT),
---	ID_LOCATION		INT				NULL FOREIGN KEY(ID_LOCATION) REFERENCES LOCATION(ID_LOCATION),
---	ADDRESS			VARCHAR(50)		NOT NULL,
---	PRIMARY KEY(ID_RESTAURANT, ID_LOCATION)
---);
-
---/*==============================================================*/
---/* Table: LOCATION	                                            */
---/*==============================================================*/
---CREATE TABLE LOCATION 
---(
---	ID_LOCATION		INT				IDENTITY(1,1) NOT NULL,
---	NAME			VARCHAR(30)		NOT NULL,
---	POSTALCODE		INT				NOT NULL,
---	COUNTRY			VARCHAR(30)		NOT NULL,
---	PRIMARY KEY(ID_LOCATION)
---);
-
-/*==============================================================*/
-/* Table: PAYMENT												*/
-/*==============================================================*/
-CREATE TABLE PAYMENT 
-(
-	ID_PAYMENT			INT				IDENTITY(1,1) NOT NULL,
-	CARDNUMBER			CHAR(15)		NOT NULL,
-	EXPIRYDATE			DATE			NOT NULL,
-	CVC					SMALLINT		NOT NULL,
-	PRIMARY KEY(ID_PAYMENT)
-);
 
 /*==============================================================*/
 /* Table: CUSTOMER                                              */
@@ -66,12 +19,11 @@ CREATE TABLE CUSTOMER
 	ID_CUSTOMER			INT				IDENTITY(1,1) NOT NULL,
 	NAME				NVARCHAR(30)	NOT NULL,
 	PASSWORD_HASH		VARCHAR(150)	NOT NULL,
-	PHONE				VARCHAR(13)		NULL,
+	PHONE				VARCHAR(15)		NULL,
 	EMAIL				VARCHAR(35)		NULL,
 	BIRTHDAY			DATE			NULL,
 	PHOTO				VARCHAR(MAX)	NULL,
 	ADDRESS				NVARCHAR(100)	NULL,
-	ID_PAYMENT			INT				NULL FOREIGN KEY(ID_PAYMENT) REFERENCES PAYMENT(ID_PAYMENT),
 	CONSTRAINT CHK_PHONE_EMAIL_CUSTOMER CHECK (PHONE IS NOT NULL OR EMAIL IS NOT NULL),
 	PRIMARY KEY(ID_CUSTOMER)
 );
@@ -109,6 +61,40 @@ CREATE TABLE DINETABLE
 	PRIMARY KEY(ID_DINETABLE)
 );
 
+
+/*==============================================================*/
+/* Table: STAFFTYPE												*/
+/*==============================================================*/
+CREATE TABLE STAFFTYPE
+(
+	ID_STAFFTYPE		INT				IDENTITY(1,1) NOT NULL,
+	NAME				NVARCHAR(35)	NOT NULL,
+	PRIMARY KEY(ID_STAFFTYPE)
+);
+
+/*==============================================================*/
+/* Table: STAFF													*/
+/*==============================================================*/
+CREATE TABLE STAFF 
+(
+	ID_STAFF			INT				IDENTITY(1,1) NOT NULL,
+	NAME				NVARCHAR(35)	NOT NULL,
+	PASSWORD_HASH		VARCHAR(150)	NOT NULL,
+	CITIZENID			CHAR(12)		NOT NULL UNIQUE,
+	PHONE				CHAR(13)		NOT NULL,
+	EMAIL				VARCHAR(35)		NOT NULL,
+	GENDER				BIT				NULL,
+	BIRTHDAY			DATE			NOT NULL,
+	PHOTO				VARCHAR(MAX)	NULL,
+	ADDRESS				NVARCHAR(100)	NOT NULL,
+	STARTDATE			DATE			NULL,			-- date started working
+	HOURLYSALARY		FLOAT			NULL,			-- salary per hour
+	ISACTIVE			BIT				NOT NULL,		-- is still working?
+	ID_STAFFTYPE		INT				NULL FOREIGN KEY(ID_STAFFTYPE) REFERENCES STAFFTYPE(ID_STAFFTYPE),
+	PRIMARY KEY(ID_STAFF)
+);
+
+
 /*==============================================================*/
 /* Table: RESERVATIONSTATUS										*/
 /*==============================================================*/
@@ -137,6 +123,7 @@ CREATE TABLE RESERVATION
 	ID_RESERVATIONSTATUS INT			NULL FOREIGN KEY(ID_RESERVATIONSTATUS) REFERENCES RESERVATIONSTATUS(ID_RESERVATIONSTATUS),
 	ID_CUSTOMER			INT				NULL FOREIGN KEY(ID_CUSTOMER) REFERENCES CUSTOMER(ID_CUSTOMER),
 	ID_DINETABLE		INT				NULL FOREIGN KEY(ID_DINETABLE) REFERENCES DINETABLE(ID_DINETABLE),
+	ID_STAFF			INT				NULL FOREIGN KEY(ID_STAFF) REFERENCES STAFF(ID_STAFF),
 	CONSTRAINT CHK_PHONE_EMAIL_RESERVATION CHECK (PHONE IS NOT NULL OR EMAIL IS NOT NULL),
 	PRIMARY KEY(ID_RESERVATION)
 );
@@ -213,38 +200,6 @@ CREATE TABLE RESERVATIONORDER
 	PRIMARY KEY(ID_RESERVATION, ID_DISH)
 );
 
---/*==============================================================*/
---/* Table: RESERVATIONLIST										*/
---/*==============================================================*/
---CREATE TABLE RESERVATIONLIST
---(
---	ID_RESERVATIONLIST	INT				IDENTITY(1,1) NOT NULL,
---	QUANTITY			INT				NOT NULL,
---	TOTAL				INT				NOT NULL,
---	PRIMARY KEY(ID_RESERVATIONLIST)
---);
-
---/*==============================================================*/
---/* Table: RATING												*/
---/*==============================================================*/
---CREATE TABLE RATING 
---(
---	ID_RATING			INT				IDENTITY(1,1) NOT NULL,
---	STAR				INT				NOT NULL,
---	PRIMARY KEY(ID_RATING)
---);
-
---/*==============================================================*/
---/* Table: DISHRATING											*/
---/*==============================================================*/
---CREATE TABLE DISHRATING 
---(
---	ID_DISH				INT				FOREIGN KEY(ID_DISH) REFERENCES DISH(ID_DISH),
---	ID_RATING			INT				FOREIGN KEY(ID_RATING) REFERENCES RATING(ID_RATING),
---	COMMENT				NVARCHAR(200)	NULL,
---	PRIMARY KEY(ID_DISH, ID_RATING)
---);
-
 /*==============================================================*/
 /* Table: ORDERSTATUS											*/
 /*==============================================================*/
@@ -289,14 +244,14 @@ CREATE TABLE SHIPORDER
 	PHONE				CHAR(13)		NULL,
 	EMAIL				VARCHAR(35)		NULL,
 	ISSHIPPING			BIT				NOT NULL,
-	SHIPADDRESS			VARCHAR(100)	NULL,
+	SHIPADDRESS			NVARCHAR(100)	NULL,
 	SHIPFEE				FLOAT			NULL,
 	ORDERPRICE			FLOAT			NOT NULL,
 	NOTE				NVARCHAR(150)	NULL,
 	TRANSACTIONID		VARCHAR(100)	NULL,
 	ID_ORDERSTATUS		INT				NULL FOREIGN KEY(ID_ORDERSTATUS) REFERENCES ORDERSTATUS(ID_ORDERSTATUS),
 	ID_CART				INT				NULL FOREIGN KEY(ID_CART) REFERENCES CART(ID_CART),
-	ID_PAYMENT			INT				NULL FOREIGN KEY(ID_PAYMENT) REFERENCES PAYMENT(ID_PAYMENT),
+	ID_STAFF			INT				NULL FOREIGN KEY(ID_STAFF) REFERENCES STAFF(ID_STAFF),
 	CONSTRAINT CHK_PHONE_EMAIL_ORDER CHECK (PHONE IS NOT NULL OR EMAIL IS NOT NULL),
 	PRIMARY KEY(ID_SHIPORDER)
 );
@@ -311,39 +266,6 @@ CREATE TABLE ORDERITEM
 	QUANTITY			INT				NOT NULL,
 	SUBTOTAL			FLOAT			NOT NULL,
 	PRIMARY KEY(ID_SHIPORDER, ID_DISH)
-);
-
-
-/*==============================================================*/
-/* Table: STAFFTYPE												*/
-/*==============================================================*/
-CREATE TABLE STAFFTYPE
-(
-	ID_STAFFTYPE		INT				IDENTITY(1,1) NOT NULL,
-	NAME				NVARCHAR(35)	NOT NULL,
-	PRIMARY KEY(ID_STAFFTYPE)
-);
-
-/*==============================================================*/
-/* Table: STAFF													*/
-/*==============================================================*/
-CREATE TABLE STAFF 
-(
-	ID_STAFF			INT				IDENTITY(1,1) NOT NULL,
-	NAME				NVARCHAR(35)	NOT NULL,
-	PASSWORD_HASH		VARCHAR(150)	NOT NULL,
-	CITIZENID			CHAR(12)		NOT NULL UNIQUE,
-	PHONE				CHAR(13)		NOT NULL,
-	EMAIL				VARCHAR(35)		NOT NULL,
-	GENDER				BIT				NULL,
-	BIRTHDAY			DATE			NOT NULL,
-	PHOTO				VARCHAR(MAX)	NULL,
-	ADDRESS				NVARCHAR(100)	NOT NULL,
-	STARTDATE			DATE			NULL,			-- date started working
-	HOURLYSALARY		FLOAT			NULL,			-- salary per hour
-	ISACTIVE			BIT				NOT NULL,		-- is still working?
-	ID_STAFFTYPE		INT				NULL FOREIGN KEY(ID_STAFFTYPE) REFERENCES STAFFTYPE(ID_STAFFTYPE),
-	PRIMARY KEY(ID_STAFF)
 );
 
 /*==============================================================*/
@@ -410,29 +332,4 @@ CREATE TABLE PAYROLLDETAIL
 	TOTALSALARY			FLOAT			NOT NULL DEFAULT 0,
 	NOTE				NVARCHAR(100)	NULL,
 	PRIMARY KEY(ID_STAFF, ID_PAYROLL)
-);
-
-/*==============================================================*/
-/* Table: IMPORTTICKET											*/
-/*==============================================================*/
-CREATE TABLE IMPORTTICKET 
-(
-	ID_IMPORTTICKET		INT				IDENTITY(1,1) NOT NULL,
-	CREATEDATE			DATETIME		NOT NULL,
-	VAT					FLOAT			NOT NULL,
-	TOTALFEE			FLOAT			NOT NULL,
-	ID_STAFF			INT				NULL FOREIGN KEY(ID_STAFF) REFERENCES STAFF(ID_STAFF),
-	PRIMARY KEY(ID_IMPORTTICKET)
-);
-
-/*==============================================================*/
-/* Table: IMPORTTICKETDETAIL									*/
-/*==============================================================*/
-CREATE TABLE IMPORTTICKETDETAIL 
-(
-	ID_INVENTORYITEM	INT				FOREIGN KEY(ID_INVENTORYITEM) REFERENCES INVENTORYITEM(ID_INVENTORYITEM),
-	ID_IMPORTTICKET		INT				FOREIGN KEY(ID_IMPORTTICKET) REFERENCES IMPORTTICKET(ID_IMPORTTICKET),
-	AMOUNT				FLOAT			NOT NULL,
-	SUBTOTAL			FLOAT			NOT NULL,
-	PRIMARY KEY(ID_INVENTORYITEM, ID_IMPORTTICKET)
 );

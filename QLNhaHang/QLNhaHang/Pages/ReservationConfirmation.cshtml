@@ -10,7 +10,7 @@
 	<link rel="stylesheet" href="~/css/confirmation-pages.css" asp-append-version="true" />
 }
 
-<div class="confirmation-wrapper">
+<div class="confirmation-wrapper" id="reservation-content" hidden>
 	<div class="confirmation-container">
 		@if (r != null)
 		{
@@ -193,3 +193,15 @@
 		}
 	</div>
 </div>
+<script>
+	document.addEventListener("DOMContentLoaded", function () {
+		const current = localStorage.getItem("reservationid");
+		console.log(current.toString() == @r.IdReservation);
+		if (current == @r.IdReservation) {
+			document.getElementById("reservation-content").hidden = false;
+		}
+		else {
+			document.getElementById("reservation-content").hidden = true;
+		}
+	});
+</script>

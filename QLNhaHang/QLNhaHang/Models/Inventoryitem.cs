@@ -8,7 +8,6 @@ namespace QLNhaHang.Models
         public Inventoryitem()
         {
             Dishingredients = new HashSet<Dishingredient>();
-            Importticketdetails = new HashSet<Importticketdetail>();
         }
 
         public int IdInventoryitem { get; set; }
@@ -19,6 +18,5 @@ namespace QLNhaHang.Models
 
         public virtual Inventoryitemtype? IdInventoryitemtypeNavigation { get; set; }
         public virtual ICollection<Dishingredient> Dishingredients { get; set; }
-        public virtual ICollection<Importticketdetail> Importticketdetails { get; set; }
     }
 }

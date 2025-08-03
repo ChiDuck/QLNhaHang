@@ -18,9 +18,7 @@ namespace QLNhaHang.Models
         public DateTime? Birthday { get; set; }
         public string? Photo { get; set; }
         public string? Address { get; set; }
-        public int? IdPayment { get; set; }
 
-        public virtual Payment? IdPaymentNavigation { get; set; }
         public virtual Cart? Cart { get; set; }
         public virtual ICollection<Reservation> Reservations { get; set; }
     }

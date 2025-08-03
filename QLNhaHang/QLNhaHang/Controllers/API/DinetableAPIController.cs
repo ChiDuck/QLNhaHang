@@ -27,7 +27,9 @@ namespace QLNhaHang.Controllers.API
                     t.IdDinetable,
                     t.Name,
                     t.IdTabletypeNavigation.Seats,
-                    Area = t.IdAreaNavigation.Name,
+                    t.IdArea,
+                    t.IdTabletype,
+					Area = t.IdAreaNavigation.Name,
                     Type = t.IdTabletypeNavigation.Name
                 })
                 .ToListAsync();

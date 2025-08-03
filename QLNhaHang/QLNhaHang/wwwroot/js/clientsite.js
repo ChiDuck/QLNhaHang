@@ -126,7 +126,6 @@ function renderAccountDropdown() {
         menu.innerHTML = `
             <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#loginModal">Đăng nhập</a></li>
             <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#registerModal">Đăng ký</a></li>
-            <li><a class="dropdown-item" href="/cart">Đơn hàng hiện tại</a></li>
         `;
     } else {
         nameSpan.textContent = customer.name || "Khách hàng";

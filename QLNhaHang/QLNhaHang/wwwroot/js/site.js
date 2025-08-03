@@ -6,6 +6,12 @@
         window.location.href = '/Login';
         return;
     }
+
+    const today = new Date();
+    const options = { weekday: 'long', day: 'numeric', month: 'numeric', year: 'numeric' };
+    const formattedDate = today.toLocaleDateString('vi-VN', options);
+
+    document.getElementById("todayDate").textContent = formattedDate.charAt(0).toUpperCase() + formattedDate.slice(1);
 });
 
 function logout() {

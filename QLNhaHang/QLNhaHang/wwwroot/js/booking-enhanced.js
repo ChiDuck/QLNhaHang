@@ -604,7 +604,7 @@ class ModernBookingManager {
 
             if (response.ok) {
                 const result = await response.json()
-                this.showBookingSuccess(result.reservationId || "RES" + Date.now())
+                this.showBookingSuccess(result.reservationResultDto.reservationId || "RES" + Date.now())
             } else {
                 const error = await response.text()
                 this.showError("Không thể đặt bàn: " + error)
@@ -620,7 +620,6 @@ class ModernBookingManager {
 
     async createVNPayReservation(bookingPayload) {
         try {
-
             const response = await fetch("/api/reservationapi/vnpay", {
                 method: "POST",
                 headers: { "Content-Type": "application/json", "Authorization": `Bearer ${customertoken}` },
@@ -630,12 +629,13 @@ class ModernBookingManager {
             if (response.ok) {
                 const data = await response.json();
                 if (data && data.paymentUrl) {
+                    localStorage.setItem("reservationid", data.reservationid);
                     window.location.href = data.paymentUrl;
                 } else {
                     this.showError("Không thể đặt bàn: " + error)
                 }
             } else {
-                alert("Không thể đặt bàn.");
+                this.showError("Xảy ra lỗi khi đặt bàn.");
             }
         } catch (error) {
             console.error("Error confirming booking:", error)
@@ -643,7 +643,6 @@ class ModernBookingManager {
         } finally {
             this.hideLoading("bookingConfirmBtn")
         }
-
     }
 
     showBookingSuccess(bookingCode) {

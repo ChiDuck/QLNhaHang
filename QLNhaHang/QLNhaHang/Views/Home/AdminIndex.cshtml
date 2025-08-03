@@ -7,18 +7,6 @@
 <div class="dashboard-container">
 	<!-- Stats Cards -->
 	<div class="stats-grid">
-		@* <div class="stat-card">
-			<div class="stat-header">
-				<div class="stat-icon-wrapper success">
-					<i class="fas fa-utensils"></i>
-				</div>
-				<div class="stat-info">
-					<h3 class="stat-value" id="bestselltoday"></h3>
-					<p class="stat-label">Món đặt nhiều nhất hôm nay</p>
-				</div>
-			</div>
-		</div> *@
-
 		<div class="stat-card">
 			<div class="stat-header">
 				<div class="stat-icon-wrapper warning">
@@ -29,12 +17,6 @@
 					<p class="stat-label">Lượt đặt bàn hôm nay</p>
 				</div>
 			</div>
-			@* 			<div class="stat-footer">
-				<span class="stat-change positive">
-					<i class="fas fa-arrow-up"></i>
-					+8% so với hôm qua
-				</span>
-			</div> *@
 		</div>
 
 		<div class="stat-card">
@@ -47,12 +29,6 @@
 					<p class="stat-label">Số đơn giao hàng hôm nay</p>
 				</div>
 			</div>
-			@* 			<div class="stat-footer">
-				<span class="stat-change negative">
-					<i class="fas fa-arrow-down"></i>
-					-3% so với hôm qua
-				</span>
-			</div> *@
 		</div>
 
 		<div class="stat-card">
@@ -65,80 +41,8 @@
 					<p class="stat-label">Doanh thu hôm nay</p>
 				</div>
 			</div>
-			@* 			<div class="stat-footer">
-				<span class="stat-change positive">
-					<i class="fas fa-arrow-up"></i>
-					+15% so với hôm qua
-				</span>
-			</div> *@
 		</div>
 	</div>
-	<!-- Main Content Grid -->
-	@* 	<div class="dashboard-grid">
-		<!-- Recent Activities -->
-		<div class="dashboard-card">
-			<div class="card-header">
-				<h4 class="card-title">
-					<i class="fas fa-clock me-2"></i>
-					Hoạt động gần đây
-				</h4>
-				<button class="btn btn-sm btn-outline-primary">Xem tất cả</button>
-			</div>
-			<div class="card-body">
-				<div class="activity-list" id="recentActivities">
-					<div class="activity-item">
-						<div class="activity-icon success">
-							<i class="fas fa-user-plus"></i>
-						</div>
-						<div class="activity-content">
-							<p class="activity-text">Khách hàng mới <strong>Nguyễn Văn A</strong> đã đăng ký</p>
-							<span class="activity-time">5 phút trước</span>
-						</div>
-					</div>
-
-					<div class="activity-item">
-						<div class="activity-icon warning">
-							<i class="fas fa-calendar"></i>
-						</div>
-						<div class="activity-content">
-							<p class="activity-text">Đặt bàn mới cho <strong>4 người</strong> lúc 19:00</p>
-							<span class="activity-time">10 phút trước</span>
-						</div>
-					</div>
-
-					<div class="activity-item">
-						<div class="activity-icon info">
-							<i class="fas fa-shopping-cart"></i>
-						</div>
-						<div class="activity-content">
-							<p class="activity-text">Đơn hàng mới <strong>#ORD001</strong> cần xử lý</p>
-							<span class="activity-time">15 phút trước</span>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
- *@
-	<!-- Chart Section -->
-	@* 	<div class="dashboard-card full-width">
-		<div class="card-header">
-			<h4 class="card-title">
-				<i class="fas fa-chart-line me-2"></i>
-				Doanh thu 7 ngày qua
-			</h4>
-			<div class="card-actions">
-				<select class="form-select form-select-sm">
-					<option>7 ngày qua</option>
-					<option>30 ngày qua</option>
-					<option>3 tháng qua</option>
-				</select>
-			</div>
-		</div>
-		<div class="card-body">
-			<canvas id="revenueChart" height="100"></canvas>
-		</div>
-	</div> *@
 
 	<div class="row g-4">
 		<div class="col-md-7">
@@ -147,7 +51,6 @@
 				<canvas id="revenueWeekChart"></canvas>
 			</div>
 		</div>
-
 		<div class="col-md-5">
 			<div class="card p-3">
 				<h5>Top 5 món được đặt nhiều nhất</h5>
@@ -161,7 +64,6 @@
 				<canvas id="topDishesChart"></canvas>
 			</div>
 		</div>
-
 		<div class="col-md-12">
 			<div class="card p-3">
 				<h5>Doanh thu tháng này</h5>

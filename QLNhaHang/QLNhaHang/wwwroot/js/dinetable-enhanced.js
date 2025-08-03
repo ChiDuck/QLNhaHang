@@ -105,8 +105,6 @@ class DinetableManager {
     const searchTerm = document.getElementById("searchInput").value.toLowerCase()
     const areaFilter = document.getElementById("areaFilter").value
     const typeFilter = document.getElementById("typeFilter").value
-    //const statusFilter = document.getElementById("statusFilter").value
-
     this.filteredTables = this.tables.filter((table) => {
       const matchesSearch =
         table.name.toLowerCase().includes(searchTerm) ||
@@ -115,13 +113,10 @@ class DinetableManager {
 
       const matchesArea = !areaFilter || table.idArea == areaFilter
       const matchesType = !typeFilter || table.idTabletype == typeFilter
-     // const matchesStatus = !statusFilter || table.status === statusFilter
-
-      return matchesSearch && matchesArea && matchesType //&& matchesStatus
+      return matchesSearch && matchesArea && matchesType 
     })
 
     this.renderTables()
-   // this.updateStats()
   }
 
   switchView(view) {
@@ -162,13 +157,6 @@ class DinetableManager {
     }
 
     this.filteredTables.forEach((table) => {
-      //const status = table.status || "available"
-      //const statusText = {
-      //  available: "Trống",
-      //  occupied: "Có khách",
-      //  maintenance: "Bảo trì",
-      //}
-
       const card = document.createElement("div")
       card.className = `table-card`
       card.innerHTML = `
@@ -219,12 +207,6 @@ class DinetableManager {
     }
 
     this.filteredTables.forEach((table) => {
-      //const status = table.status || "available"
-      //const statusText = {
-      //  available: "Trống",
-      //  occupied: "Có khách",
-      //  maintenance: "Bảo trì",
-      //}
 
       const row = document.createElement("tr")
       row.innerHTML = `
@@ -279,8 +261,6 @@ class DinetableManager {
       document.getElementById("dinetableName").value = table.name
       document.getElementById("dinetableArea").value = table.idArea
       document.getElementById("dinetableType").value = table.idTabletype
-      //document.getElementById("dinetableStatus").value = table.status || "available"
-      //document.getElementById("dinetableNote").value = table.note || ""
 
       new bootstrap.Modal(document.getElementById("dinetableModal")).show()
     } catch (error) {
@@ -301,8 +281,6 @@ class DinetableManager {
         Name: document.getElementById("dinetableName").value.trim(),
         IdArea: Number.parseInt(document.getElementById("dinetableArea").value),
         IdTabletype: Number.parseInt(document.getElementById("dinetableType").value),
-      //  Status: document.getElementById("dinetableStatus").value,
-      //  Note: document.getElementById("dinetableNote").value.trim(),
       }
 
       // Validation

@@ -110,24 +110,6 @@ function createDishCard(dish) {
     return card
 }
 
-function updateStats() {
-    const totalElement = document.getElementById("totalDishes")
-    const availableElement = document.getElementById("availableDishes")
-    const discountElement = document.getElementById("discountDishes")
-    const soldOutElement = document.getElementById("soldOutDishes")
-
-    if (totalElement) totalElement.textContent = dishlist.length
-
-    const availableDishes = dishlist.filter((d) => !d.issoldout).length
-    if (availableElement) availableElement.textContent = availableDishes
-
-    const discountDishes = dishlist.filter((d) => d.discount && d.discount > 0).length
-    if (discountElement) discountElement.textContent = discountDishes
-
-    const soldOutDishes = dishlist.filter((d) => d.issoldout).length
-    if (soldOutElement) soldOutElement.textContent = soldOutDishes
-}
-
 function showLoading(show) {
     const loadingState = document.getElementById("loadingState")
     const container = document.getElementById("dishTableBody")

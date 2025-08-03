@@ -7,19 +7,20 @@ namespace QLNhaHang.Models
     {
         public Staff()
         {
-            Importtickets = new HashSet<Importticket>();
             Payrolldetails = new HashSet<Payrolldetail>();
+            Reservations = new HashSet<Reservation>();
+            Shiporders = new HashSet<Shiporder>();
             Weeklyshifts = new HashSet<Weeklyshift>();
         }
 
         public int IdStaff { get; set; }
         public string Name { get; set; } = null!;
-        public string? PasswordHash { get; set; } = null!;
+        public string PasswordHash { get; set; } = null!;
         public string Citizenid { get; set; } = null!;
         public string Phone { get; set; } = null!;
         public string Email { get; set; } = null!;
         public bool? Gender { get; set; }
-        public DateTime? Birthday { get; set; }
+        public DateTime Birthday { get; set; }
         public string? Photo { get; set; }
         public string Address { get; set; } = null!;
         public DateTime? Startdate { get; set; }
@@ -28,8 +29,9 @@ namespace QLNhaHang.Models
         public int? IdStafftype { get; set; }
 
         public virtual Stafftype? IdStafftypeNavigation { get; set; }
-        public virtual ICollection<Importticket> Importtickets { get; set; }
         public virtual ICollection<Payrolldetail> Payrolldetails { get; set; }
+        public virtual ICollection<Reservation> Reservations { get; set; }
+        public virtual ICollection<Shiporder> Shiporders { get; set; }
         public virtual ICollection<Weeklyshift> Weeklyshifts { get; set; }
     }
 }

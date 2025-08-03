@@ -269,46 +269,7 @@
 			</button>
 		</div>
 	</div>
-	<!-- Stats Cards -->
-	@*     <div class="schedule-stats">
-        <div class="stat-card primary">
-            <div class="stat-icon">
-                <i class="fas fa-users"></i>
-            </div>
-            <div class="stat-content">
-                <div class="stat-number" id="totalStaffCount">0</div>
-                <div class="stat-label">Tổng nhân viên</div>
-            </div>
-        </div>
-        <div class="stat-card success">
-            <div class="stat-icon">
-                <i class="fas fa-user-check"></i>
-            </div>
-            <div class="stat-content">
-                <div class="stat-number" id="presentStaffCount">0</div>
-                <div class="stat-label">Có mặt hôm nay</div>
-            </div>
-        </div>
-        <div class="stat-card warning">
-            <div class="stat-icon">
-                <i class="fas fa-user-clock"></i>
-            </div>
-            <div class="stat-content">
-                <div class="stat-number" id="lateStaffCount">0</div>
-                <div class="stat-label">Đi muộn</div>
-            </div>
-        </div>
-        <div class="stat-card info">
-            <div class="stat-icon">
-                <i class="fas fa-calendar-week"></i>
-            </div>
-            <div class="stat-content">
-                <div class="stat-number" id="currentWeekNumber">1</div>
-                <div class="stat-label">Tuần hiện tại</div>
-            </div>
-        </div>
-    </div>
- *@
+
 	<!-- Control Panel -->
 	<div class="content-card">
 		<div class="control-panel">
@@ -323,26 +284,7 @@
 						</button> *@
 					</div>
 				</div>
-				@* <div class="filter-group">
-					<select class="form-select" id="shiftFilter">
-						<option value="">Tất cả ca</option>
-						<option value="1">Ca sáng</option>
-						<option value="2">Ca chiều</option>
-						<option value="3">Ca tối</option>
-					</select>
-				</div>
-				<div class="filter-group">
-					<select class="form-select" id="dayFilter">
-						<option value="">Tất cả ngày</option>
-						<option value="2">Thứ 2</option>
-						<option value="3">Thứ 3</option>
-						<option value="4">Thứ 4</option>
-						<option value="5">Thứ 5</option>
-						<option value="6">Thứ 6</option>
-						<option value="7">Thứ 7</option>
-						<option value="8">Chủ nhật</option>
-					</select>
-				</div> *@
+
 				 <button class="btn btn-secondary" id="resetFilterButton">
 					<i class="fas fa-times"></i>
 					Xóa lọc
@@ -351,13 +293,13 @@
 		</div>
 	</div>
 
+			<div id="checkinMessage" class="checkin-message"></div>
 	<!-- Current Week Display -->
-	<div class="week-display-card">
+@* 	<div class="week-display-card">
 		<div class="week-info">
 			<h4 id="currentWeekDisplay" class="week-title"></h4>
-			<div id="checkinMessage" class="checkin-message"></div>
 		</div>
-		@* <div class="week-navigation">
+		 <div class="week-navigation">
 			<button class="btn btn-outline-primary" id="prevWeekBtn">
 				<i class="fas fa-chevron-left"></i>
 				Tuần trước
@@ -366,23 +308,13 @@
 				Tuần sau
 				<i class="fas fa-chevron-right"></i>
 			</button>
-		</div> *@
-	</div> 
+		</div> 
+	</div>  *@
 
 	<!-- Schedule Grid -->
 	<div class="content-card">
 		<div class="card-header">
 			<h3><i class="fas fa-table"></i> Lịch làm việc tuần</h3>
-			@* <div class="view-controls">
-				<button class="btn btn-sm btn-outline-primary" id="compactViewBtn">
-					<i class="fas fa-compress"></i>
-					Thu gọn
-				</button>
-				<button class="btn btn-sm btn-outline-primary" id="expandViewBtn">
-					<i class="fas fa-expand"></i>
-					Mở rộng
-				</button>
-			</div> *@
 		</div>
 		<div class="schedule-grid-container">
 			<div class="table-responsive">

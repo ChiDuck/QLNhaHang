@@ -23,11 +23,11 @@ namespace QLNhaHang.Models
         public string? Transactionid { get; set; }
         public int? IdOrderstatus { get; set; }
         public int? IdCart { get; set; }
-        public int? IdPayment { get; set; }
+        public int? IdStaff { get; set; }
 
         public virtual Cart? IdCartNavigation { get; set; }
         public virtual Orderstatus? IdOrderstatusNavigation { get; set; }
-        public virtual Payment? IdPaymentNavigation { get; set; }
+        public virtual Staff? IdStaffNavigation { get; set; }
         public virtual ICollection<Orderitem> Orderitems { get; set; }
     }
 }

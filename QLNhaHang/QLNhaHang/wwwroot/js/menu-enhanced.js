@@ -133,11 +133,11 @@ class MenuManager {
 
     renderDishes() {
         const container = document.getElementById("dishesGrid")
-        const countElement = document.getElementById("dishesCount")
+        //const countElement = document.getElementById("dishesCount")
         const noResults = document.getElementById("noResults")
 
         // Update count
-        countElement.textContent = `Hiển thị ${this.filteredDishes.length} món ăn`
+        //countElement.textContent = `Hiển thị ${this.filteredDishes.length} món ăn`
 
         if (!this.filteredDishes.length) {
             container.style.display = "none"

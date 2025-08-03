@@ -103,14 +103,13 @@
 
 .search-clear {
   position: absolute;
-  right: 1rem;
+  right: 1.5rem;
   top: 50%;
   transform: translateY(-50%);
   background: none;
   border: none;
   color: #6c757d;
   cursor: pointer;
-  padding: 0.25rem;
   border-radius: 50%;
   transition: all 0.3s ease;
 }

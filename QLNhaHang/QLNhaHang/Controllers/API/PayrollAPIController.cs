@@ -40,7 +40,14 @@ namespace QLNhaHang.Controllers.API
 				details = payroll.Payrolldetails.Select(d => new {
 					id = d.IdStaff,
 					name = d.IdStaffNavigation.Name,
-					type = d.IdStaffNavigation.IdStafftypeNavigation?.Name ?? ""
+					type = d.IdStaffNavigation.IdStafftypeNavigation?.Name ?? "",
+					d.Days,
+					d.Hours,
+					d.Absencetimes,
+					d.Latetimes,
+					d.Subtract,
+					d.Bonus,
+					d.Totalsalary,
 				})
 			});
 		}
@@ -49,6 +56,7 @@ namespace QLNhaHang.Controllers.API
 		public async Task<IActionResult> GetDetail(int idPayroll, int idStaff)
 		{
 			var pd = await _context.Payrolldetails
+				.Include(p => p.IdStaffNavigation)
 				.FirstOrDefaultAsync(p => p.IdPayroll == idPayroll && p.IdStaff == idStaff);
 
 			if (pd == null) return NotFound();
@@ -57,6 +65,7 @@ namespace QLNhaHang.Controllers.API
 			{
 				pd.IdStaff,
 				pd.IdPayroll,
+				pd.IdStaffNavigation?.Hourlysalary,
 				pd.Days,
 				pd.Hours,
 				pd.Absencetimes,

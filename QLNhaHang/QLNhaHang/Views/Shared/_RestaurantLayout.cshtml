@@ -49,7 +49,7 @@
 							<i class="fas fa-book-open me-1"></i>Thực đơn
 						</a>
 					</li>
-					<li class="nav-item">
+					@* <li class="nav-item">
 						<a class="nav-link modern-nav-link" href="@Url.Action("About", "Home")">
 							<i class="fas fa-info-circle me-1"></i>Giới thiệu
 						</a>
@@ -58,7 +58,7 @@
 						<a class="nav-link modern-nav-link" href="@Url.Action("Contact", "Home")">
 							<i class="fas fa-phone me-1"></i>Liên hệ
 						</a>
-					</li>
+					</li> *@
 					<li class="nav-item">
 						<a class="nav-link modern-nav-link" asp-area="" asp-controller="Home" asp-action="AdminIndex">
 							<i class="fas fa-cog me-1"></i>Quản lý
@@ -85,12 +85,12 @@
 						</ul>
 					</div>
 
-@* 					<!-- Reservation Button -->
+					@* 					<!-- Reservation Button -->
 					<button class="btn modern-reservation-btn me-3 book-now-btn">
 						<i class="fas fa-calendar-check me-2"></i>Đặt bàn
 					</button> *@
 
-					
+
 				</div>
 			</div>
 		</div>
@@ -121,7 +121,7 @@
 						</div>
 					</div>
 
-			@* 		<div class="col-lg-2 col-md-6 mb-4">
+					@* 		<div class="col-lg-2 col-md-6 mb-4">
 						<h6 class="footer-heading">Menu</h6>
 						<ul class="footer-links">
 							<li><a href="@Url.Action("Index", "Home")">Trang chủ</a></li>
@@ -134,8 +134,11 @@
 					<div class="col-lg-4 col-md-6 mb-4">
 						<h6 class="footer-heading">Liên hệ</h6>
 						<ul class="footer-contact">
-							<li><i class="fas fa-map-marker-alt"></i>123 Đường ABC, Quận 1, TP.HCM</li>
-							<li><i class="fas fa-phone"></i>(028) 1234 5678</li>
+							<li><i class="fas fa-map-marker-alt"></i>164 Nguyễn Hữu Thọ, phường Tân Hưng, Quận 7, TP.HCM</li>
+							<li>
+								<i class="fas fa-envelope"></i>ducphat.nhahang@gmail.com
+							</li>
+							<li><i class="fas fa-phone"></i>(+84) 0345674319</li>
 						</ul>
 					</div>
 
@@ -282,7 +285,7 @@
 						<i class="fas fa-arrow-left me-2"></i>Tiếp tục chọn món
 					</a>
 					<button id="checkoutButton" type="button" class="btn modern-btn-primary">
-						<i class="fas fa-credit-card me-2"></i>Thanh toán
+						<i class="fas fa-credit-card me-2"></i>Tạo đơn
 					</button>
 				</div>
 			</div>
@@ -482,8 +485,8 @@
 									<i class="fas fa-calendar-alt me-2"></i>
 									Chọn ngày và giờ đặt bàn
 								</h5>
-								<p class="step-description">Vui lòng chọn thời gian phù hợp cho bữa ăn của bạn</p>
-							</div>
+								@* 								<p class="step-description">Vui lòng chọn thời gian phù hợp cho bữa ăn của bạn</p>
+ *@							</div>
 
 							<div class="row">
 								<div class="col-md-6">
@@ -546,38 +549,38 @@
 								<p class="step-description">Bạn có thể đặt trước một số món ăn hoặc bỏ qua bước này</p>
 							</div>
 
-							<div class="dish-selection-container">
-								@* <div class="dish-search-bar">
-									<div class="search-input-group">
-										<i class="fas fa-search"></i>
-										<input type="text" class="form-control" id="dishSearchInput" placeholder="Tìm kiếm món ăn...">
-									</div>
+							<div class="dish-search-bar">
+								<div class="search-input-group">
+									<i class="fas fa-search"></i>
+									<input type="text" class="form-control" id="dishSearchInput" placeholder="Tìm kiếm món ăn...">
 								</div>
+							</div>
 
-								<div class="dish-categories">
-									<button class="category-btn active" data-category="all">Tất cả</button>
-									<button class="category-btn" data-category="appetizer">Khai vị</button>
-									<button class="category-btn" data-category="main">Món chính</button>
-									<button class="category-btn" data-category="dessert">Tráng miệng</button>
-									<button class="category-btn" data-category="drink">Đồ uống</button>
-								</div> *@
+							<div class="dish-categories">
+								<button class="category-btn active" data-category="0">Tất cả</button>
+								<button class="category-btn" data-category="1">Khai vị</button>
+								<button class="category-btn" data-category="2">Món chính</button>
+								<button class="category-btn" data-category="3">Món phụ</button>
+								<button class="category-btn" data-category="4">Tráng miệng</button>
+								<button class="category-btn" data-category="5">Đồ uống</button>
+							</div>
+							<div class="dish-selection-container">
 
 								<div class="dishes-grid" id="dishesGrid">
 									<!-- Dishes will be populated by JS -->
 								</div>
-
-								<div class="selected-dishes-summary" id="selectedDishesSummary" style="display: none;">
-									<h6 class="summary-title">
-										<i class="fas fa-check-circle me-2"></i>
-										Món ăn đã chọn
-									</h6>
-									<div class="selected-dishes-list" id="selectedDishesList">
-										<!-- Selected dishes will be shown here -->
-									</div>
-									<div class="summary-total">
-										<span class="total-label">Tổng cộng:</span>
-										<span class="total-amount" id="dishesTotal">0 ₫</span>
-									</div>
+							</div>
+							<div class="selected-dishes-summary" id="selectedDishesSummary" style="display: none;">
+								<h6 class="summary-title">
+									<i class="fas fa-check-circle me-2"></i>
+									Món ăn đã chọn
+								</h6>
+								<div class="selected-dishes-list" id="selectedDishesList">
+									<!-- Selected dishes will be shown here -->
+								</div>
+								<div class="summary-total">
+									<span class="total-label">Tổng cộng:</span>
+									<span class="total-amount" id="dishesTotal">0 ₫</span>
 								</div>
 							</div>
 						</div>
@@ -722,12 +725,12 @@
 						<i class="fas fa-check-circle"></i>
 					</div>
 					<h4 class="success-title">Đặt bàn thành công!</h4>
-					<p class="success-message">Cảm ơn bạn đã đặt bàn tại nhà hàng của chúng tôi.</p>
+					<p class="success-message">Cảm ơn quý khách đã đặt bàn tại nhà hàng của chúng tôi.</p>
 					<div class="booking-code">
 						<span class="code-label">Mã đặt bàn:</span>
 						<span class="code-value" id="bookingCode">#000000</span>
 					</div>
-					<p class="success-note">Vui lòng đến đúng giờ đã đặt. Chúng tôi sẽ liên hệ với bạn để xác nhận.</p>
+					<p class="success-note">Thông tin đặt bàn đã được gửi qua email của quý khách. Vui lòng theo dõi để biết thêm thông tin.</p>
 					<button type="button" class="btn booking-btn-primary" data-bs-dismiss="modal">
 						<i class="fas fa-home me-2"></i>Về trang chủ
 					</button>
@@ -742,7 +745,7 @@
 	<script src="~/js/menu.js" asp-append-version="true"></script>
 	<script src="~/js/booking-enhanced.js" asp-append-version="true"></script>
 	<script src="~/js/restaurant-layout.js" asp-append-version="true"></script>
- 	<script src="~/js/ordering.js" asp-append-version="true"></script>
+	<script src="~/js/ordering.js" asp-append-version="true"></script>
 
 	@await RenderSectionAsync("Scripts", required: false)
 </body>

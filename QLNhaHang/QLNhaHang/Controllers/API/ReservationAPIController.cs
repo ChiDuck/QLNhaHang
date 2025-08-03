@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using QLNhaHang.DTO;
 using QLNhaHang.Libraries;
 using QLNhaHang.Models;
+using QLNhaHang.Service;
 using System.Security.Claims;
 
 namespace QLNhaHang.Controllers.API
@@ -14,11 +15,13 @@ namespace QLNhaHang.Controllers.API
 	{
 		private readonly QLNhaHangContext db;
 		private readonly IConfiguration _config;
+		private readonly EmailService _emailService;
 
-		public ReservationAPIController(QLNhaHangContext context, IConfiguration config)
+		public ReservationAPIController(QLNhaHangContext context, IConfiguration config, EmailService emailService)
 		{
 			db = context;
 			_config = config;
+			_emailService = emailService;
 		}
 
 		//GET: api/Reservations
@@ -157,7 +160,11 @@ namespace QLNhaHang.Controllers.API
 		[HttpPut("{id}/status")]
 		public async Task<IActionResult> UpdateStatus(int id, [FromBody] int newStatus)
 		{
-			var reservation = await db.Reservations.FindAsync(id);
+			var reservation = await db.Reservations
+				.Include(c => c.IdCustomerNavigation)
+				.Include(t => t.IdDinetableNavigation)
+				.Include(ro => ro.Reservationorders)
+				.FirstOrDefaultAsync(r => r.IdReservation == id);
 			if (reservation == null) return NotFound();
 
 			var status = await db.Reservationstatuses.FirstOrDefaultAsync(s => s.IdReservationstatus == newStatus);
@@ -166,6 +173,16 @@ namespace QLNhaHang.Controllers.API
 			reservation.IdReservationstatus = status.IdReservationstatus;
 			await db.SaveChangesAsync();
 
+			if (reservation.IdReservationstatus == 2)
+			{
+				// Gửi email xác nhận đặt bàn
+				await _emailService.SendReservationStatusEmail(reservation, true);
+			}
+			else if (reservation.IdReservationstatus == 3)
+			{
+				// Gửi email thông báo hủy đặt bàn
+				await _emailService.SendReservationStatusEmail(reservation, false);
+			}
 			return Ok();
 		}
 
@@ -246,6 +263,20 @@ namespace QLNhaHang.Controllers.API
 					}
 
 					await db.SaveChangesAsync();
+				}
+
+				// Gửi email xác nhận đặt bàn (nếu cần)
+				var res = await db.Reservations
+					.Include(r => r.Reservationorders)
+					  .ThenInclude(ro => ro.IdDishNavigation)
+					.Include(r => r.IdCustomerNavigation)
+					.Include(r => r.IdDinetableNavigation)
+					.Include(r => r.IdReservationstatusNavigation)
+					.FirstOrDefaultAsync(r => r.IdReservation == reservation.IdReservation);
+				if (res != null)
+				{
+					// Gửi email xác nhận đặt bàn
+					await _emailService.SendReservationConfirmationEmail(res);
 				}
 
 				// Tạo mã đặt bàn
@@ -364,11 +395,16 @@ namespace QLNhaHang.Controllers.API
 
 			var paymentUrl = pay.CreateRequestUrl(_config["Vnpay:BaseUrl"], _config["Vnpay:HashSecret"]);
 
+			var reservationid = await db.Reservations
+				.Where(r => r.Transactionid == transactionId)
+				.Select(r => r.IdReservation)
+				.FirstOrDefaultAsync();
 			// Trả về transactionId để lưu tạm ở client, khi callback sẽ gửi lại
 			return Ok(new
 			{
 				paymentUrl,
 				transactionId,
+				reservationid,
 				bookData = dto // client cần gửi lại khi callback
 			});
 		}
@@ -386,6 +422,7 @@ namespace QLNhaHang.Controllers.API
 		public int TableId { get; set; }
 		public int TableTypeId { get; set; }
 		public string CustomerName { get; set; }
+		public int? IdStaff { get; set; } 
 		public List<SelectedDishDto> SelectedDishes { get; set; }
 	}
 

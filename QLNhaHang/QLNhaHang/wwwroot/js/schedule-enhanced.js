@@ -141,7 +141,7 @@ class ScheduleManager {
 
         for (let s = 0; s < 3; s++) {
             const tr = document.createElement("tr")
-            tr.innerHTML = `<th class="shift-header">${shifts[s]}</th>`
+            tr.innerHTML = `<th class="shift-header text-center" style="vertical-align:middle;">${shifts[s]}</th>`
 
             for (let d = 2; d <= 8; d++) {
                 const cell = document.createElement("td")
@@ -490,7 +490,6 @@ class ScheduleManager {
 
         const filteredStaff = this.allStaffOptions
             .filter((opt) => opt.name.toLowerCase().includes(keyword) && !this.selectedStaffIds.includes(opt.id))
-            .slice(0, 10) // Limit results
 
         if (filteredStaff.length === 0) {
             resultDiv.innerHTML = '<div class="text-muted p-2">Không tìm thấy nhân viên</div>'

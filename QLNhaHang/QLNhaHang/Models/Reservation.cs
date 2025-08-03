@@ -23,10 +23,12 @@ namespace QLNhaHang.Models
         public int? IdReservationstatus { get; set; }
         public int? IdCustomer { get; set; }
         public int? IdDinetable { get; set; }
+        public int? IdStaff { get; set; }
 
         public virtual Customer? IdCustomerNavigation { get; set; }
         public virtual Dinetable? IdDinetableNavigation { get; set; }
         public virtual Reservationstatus? IdReservationstatusNavigation { get; set; }
+        public virtual Staff? IdStaffNavigation { get; set; }
         public virtual ICollection<Reservationorder> Reservationorders { get; set; }
     }
 }
