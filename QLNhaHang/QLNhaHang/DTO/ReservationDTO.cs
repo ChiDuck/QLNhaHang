@@ -22,7 +22,7 @@
 
     public class ReservationOrderDTO
     {
-        public int IdDish { get; set; }
+        public int? IdDish { get; set; }
         public string DishName { get; set; } = null!;
         public string? DishPhoto { get; set; }
         public int Quantity { get; set; }

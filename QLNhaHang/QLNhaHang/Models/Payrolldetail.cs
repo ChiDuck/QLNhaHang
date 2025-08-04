@@ -5,8 +5,9 @@ namespace QLNhaHang.Models
 {
     public partial class Payrolldetail
     {
-        public int IdStaff { get; set; }
-        public int IdPayroll { get; set; }
+        public int Id { get; set; }
+        public int? IdStaff { get; set; }
+        public int? IdPayroll { get; set; }
         public byte Days { get; set; }
         public double Hours { get; set; }
         public byte Absencetimes { get; set; }
@@ -16,7 +17,7 @@ namespace QLNhaHang.Models
         public double Totalsalary { get; set; }
         public string? Note { get; set; }
 
-        public virtual Payroll? IdPayrollNavigation { get; set; } = null!;
-        public virtual Staff? IdStaffNavigation { get; set; } = null!;
+        public virtual Payroll? IdPayrollNavigation { get; set; }
+        public virtual Staff? IdStaffNavigation { get; set; }
     }
 }

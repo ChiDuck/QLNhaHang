@@ -103,20 +103,21 @@ namespace QLNhaHang.Controllers.API
 
 				foreach (var ing in dishIngredients)
 				{
+					int ingid = (int)ing.IdInventoryitem;
 					double totalNeeded = ing.Amount * item.Quantity;
-					if (ingredientMap.ContainsKey(ing.IdInventoryitem))
+					if (ingredientMap.ContainsKey(ingid))
 					{
-						ingredientMap[ing.IdInventoryitem] = (
+						ingredientMap[ingid] = (
 							ing.IdInventoryitemNavigation.Name,
 							ing.IdInventoryitemNavigation.Unit,
-							ingredientMap[ing.IdInventoryitem].Required + totalNeeded,
+							ingredientMap[ingid].Required + totalNeeded,
 							ing.IdInventoryitemNavigation.Amount,
 							true
 						);
 					}
 					else
 					{
-						ingredientMap[ing.IdInventoryitem] = (
+						ingredientMap[ingid] = (
 							ing.IdInventoryitemNavigation.Name,
 							ing.IdInventoryitemNavigation.Unit,
 							totalNeeded,
@@ -177,7 +178,7 @@ namespace QLNhaHang.Controllers.API
 			// Nếu chấp nhận đơn hàng => kiểm tra và trừ kho
 			if (statusId == 3)
 			{
-				var ingredientMap = new Dictionary<int, double>(); // IdInventoryitem -> total needed
+				var ingredientMap = new Dictionary<int?, double>(); // IdInventoryitem -> total needed
 
 				foreach (var item in order.Orderitems)
 				{
@@ -350,7 +351,7 @@ namespace QLNhaHang.Controllers.API
 
 	public class OrderItemDto
 	{
-		public int DishId { get; set; }
+		public int? DishId { get; set; }
 		public int Quantity { get; set; }
 		public double Price { get; set; }
 		public double Subtotal { get; set; }

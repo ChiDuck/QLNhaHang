@@ -141,18 +141,18 @@ VALUES
 (N'Trà xanh mật ong', 50000, 0, 5, N'Trà dịu nhẹ kết hợp mật ong.', '/photo/dish/shutterstock-134444405-8182-1644678448_ea9b71c3d40c4b13b757103326978ccb.jpg'),					--19
 (N'Sữa tươi đánh bọt', 50000, 0, 5, N'Đơn giản nhưng ngon.', null),																												--20
 
-(N'Gỏi Thái hải sản chua cay', 150000, 0, 1, N'Gỏi tôm mực Thái Lan có vị chua ngọt, không chỉ kích thích vị giác mà còn hấp dẫn bởi màu sắc vốn có của món gỏi.', null),		--21
-(N'Gỏi miến trộn tôm thịt', 120000, 0, 1, N'Gỏi miến trộn tôm thịt có vị chua chua ngọt ngọt, sợi miến giòn, thịt tôm béo ngậy ăn cùng rau củ.', null),							--22	
-(N'Xôi xoài', 80000, 0, 4, N'Xôi xoài kết hợp sự giản dị của gạo nếp với hương vị nhiệt đới của xoài chín.', null),																--23																														
-(N'Tôm hùm sốt bơ tỏi', 400000, 0, 2, N'Món ăn thơm ngon, bổ dưỡng được nhiều người yêu thích.', null),																			--24																														
-(N'Sườn xào chua ngọt', 230000, 0, 2, N'Sườn non xào gia vị đậm đà.', null),																									--25																														
+(N'Gỏi Thái hải sản chua cay', 150000, 0, 1, N'Gỏi tôm mực Thái Lan có vị chua ngọt, không chỉ kích thích vị giác mà còn hấp dẫn bởi màu sắc vốn có của món gỏi.', '/photo/dish/goi-tom-muc-thai-lan-thumbnail_7808151f57fe4d2e98871414957c256f.jpg'),		--21
+(N'Gỏi miến trộn tôm thịt', 120000, 0, 1, N'Gỏi miến trộn tôm thịt có vị chua chua ngọt ngọt, sợi miến giòn, thịt tôm béo ngậy ăn cùng rau củ.', '/photo/dish/goi-y-8-mon-nguoi-khai-vi-cho-nhung-buoi-tiec-hoi-hop-voi-gia-dinh-202204040922172703_004ba5eca3524e71b6eb2c6d74a2fa6e.jpg'),							--22	
+(N'Xôi xoài', 80000, 0, 4, N'Xôi xoài kết hợp sự giản dị của gạo nếp với hương vị nhiệt đới của xoài chín.', '/photo/dish/xoixoai_a079468a3df74631a7d6908919977262.png'),																--23																														
+(N'Tôm hùm sốt bơ tỏi', 400000, 0, 2, N'Món ăn thơm ngon, bổ dưỡng được nhiều người yêu thích.', '/photo/dish/tomhum_d91d27eb11d14c10868e5d22f1e876c4.jpg'),																			--24																														
+(N'Sườn xào chua ngọt', 230000, 0, 2, N'Sườn non xào gia vị đậm đà.', '/photo/dish/suonxao_2946084422444a45a3f00aa7160aaf56.jpg'),																									--25																														
 (N'Vịt quay Bắc Kinh', 500000, 0, 2, N'Món vịt quay truyền thống có hương vị đặc biệt thơm ngon, thịt vịt ngọt mềm, lớp da giòn tan.', null),									--26																														
-(N'Bánh tiramisu', 130000, 0, 4, N'Bánh kem nhiều lớp.', null),																													--27																														
-(N'Chè long nhãn', 80000, 0, 4, N'Chè long nhãn ngọt và mát.', null),																											--28																														
-(N'Cocacola', 25000, 0, 5, null, null),																																			--29																														
-(N'Sprite', 25000, 0, 5, null, null),																																			--30																														
-(N'Rượu táo mèo', 300000, 0, 5, null, null)																																			--30																														
-
+(N'Bánh tiramisu', 130000, 0, 4, N'Bánh kem nhiều lớp.', '/photo/dish/tiramisu202108082258460504_3b2c04b7a24e4d0cb1008c6d141585ed.jpg'),																													--27																														
+(N'Chè long nhãn', 80000, 0, 4, N'Chè long nhãn ngọt và mát.', '/photo/dish/che-hat-sen-long-nhankho-scaled_065b718dcc3c49809794d6204bb2fade.jpeg'),																											--28																														
+(N'Cocacola', 25000, 0, 5, null, '/photo/dish/coca_f9c86920462d40f7bd5ed03fde218e3f.webp'),																																			--29																														
+(N'Sprite', 25000, 0, 5, null, '/photo/dish/sprite_2cfe5a7a081c4e8e832aa443eeeef361.jpg'),																																			--30																														
+(N'Rượu táo mèo', 300000, 0, 5, null, '/photo/dish/ruou_fc70359500f14957a9855b64bf8f636d.webp')																																			--30																														
+select * from dish
 -- Salad tôm bơ
 INSERT INTO Dishingredient VALUES (1, 1, 150), (1, 4, 50), (1, 6, 30);
 -- Súp trứng gà
@@ -263,7 +263,7 @@ INSERT INTO STAFFTYPE VALUES
 -- Chèn dữ liệu nhân viên
 INSERT INTO STAFF (NAME, PASSWORD_HASH, CITIZENID, PHONE, EMAIL, GENDER, BIRTHDAY, ADDRESS, STARTDATE, HOURLYSALARY, ISACTIVE, ID_STAFFTYPE) VALUES
 -- Quản lý (1 người)
-(N'Lê Thị Thanh Hương', '$2a$11$tuxya.c8cSpTtlkqyWz8xOSEst6lDm4HRlHZ5z02074eduE4pIsSO', '036198000123', '0912345678', 'breadwithginger@gmail.com', 0, '1985-11-15', N'12 Nguyễn Huệ, Q.1, TP.HCM', '2018-06-10', 50000, 1, 1),
+(N'Lê Thị Thanh Hương', '$2a$11$tuxya.c8cSpTtlkqyWz8xOSEst6lDm4HRlHZ5z02074eduE4pIsSO', '036198000123', '0912345678', 'quanly@gmail.com', 0, '1985-11-15', N'12 Nguyễn Huệ, Q.1, TP.HCM', '2018-06-10', 50000, 1, 1),
 -- Nhân viên phục vụ (10 người)
 (N'Nguyễn Văn Minh',	'e10adc3949ba59abbe56e057f20f883e', '036198001234', '0912345679', 'nguyenminh.nv@email.com', 1, '1995-03-22', N'45 Lê Lợi, Q.1, TP.HCM', '2021-01-15', 30000, 1, 5),
 (N'Trần Thị Ngọc Ánh',	'e10adc3949ba59abbe56e057f20f883e', '036198002345', '0912345680', 'trananh.nv@email.com',	0,	'1996-07-18', N'78 Trần Hưng Đạo, Q.5, TP.HCM', '2021-02-20', 30000, 1, 5),
@@ -441,19 +441,3 @@ INSERT INTO WEEKLYSHIFT (ID_STAFF, ID_WORKDAY, ID_WORKSHIFT, PROCESSED, ATTENDED
 (1, 5, 3, 0, 0, 0), (4, 5, 3, 0, 0, 0), (5, 5, 3, 0, 0, 0),	(7, 5, 3, 0, 0, 0),  (9, 5, 3, 0, 0, 0),  (13, 5, 3, 0, 0, 0), (15, 5, 3, 0, 0, 0), (16, 5, 3, 0, 0, 0), (20, 5, 3, 0, 0, 0), (22, 5, 3, 0, 0, 0), (23, 5, 3, 0, 0, 0), 
 (1, 6, 3, 0, 0, 0), (2, 6, 3, 0, 0, 0), (4, 6, 3, 0, 0, 0),	(5, 6, 3, 0, 0, 0),  (8, 6, 3, 0, 0, 0),  (10, 6, 3, 0, 0, 0), (11, 6, 3, 0, 0, 0), (12, 6, 3, 0, 0, 0), (13, 6, 3, 0, 0, 0), (15, 6, 3, 0, 0, 0), (18, 6, 3, 0, 0, 0), (20, 6, 3, 0, 0, 0), (21, 6, 3, 0, 0, 0), (24, 6, 3, 0, 0, 0),
 (7, 7, 3, 0, 0, 0), (9, 7, 3, 0, 0, 0), (10, 7, 3, 0, 0, 0),(11, 7, 3, 0, 0, 0), (12, 7, 3, 0, 0, 0), (13, 7, 3, 0, 0, 0), (14, 7, 3, 0, 0, 0), (17, 7, 3, 0, 0, 0), (19, 7, 3, 0, 0, 0), (20, 7, 3, 0, 0, 0), (22, 7, 3, 0, 0, 0), (23, 7, 3, 0, 0, 0)
-
-select * from CUSTOMER
-select * from cart
-select * from cartdetail where ID_CART = 1
-select * from staff
-select * from WORKDAY
-select * from WORKSHIFT
-select * from weeklySHIFT
-select * from INVENTORYITEM
-select * from SHIPORDER
-select * from ORDERITEM 
-select * from RESERVATION
-select * from RESERVATION re where re.ID_CUSTOMER = 17
-select * from RESERVATIONORDER r Where r.ID_RESERVATION = 10
-SELECT * FROM payrolldetail
-SELECT * FROM payroll
