@@ -1,597 +1,771 @@
-﻿document.addEventListener('DOMContentLoaded', function () {
-    // Khởi tạo modal
-    const step1Modal = new bootstrap.Modal('#bookingStep1Modal');
-    const step2Modal = new bootstrap.Modal('#bookingStep2Modal');
-    const step3Modal = new bootstrap.Modal('#bookingStep3Modal');
-    const successModal = new bootstrap.Modal('#bookingSuccessModal');
-    // Lấy tham chiếu đến modal
-    const dishModal = new bootstrap.Modal('#dishModal');
-
-    // Gắn sự kiện cho các nút
-    document.getElementById('skipDishesBtn').addEventListener('click', skipDishSelection);
-    document.getElementById('confirmDishesBtn').addEventListener('click', confirmDishSelection);
-
-    // Nếu có nút nào đó mở modal chọn món
-    // document.getElementById('openDishModalBtn').addEventListener('click', openDishSelectionModal);
-
-    // Dữ liệu tạm
-    let bookingData = {
-        reservationDate: null,
-        reservationTime: null,
-        partySize: 2,
-        tableTypeId: null,
-        tableTypeName: null,
-        customerName: '',
-        phone: '',
-        email: '',
-        note: '',
-        reservationPrice: 0,
-        selectedDishes: []
-    };
-
-    // Bước 1: Mở modal đầu tiên khi click "Đặt bàn ngay"
-    document.querySelectorAll('.book-now-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            initBookingStep1();
-            step1Modal.show();
-        });
-    });
-
-    // Khởi tạo bước 1
-    function initBookingStep1() {
-        // Đặt ngày mặc định là hôm nay
-        const today = new Date();
-        document.getElementById('bookingDate').valueAsDate = today;
-        bookingData.reservationDate = today.toISOString().split('T')[0];
-
-        // Điền options giờ (cách nhau 30 phút)
-        const timeSelect = document.getElementById('bookingTime');
-        timeSelect.innerHTML = '';
-
-        const openingHour = 10; // 10:00 AM
-        const closingHour = 22; // 10:00 PM
-
-        for (let hour = openingHour; hour < closingHour; hour++) {
-            for (let minute = 0; minute < 60; minute += 30) {
-                const timeString = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
-                const option = document.createElement('option');
-                option.value = timeString;
-                option.textContent = timeString;
-                timeSelect.appendChild(option);
-            }
-        }
-
-        // Đặt giờ mặc định là giờ tiếp theo tròn 30 phút
-        const nextHalfHour = new Date();
-        nextHalfHour.setMinutes(nextHalfHour.getMinutes() < 30 ? 30 : 60, 0, 0);
-        timeSelect.value = `${nextHalfHour.getHours().toString().padStart(2, '0')}:${nextHalfHour.getMinutes().toString().padStart(2, '0')}`;
-        bookingData.reservationTime = timeSelect.value;
-
-        // Cập nhật số người
-        document.getElementById('partySize').value = bookingData.partySize;
-    }
-
-    // Sự kiện thay đổi giá trị bước 1
-    document.getElementById('bookingDate').addEventListener('change', function () {
-        bookingData.reservationDate = this.value;
-    });
-
-    document.getElementById('bookingTime').addEventListener('change', function () {
-        bookingData.reservationTime = this.value;
-    });
-
-    document.getElementById('partySize').addEventListener('change', function () {
-        bookingData.partySize = parseInt(this.value);
-    });
-
-    // Chuyển sang bước 2
-    document.getElementById('nextToStep2').addEventListener('click', async function () {
-        if (!bookingData.reservationDate || !bookingData.reservationTime) {
-            alert('Vui lòng chọn ngày và giờ đặt bàn');
-            return;
-        }
-
-        // Hiển thị thông tin đã chọn
-        document.getElementById('displayPartySize').textContent = bookingData.partySize;
-        document.getElementById('displayBookingTime').textContent = `${formatDate(bookingData.reservationDate)} - ${bookingData.reservationTime}`;
-
-        // Load các bàn có sẵn
-        await loadAvailableTableTypes();
-
-        // Chuyển modal
-        step1Modal.hide();
-        //b.show();
-
-        openDishSelectionModal();
-    });
-
-    // Quay lại bước 1
-    document.getElementById('backToStep1').addEventListener('click', function () {
-        dishModal.hide();
-        step1Modal.show();
-    });
-
-    // Load các loại bàn có sẵn
-    async function loadAvailableTableTypes() {
-        try {
-            const response = await fetch(`/api/dinetableapi/available-types?date=${bookingData.reservationDate}&time=${bookingData.reservationTime}&partySize=${bookingData.partySize}`);
-            const availableTableTypes = await response.json();
-
-            const container = document.getElementById('availableTableTypesContainer');
-            container.innerHTML = '';
-
-            if (availableTableTypes.length === 0) {
-                container.innerHTML = `
-                <div class="alert alert-warning">
-                    Không có loại bàn trống phù hợp. Vui lòng thử ngày/giờ khác hoặc giảm số lượng người.
-                </div>
-            `;
-                document.getElementById('nextToStep3').disabled = true;
-                return;
-            }
-
-            // Tạo các card loại bàn có sẵn
-            availableTableTypes.forEach(tableType => {
-                const cardElement = document.createElement('div');
-                cardElement.className = 'card mb-3 table-type-card';
-                cardElement.innerHTML = `
-                <div class="card-body">
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="availableTableType" 
-                               id="table-type-${tableType.id}" value="${tableType.id}"
-                               data-table-type-name="${tableType.name}">
-                        <label class="form-check-label" for="table-type-${tableType.id}">
-                            <h5 class="mb-1">${tableType.name}</h5>
-                            <p class="mb-1">${tableType.capacity} người</p>
-                            <p class="mb-1 text-success">Còn ${tableType.availableCount} bàn trống</p>
-                        </label>
-                    </div>
-                </div>
-            `;
-                container.appendChild(cardElement);
-            });
-
-            // Thêm sự kiện chọn loại bàn
-            document.querySelectorAll('input[name="availableTableType"]').forEach(radio => {
-                radio.addEventListener('change', function () {
-                    if (this.checked) {
-                        bookingData.tableTypeId = this.value;
-                        bookingData.tableTypeName = this.dataset.tableTypeName;
-                        document.getElementById('nextToStep3').disabled = false;
-                    }
-                });
-            });
-
-        } catch (error) {
-            console.error('Error loading available table types:', error);
-            alert('Có lỗi khi tải danh sách loại bàn trống');
-        }
-    }
-
-    async function loadCustomerProfile() {
-        try {
-            const res = await fetch(`/api/customerapi/profile`, {
-                headers: { Authorization: `Bearer ${customertoken}` }
-            });
-            const customerData = await res.json();
-            document.getElementById('customerBookName').value = customerData.name || '';
-            document.getElementById('customerPhone').value = customerData.phone || '';
-            document.getElementById('customerEmail').value = customerData.email || '';
-        }
-        catch (error) {
-            console.error('Error loading customer profile:', error);
-        }
-    }
-
-    // Chuyển sang bước 3
-    document.getElementById('nextToStep3').addEventListener('click', async function () {
-        if (!bookingData.tableTypeId) {
-            alert('Vui lòng chọn bàn');
-            return;
-        }
-
-        if (customertoken) {
-            await loadCustomerProfile(); // Tải thông tin khách hàng nếu đã đăng nhập
-        }
-
-        // Hiển thị thông tin đã chọn
-        document.getElementById('displaySelectedTable').textContent = bookingData.tableTypeName;
-        document.getElementById('displaySelectedDate').textContent = formatDate(bookingData.reservationDate);
-        document.getElementById('displaySelectedTime').textContent = bookingData.reservationTime;
-        document.getElementById('displaySelectedPartySize').textContent = bookingData.partySize;
-
-        // Chuyển tới bước 3
-        step2Modal.hide();
-        renderSelectedDishesSummary();
-        step3Modal.show();
-    });
-
-    // Quay lại bước 2
-    document.getElementById('backToStep2').addEventListener('click', function () {
-        step3Modal.hide();
-        step2Modal.show();
-    });
-
-    // Quay lại bước chọn món
-    document.getElementById('backToStepDish').addEventListener('click', function () {
-        step2Modal.hide();
-        dishModal.show();
-    });
-
-    // Xác nhận đặt bàn
-    document.getElementById("confirmBooking").addEventListener("click", async function () {
-        const customerName = document.getElementById("customerBookName").value;
-        const customerPhone = document.getElementById("customerPhone").value;
-        const customerEmail = document.getElementById("customerEmail").value;
-        const bookingNote = document.getElementById("bookingNote").value;
-        const paymentMethod = window.selectedDishesData.length === 0 ? '' : 'vnpay';
-        console.log("Payment method:", paymentMethod);
-        bookingData.customerName = customerName;
-        bookingData.phone = customerPhone;
-        bookingData.email = customerEmail;
-        bookingData.note = bookingNote;
-        bookingData.selectedDishes = window.selectedDishesData || [];
-        console.log("Booking data:", bookingData);
-
-        if (paymentMethod === '') {
-            await createReservation(bookingData);
-        } else if (paymentMethod === 'vnpay') {
-            await createVNPayReservation(bookingData);
-        }
-    });
-
-    async function createReservation(data) {
-        try {
-            const headers = {
-                'Content-Type': 'application/json'
-            };
-            if (customertoken) {
-                headers['Authorization'] = 'Bearer ' + customertoken;
-            }
-
-            const response = await fetch("/api/reservationapi/noorder", {
-                method: "POST",
-                headers: headers,
-                body: JSON.stringify(data)
-            });
-
-            if (response.ok) {
-                alert("Đặt bàn thành công!");
-                const result = await response.json();
-
-                // Hiển thị modal thành công
-                document.getElementById('bookingCode').textContent = result.reservationId;
-                step3Modal.hide();
-                successModal.show();
-
-                // Reset form
-                resetBookingData();
-            } else {
-                alert("Có lỗi khi đặt bàn.");
-            }
-        } catch (err) {
-            console.error("Booking error:", err);
-            alert("Lỗi khi gửi yêu cầu.");
-        }
-    }
-
-    async function createVNPayReservation(data) {
-        try {
-            const headers = {
-                'Content-Type': 'application/json'
-            };
-            if (customertoken) {
-                headers['Authorization'] = 'Bearer ' + customertoken;
-            }
-
-            const response = await fetch("/api/reservationapi/vnpay", {
-                method: "POST",
-                headers: headers,
-                body: JSON.stringify(data)
-            });
-
-            if (response.ok) {
-                const paymentData = await response.json();
-                window.location.href = paymentData.paymentUrl; // Chuyển hướng đến VNPay
-            } else {
-                alert("Có lỗi khi tạo đơn hàng VNPay.");
-            }
-        } catch (err) {
-            console.error("VNPay booking error:", err);
-            alert("Lỗi khi gửi yêu cầu VNPay.");
-        }
-    }
-
-    // Hàm hỗ trợ
-    function formatDate(dateString) {
-        const date = new Date(dateString);
-        return date.toLocaleDateString('vi-VN', {
-            weekday: 'long',
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
-        });
-    }
-
-    function resetBookingData() {
-        bookingData = {
+class ModernBookingManager {
+    constructor() {
+        this.currentStep = 1
+        this.totalSteps = 4
+        this.bookingData = {
             reservationDate: null,
             reservationTime: null,
             partySize: 2,
+            selectedDishes: [],
             tableTypeId: null,
-            tableTypeName: null,
-            customerName: '',
-            phone: '',
-            email: '',
-            note: '',
-            selectedDishes: []
-        };
+            name: null,
+            customerName: "",
+            phone: "",
+            email: "",
+            note: "",
+            reservationPrice: 0,
+            idCustomer: null,
+        }
+        this.availableDishes = []
+        this.availableTableTypes = []
+        this.bootstrap = window.bootstrap
+
+        this.init()
     }
 
-    // Biến toàn cục
-    let availableDishes = [];
-    let selectedDishes = {};
+    init() {
+        this.bindEvents()
+        this.initializeStep1()
+    }
 
-    // Hàm mở modal chọn món
-    function openDishSelectionModal() {
-        fetchAvailableDishes()
-            .then(() => {
-                renderDishList();
-                dishModal.show();
+    bindEvents() {
+        // Book now buttons
+        document.querySelectorAll(".book-now-btn").forEach((btn) => {
+            btn.addEventListener("click", () => {
+                this.openBookingModal()
             })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Có lỗi khi tải danh sách món ăn');
-            });
-    }
+        })
 
-    // Lấy danh sách món ăn từ server
-    function fetchAvailableDishes() {
-        return fetch('/api/dishapi/available')
-            .then(response => {
-                if (!response.ok) throw new Error('Network response was not ok');
-                return response.json();
+        // Navigation buttons
+        document.getElementById("bookingNextBtn").addEventListener("click", () => {
+            this.nextStep()
+        })
+
+        document.getElementById("bookingPrevBtn").addEventListener("click", () => {
+            this.prevStep()
+        })
+
+        document.getElementById("bookingConfirmBtn").addEventListener("click", () => {
+            this.confirmBooking()
+        })
+
+        // Form inputs
+        document.getElementById("bookingDate").addEventListener("change", (e) => {
+            this.bookingData.reservationDate = e.target.value
+            this.populateTimeSlots();
+        })
+
+        document.getElementById("bookingTime").addEventListener("change", (e) => {
+            this.bookingData.reservationTime = e.target.value
+        })
+
+        document.getElementById("partySize").addEventListener("change", (e) => {
+            this.bookingData.partySize = Number.parseInt(e.target.value)
+        })
+
+        // Dish search
+        //document.getElementById("dishSearchInput").addEventListener("input", (e) => {
+        //    this.filterDishes(e.target.value)
+        //})
+
+        // Category buttons
+        document.querySelectorAll(".category-btn").forEach((btn) => {
+            btn.addEventListener("click", (e) => {
+                this.filterByCategory(e.target.dataset.category)
             })
-            .then(dishes => {
-                availableDishes = dishes;
-                // Khởi tạo selectedDishes với quantity = 0
-                selectedDishes = {};
-                dishes.forEach(dish => {
-                    selectedDishes[dish.idDish] = 0;
-                });
-            });
+        })
+
+        // Customer info inputs
+        document.getElementById("customerBookName").addEventListener("input", (e) => {
+            this.bookingData.customerName = e.target.value
+        })
+
+        document.getElementById("customerPhone").addEventListener("input", (e) => {
+            this.bookingData.phone = e.target.value
+        })
+
+        document.getElementById("customerEmail").addEventListener("input", (e) => {
+            this.bookingData.email = e.target.value
+        })
+
+        document.getElementById("bookingNote").addEventListener("input", (e) => {
+            this.bookingData.note = e.target.value
+        })
     }
 
-    // Hiển thị danh sách món ăn
-    function renderDishList() {
-        const dishListElement = document.getElementById('dishList');
-        dishListElement.innerHTML = '';
+    openBookingModal() {
+        const modal = new this.bootstrap.Modal(document.getElementById("bookingModal"))
+        modal.show()
+        document.getElementById("bookingDate").value = '';
+        document.getElementById("partySize").value = 2;
+        this.resetBooking()
+    }
 
-        availableDishes.forEach(dish => {
-            const dishElement = document.createElement('div');
-            dishElement.className = 'card mb-3 dish-item';
-            dishElement.innerHTML = `
-      <div class="row g-0">
-        <div class="col-md-4">
-          <img src="${dish.photo || 'default-dish.jpg'}" class="img-fluid rounded-start" alt="${dish.name}">
+    resetBooking() {
+        this.currentStep = 1
+        this.bookingData = {
+            reservationDate: null,
+            reservationTime: null,
+            partySize: 2,
+            selectedDishes: [],
+            id: null,
+            name: null,
+            customerName: "",
+            phone: "",
+            email: "",
+            note: "",
+            reservationPrice: 0,
+        }
+        this.updateStepDisplay()
+        this.updateProgressSteps()
+    }
+
+    initializeStep1() {
+        // Set minimum date to today
+        const today = new Date().toISOString().split("T")[0]
+        document.getElementById("bookingDate").min = today
+
+        // Populate time slots
+        this.populateTimeSlots()
+    }
+
+    populateTimeSlots() {
+        const timeSelect = document.getElementById("bookingTime");
+        timeSelect.innerHTML = '<option value="">Chọn giờ</option>';
+
+        const timeSlots = [
+            "10:00", "10:30", "11:00", "11:30", "12:00", "12:30",
+            "13:00", "13:30", "14:00", "14:30", "15:00", "15:30",
+            "16:00", "16:30", "17:00", "17:30", "18:00", "18:30",
+            "19:00", "19:30", "20:00", "20:30", "21:00",
+        ];
+
+        const selectedDate = document.getElementById("bookingDate").value;
+        const today = new Date();
+        const todayStr = today.toISOString().split("T")[0];
+
+        let filteredSlots = timeSlots;
+
+        if (selectedDate === todayStr) {
+            const nowMinutes = today.getHours() * 60 + today.getMinutes();
+
+            filteredSlots = timeSlots.filter(slot => {
+                const [hour, minute] = slot.split(":").map(Number);
+                const slotMinutes = hour * 60 + minute;
+                return slotMinutes > nowMinutes;
+            });
+        }
+
+        filteredSlots.forEach(time => {
+            const option = document.createElement("option");
+            option.value = time;
+            option.textContent = time;
+            timeSelect.appendChild(option);
+        });
+    }
+
+    async loadDishes() {
+        try {
+            this.showLoading("dishesGrid")
+            const response = await fetch("/api/dishapi/available")
+            if (response.ok) {
+                this.availableDishes = await response.json()
+                this.renderDishes(this.availableDishes)
+            } else {
+                this.showError("Không thể tải danh sách món ăn")
+            }
+        } catch (error) {
+            console.error("Error loading dishes:", error)
+            this.showError("Lỗi khi tải danh sách món ăn")
+        } finally {
+            this.hideLoading("dishesGrid")
+        }
+    }
+
+    renderDishes(dishes) {
+        const container = document.getElementById("dishesGrid")
+        container.innerHTML = ""
+
+        if (dishes.length === 0) {
+            container.innerHTML = `
+        <div class="col-12 text-center py-4">
+          <i class="fas fa-search fa-3x text-muted mb-3"></i>
+          <p class="text-muted">Không tìm thấy món ăn nào</p>
         </div>
-        <div class="col-md-8">
-          <div class="card-body">
-            <h5 class="card-title">${dish.name}</h5>
-            <p class="card-text">${dish.description || ''}</p>
-            <div class="d-flex justify-content-between align-items-center">
-              <div>
-                <span class="text-danger fw-bold">${formatPrice(dish.price - dish.price * dish.discount / 100)}</span>
-                ${dish.discount ? `<span class="text-decoration-line-through ms-2 text-muted">${formatPrice(dish.price)}</span>` : ''}
-              </div>
-              <div class="input-group" style="width: 120px;">
-                <button class="btn btn-outline-secondary decrease-btn" type="button" data-dish-id="${dish.idDish}">-</button>
-                <input type="number" class="form-control text-center dish-quantity" 
-                       data-dish-id="${dish.idDish}" value="${selectedDishes[dish.idDish]}" min="0">
-                <button class="btn btn-outline-secondary increase-btn" type="button" data-dish-id="${dish.idDish}">+</button>
-              </div>
-            </div>
-          </div>
+      `
+            return
+        }
+
+        dishes.forEach((dish) => {
+            const dishCard = this.createDishCard(dish)
+            container.appendChild(dishCard)
+        })
+    }
+
+    createDishCard(dish) {
+        const card = document.createElement("div")
+        card.className = "dish-card"
+        card.dataset.idDish = dish.idDish
+
+        const selectedDish = this.bookingData.selectedDishes.find((d) => d.idDish === dish.idDish)
+        const quantity = selectedDish ? selectedDish.quantity : 0
+
+        if (quantity > 0) {
+            card.classList.add("selected")
+        }
+
+        const imageUrl = dish.photo || "/images/placeholder.png"
+        const formattedPrice = this.formatCurrency(dish.price - dish.price * dish.discount / 100)
+
+        card.innerHTML = `
+      <img src="${imageUrl}" alt="${dish.name}" class="dish-image">
+      <div class="dish-name">${dish.name}</div>
+      <div class="dish-description">${dish.description || "Món ăn ngon tuyệt vời"}</div>
+      <div class="dish-price-section">
+        <div class="dish-price">${formattedPrice}</div>
+        <div class="quantity-controls" style="display: ${quantity > 0 ? "flex" : "none"}">
+          <button class="quantity-btn" onclick="bookingManager.updateDishQuantity(${dish.idDish}, -1)">
+            <i class="fas fa-minus"></i>
+          </button>
+          <span class="quantity-display">${quantity}</span>
+          <button class="quantity-btn" onclick="bookingManager.updateDishQuantity(${dish.idDish}, 1)">
+            <i class="fas fa-plus"></i>
+          </button>
         </div>
       </div>
-    `;
+    `
 
-            dishListElement.appendChild(dishElement);
-        });
+        card.addEventListener("click", (e) => {
+            if (!e.target.closest(".quantity-controls")) {
+                this.toggleDishSelection(dish)
+            }
+        })
 
-        // Gắn sự kiện cho các nút +/-
-        document.querySelectorAll('.increase-btn').forEach(btn => {
-            btn.addEventListener('click', function () {
-                const dishId = parseInt(this.getAttribute('data-dish-id'));
-                increaseQuantity(dishId);
-            });
-        });
-
-        document.querySelectorAll('.decrease-btn').forEach(btn => {
-            btn.addEventListener('click', function () {
-                const dishId = parseInt(this.getAttribute('data-dish-id'));
-                decreaseQuantity(dishId);
-            });
-        });
-
-        // Gắn sự kiện thay đổi số lượng trực tiếp
-        document.querySelectorAll('.dish-quantity').forEach(input => {
-            input.addEventListener('change', function () {
-                const dishId = parseInt(this.getAttribute('data-dish-id'));
-                const quantity = parseInt(this.value) || 0;
-                updateQuantity(dishId, quantity);
-            });
-        });
-
-        // Cập nhật danh sách món đã chọn
-        updateSelectedDishesList();
+        return card
     }
 
-    // Các hàm xử lý số lượng
-    function increaseQuantity(dishId) {
-        selectedDishes[dishId]++;
-        updateQuantityInput(dishId);
-        updateSelectedDishesList();
-    }
+    toggleDishSelection(dish) {
+        const existingIndex = this.bookingData.selectedDishes.findIndex((d) => d.idDish === dish.idDish)
 
-    function decreaseQuantity(dishId) {
-        if (selectedDishes[dishId] > 0) {
-            selectedDishes[dishId]--;
-            updateQuantityInput(dishId);
-            updateSelectedDishesList();
-        }
-    }
-
-    function updateQuantity(dishId, quantity) {
-        selectedDishes[dishId] = Math.max(0, quantity);
-        updateSelectedDishesList();
-    }
-
-    function updateQuantityInput(dishId) {
-        const input = document.querySelector(`.dish-quantity[data-dish-id="${dishId}"]`);
-        if (input) {
-            input.value = selectedDishes[dishId];
-        }
-    }
-
-    function removeDish(dishId) {
-        selectedDishes[dishId] = 0;
-        updateQuantityInput(dishId);
-        updateSelectedDishesList();
-    }
-
-    function calculateTotalPrice() {
-        return getSelectedDishes().reduce((sum, item) => {
-            return sum + (item.price - item.price * item.discount / 100) * selectedDishes[item.idDish];
-        }, 0);
-    }
-
-    // Cập nhật danh sách món đã chọn
-    function updateSelectedDishesList() {
-        const selectedDishesList = document.getElementById('selectedDishesList');
-        const noDishesSelected = document.getElementById('noDishesSelected');
-        const selectedItems = getSelectedDishes();
-        const totalDisplay = document.getElementById('selectedDishesTotal');
-
-        // Ẩn/hiện nút xác nhận và bỏ qua
-        updateDishSelectionButtons(selectedItems.length > 0);
-
-        if (selectedItems.length > 0) {
-            noDishesSelected.style.display = 'none';
-            selectedDishesList.style.display = 'block';
-
-            // Cập nhật danh sách
-            selectedDishesList.innerHTML = '';
-            selectedItems.forEach(item => {
-                const li = document.createElement('li');
-                li.className = 'list-group-item d-flex justify-content-between align-items-center';
-                li.innerHTML = `
-                <div class="flex-grow-1">
-                    ${item.name} 
-                    <span class="badge bg-primary rounded-pill ms-2">${selectedDishes[item.idDish]}</span>
-                </div>
-                    <span class="ms-2 text-success">${formatPrice((item.price - item.price * item.discount / 100) * selectedDishes[item.idDish])}</span>
-            `;
-                const button = document.createElement('button');
-                button.className = 'btn btn-sm btn-outline-danger ms-2';
-                button.innerHTML = '<i class="fas fa-trash"></i>';
-                button.addEventListener('click', () => removeDish(item.idDish));
-                li.appendChild(button);
-
-                selectedDishesList.appendChild(li);
-            });
-            totalDisplay.textContent = `Tổng: ${formatPrice(calculateTotalPrice())}`;
-            totalDisplay.style.display = 'block';
+        if (existingIndex >= 0) {
+            this.bookingData.selectedDishes.splice(existingIndex, 1)
         } else {
-            noDishesSelected.style.display = 'block';
-            selectedDishesList.style.display = 'none';
-            totalDisplay.style.display = 'none';
+            this.bookingData.selectedDishes.push({
+                idDish: dish.idDish,
+                name: dish.name,
+                price: dish.price - dish.price * dish.discount / 100,
+                quantity: 1,
+                discount: dish.discount || 0,
+            })
+        }
+
+        this.renderDishes(this.availableDishes)
+        this.updateSelectedDishesDisplay()
+    }
+
+    updateDishQuantity(idDish, change) {
+        const dishIndex = this.bookingData.selectedDishes.findIndex((d) => d.idDish === idDish)
+
+        if (dishIndex >= 0) {
+            this.bookingData.selectedDishes[dishIndex].quantity += change
+
+            if (this.bookingData.selectedDishes[dishIndex].quantity <= 0) {
+                this.bookingData.selectedDishes.splice(dishIndex, 1)
+            }
+        } else if (change > 0) {
+            const dish = this.availableDishes.find((d) => d.idDish === idDish)
+            if (dish) {
+                this.bookingData.selectedDishes.push({
+                    idDish: dish.idDish,
+                    name: dish.name,
+                    price: dish.price - dish.price * dish.discount / 100,
+                    quantity: 1,
+                    discount: dish.discount || 0,
+                })
+            }
+        }
+        console.log("Updated selected dishes:", this.availableDishes)
+        console.log("Updated selected dishes:", this.selectedDishes)
+        this.renderDishes(this.availableDishes)
+        this.updateSelectedDishesDisplay()
+    }
+
+    updateSelectedDishesDisplay() {
+        const summary = document.getElementById("selectedDishesSummary")
+        const list = document.getElementById("selectedDishesList")
+        const total = document.getElementById("dishesTotal")
+
+        if (this.bookingData.selectedDishes.length === 0) {
+            summary.style.display = "none"
+            return
+        }
+
+        summary.style.display = "block"
+        list.innerHTML = ""
+
+        let totalAmount = 0
+        console.log("Selected Dishes:", this.bookingData.selectedDishes)
+        this.bookingData.selectedDishes.forEach((dish) => {
+            const itemTotal = (dish.price - dish.price * dish.discount / 100) * dish.quantity
+            totalAmount += itemTotal
+            console.log(`Dish: ${dish.name}, Quantity: ${dish.quantity}, Item Total: ${itemTotal}`)
+            const item = document.createElement("div")
+            item.className = "selected-dish-item"
+            item.innerHTML = `
+        <div class="dish-item-info">
+          <div class="dish-item-name">${dish.name}</div>
+          <div class="dish-item-details">${dish.quantity} x ${this.formatCurrency(dish.price - dish.price * dish.discount / 100)}</div>
+        </div>
+        <div class="dish-item-total">${this.formatCurrency(itemTotal)}</div>
+      `
+            list.appendChild(item)
+        })
+
+        total.textContent = this.formatCurrency(totalAmount)
+    }
+
+    filterDishes(searchTerm) {
+        const filtered = this.availableDishes.filter(
+            (dish) =>
+                dish.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                (dish.description && dish.description.toLowerCase().includes(searchTerm.toLowerCase())),
+        )
+        this.renderDishes(filtered)
+    }
+
+    filterByCategory(category) {
+        // Update active category button
+        document.querySelectorAll(".category-btn").forEach((btn) => {
+            btn.classList.remove("active")
+        })
+        document.querySelector(`[data-category="${category}"]`).classList.add("active")
+
+        // Filter dishes
+        let filtered = this.availableDishes
+        if (category !== "all") {
+            filtered = this.availableDishes.filter(
+                (dish) => dish.categoryName && dish.categoryName.toLowerCase().includes(category.toLowerCase()),
+            )
+        }
+        this.renderDishes(filtered)
+    }
+
+    async loadTableTypes() {
+        try {
+            this.showLoading("tableTypesContainer")
+            const response = await fetch(`/api/dinetableapi/available-types?date=${this.bookingData.reservationDate}&time=${this.bookingData.reservationTime}&partySize=${this.bookingData.partySize}`)
+            if (response.ok) {
+                this.availableTableTypes = await response.json()
+                this.renderTableTypes()
+            } else {
+                this.showError("Không thể tải danh sách loại bàn")
+            }
+        } catch (error) {
+            console.error("Error loading table types:", error)
+            this.showError("Lỗi khi tải danh sách loại bàn")
+        } finally {
+            this.hideLoading("tableTypesContainer")
         }
     }
 
-    // Hàm ẩn/hiện nút xác nhận và bỏ qua
-    function updateDishSelectionButtons(hasSelected) {
-        const confirmBtn = document.getElementById('confirmDishesBtn');
-        const skipBtn = document.getElementById('skipDishesBtn');
-        if (hasSelected) {
-            confirmBtn.style.display = '';
-            skipBtn.style.display = 'none';
+    renderTableTypes() {
+        const container = document.getElementById("tableTypesContainer")
+        container.innerHTML = ""
+
+        this.availableTableTypes.forEach((tableType) => {
+            const card = this.createTableTypeCard(tableType)
+            container.appendChild(card)
+        })
+    }
+
+    createTableTypeCard(tableType) {
+        const card = document.createElement("div")
+        card.className = "table-type-card"
+        card.dataset.id = tableType.id
+
+        if (this.bookingData.tableTypeId === tableType.id) {
+            card.classList.add("selected")
+        }
+
+        // Simulate availability (in real app, this would come from API)
+        const availabilityStatus = tableType.availableCount > 2 ? "available" : tableType.availableCount > 0 ? "limited" : "unavailable"
+        const statusText =
+            availabilityStatus === "available" ? "Còn trống" : availabilityStatus === "limited" ? "Sắp hết" : "Hết chỗ"
+        const statusIcon =
+            availabilityStatus === "available"
+                ? "check-circle"
+                : availabilityStatus === "limited"
+                    ? "exclamation-triangle"
+                    : "times-circle"
+
+        card.innerHTML = `
+      <div class="table-type-header">
+        <h6 class="table-type-name">${tableType.name}</h6>
+        <span class="table-type-capacity">${tableType.capacity} chỗ</span>
+      </div>
+      <div class="table-availability">
+        <div class="availability-status ${availabilityStatus}">
+          <i class="fas fa-${statusIcon}"></i>
+          ${statusText}
+        </div>
+        <div class="availability-count">Còn ${tableType.availableCount} bàn</div>
+      </div>
+    `
+
+        if (availabilityStatus !== "unavailable") {
+            card.addEventListener("click", () => {
+                this.selectTableType(tableType)
+            })
         } else {
-            confirmBtn.style.display = 'none';
-            skipBtn.style.display = '';
+            card.style.opacity = "0.5"
+            card.style.cursor = "not-allowed"
+        }
+
+        return card
+    }
+
+    selectTableType(tableType) {
+        this.bookingData.tableTypeId = tableType.id
+        this.bookingData.name = tableType.name
+
+        // Update visual selection
+        document.querySelectorAll(".table-type-card").forEach((card) => {
+            card.classList.remove("selected")
+        })
+        document.querySelector(`[data-id="${tableType.id}"]`).classList.add("selected")
+    }
+
+    async nextStep() {
+        if (!this.validateCurrentStep()) {
+            return false
+        }
+
+        if (this.currentStep < this.totalSteps) {
+            this.currentStep++
+            this.updateStepDisplay()
+            this.updateProgressSteps()
+
+            // Load data for specific steps
+            if (this.currentStep === 2) {
+                this.loadDishes()
+            } else if (this.currentStep === 3) {
+                this.loadTableTypes()
+                this.updateBookingSummary()
+            } else if (this.currentStep === 4) {
+                this.updateFinalSummary()
+            }
+        }
+        return true
+    }
+
+    prevStep() {
+        if (this.currentStep > 1) {
+            this.currentStep--
+            this.updateStepDisplay()
+            this.updateProgressSteps()
         }
     }
 
-    // Lấy danh sách món đã chọn (quantity > 0)
-    function getSelectedDishes() {
-        return availableDishes.filter(dish => selectedDishes[dish.idDish] > 0);
+    validateCurrentStep() {
+        console.log(this.currentStep)
+        switch (this.currentStep) {
+            case 1:
+                if (!this.bookingData.reservationDate) {
+                    this.showError("Vui lòng chọn ngày đặt bàn")
+                    return false
+                }
+                if (!this.bookingData.reservationTime) {
+                    this.showError("Vui lòng chọn giờ đặt bàn")
+                    return false
+                }
+                break
+            case 3:
+                if (!this.bookingData.tableTypeId) {
+                    this.showError("Vui lòng chọn loại bàn")
+                    return false
+                }
+                break
+            case 4:
+                console.log(this.bookingData.customerName.trim())
+                if (!this.bookingData.customerName.trim()) {
+                    this.showError("Vui lòng nhập họ tên")
+                    return false
+                }
+                console.log(this.bookingData.phone.trim())
+                if (!this.bookingData.phone.trim()) {
+                    this.showError("Vui lòng nhập số điện thoại")
+                    return false
+                }
+                console.log(this.bookingData.email.trim())
+                if (!this.bookingData.email.trim()) {
+                    this.showError("Vui lòng nhập email")
+                    return false
+                }
+                break
+        }
+        return true
     }
 
-    // Bỏ qua bước chọn món
-    function skipDishSelection() {
-        window.selectedDishesData = []; // Không có món nào được chọn
-        dishModal.hide();
-        step2Modal.show(); // Tiếp bước 2 mà không chọn món
-    }
-
-    // Xác nhận chọn món
-    function confirmDishSelection() {
-        saveSelectedDishes();
-        dishModal.hide();
-        step2Modal.show(); // Tiếp bước 2 sau khi chọn món
-    }
-
-    // Lưu món đã chọn (có thể lưu vào biến global hoặc form)
-    function saveSelectedDishes() {
-        const selectedItems = getSelectedDishes().map(dish => ({
-            idDish: dish.idDish,
-            name: dish.name,
-            quantity: selectedDishes[dish.idDish],
-            price: dish.price - dish.price * dish.discount / 100,
-            total: (dish.price - dish.price * dish.discount / 100) * selectedDishes[dish.idDish]
-        }));
-
-        // Lưu vào biến global hoặc form ẩn
-        window.selectedDishesData = selectedItems;
-    }
-
-    // Hàm định dạng giá
-    function formatPrice(price) {
-        return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(price);
-    }
-
-    function renderSelectedDishesSummary() {
-        const summaryList = document.getElementById("selectedDishesSummary");
-        const totalElement = document.getElementById("selectedDishesSummaryTotal");
-
-        const selectedItems = getSelectedDishes();
-        summaryList.innerHTML = "";
-
-        if (selectedItems.length === 0) {
-            summaryList.innerHTML = "<li class='list-group-item'>Không có món nào được chọn</li>";
-            totalElement.textContent = "";
-            return;
+    updateStepDisplay() {
+        // Hide all steps
+        for (let i = 1; i <= this.totalSteps; i++) {
+            document.getElementById(`bookingStep${i}`).style.display = "none"
         }
 
-        let total = 0;
+        // Show current step
+        document.getElementById(`bookingStep${this.currentStep}`).style.display = "block"
 
-        selectedItems.forEach(item => {
-            const quantity = selectedDishes[item.idDish];
-            const subtotal = quantity * (item.price - item.price * item.discount / 100);
-            total += subtotal;
+        // Update navigation buttons
+        const prevBtn = document.getElementById("bookingPrevBtn")
+        const nextBtn = document.getElementById("bookingNextBtn")
+        const confirmBtn = document.getElementById("bookingConfirmBtn")
 
-            const li = document.createElement("li");
-            li.className = "list-group-item d-flex justify-content-between align-items-center";
-            li.innerHTML = `
-			<span>${item.name} x${quantity}</span>
-			<span>${formatPrice(subtotal)}</span>
-		`;
-            summaryList.appendChild(li);
-        });
-
-        bookingData.reservationPrice = total; // Cập nhật giá đặt bàn
-
-        totalElement.textContent = `Tổng cộng: ${formatPrice(total)}`;
+        prevBtn.style.display = this.currentStep > 1 ? "block" : "none"
+        nextBtn.style.display = this.currentStep < this.totalSteps ? "block" : "none"
+        confirmBtn.style.display = this.currentStep === this.totalSteps ? "block" : "none"
     }
 
-});
+    updateProgressSteps() {
+        document.querySelectorAll(".progress-step").forEach((step, index) => {
+            const stepNumber = index + 1
+            step.classList.remove("active", "completed")
+
+            if (stepNumber < this.currentStep) {
+                step.classList.add("completed")
+            } else if (stepNumber === this.currentStep) {
+                step.classList.add("active")
+            }
+        })
+
+        document.querySelectorAll(".progress-line").forEach((line, index) => {
+            line.classList.remove("completed")
+            if (index + 1 < this.currentStep) {
+                line.classList.add("completed")
+            }
+        })
+    }
+
+    updateBookingSummary() {
+        const dateTime = `${this.formatDate(this.bookingData.reservationDate)} - ${this.bookingData.reservationTime}`
+        const partySize = `${this.bookingData.partySize} người`
+        const dishCount =
+            this.bookingData.selectedDishes.length > 0 ? `${this.bookingData.selectedDishes.length} món ăn` : "Chưa chọn món"
+
+        document.getElementById("summaryDateTime").textContent = dateTime
+        document.getElementById("summaryPartySize").textContent = partySize
+        document.getElementById("summaryDishCount").textContent = dishCount
+    }
+
+    updateFinalSummary() {
+        const dateTime = `${this.formatDate(this.bookingData.reservationDate)} - ${this.bookingData.reservationTime}`
+        const partySize = `${this.bookingData.partySize} người`
+        const tableType = this.bookingData.name || "Chưa chọn"
+        const dishCount =
+            this.bookingData.selectedDishes.length > 0 ? `${this.bookingData.selectedDishes.length} món ăn` : "Không có"
+
+        // Calculate total amount
+        const dishTotal = this.bookingData.selectedDishes.reduce((total, dish) => {
+            return total + (dish.price - dish.price * dish.discount / 100) * dish.quantity
+        }, 0)
+
+        document.getElementById("finalDateTime").textContent = dateTime
+        document.getElementById("finalPartySize").textContent = partySize
+        document.getElementById("finalTableType").textContent = tableType
+        document.getElementById("finalDishCount").textContent = dishCount
+        document.getElementById("finalTotalAmount").textContent = this.formatCurrency(dishTotal)
+
+        this.bookingData.reservationPrice = dishTotal
+    }
+
+    async confirmBooking() {
+        const check = await this.nextStep()
+        if (!check) return
+        this.showLoading("bookingConfirmBtn")
+
+        const bookingPayload = {
+            reservationDate: this.bookingData.reservationDate,
+            reservationTime: this.bookingData.reservationTime,
+            partySize: this.bookingData.partySize,
+            tableTypeId: this.bookingData.tableTypeId,
+            customerName: this.bookingData.customerName,
+            phone: this.bookingData.phone,
+            email: this.bookingData.email,
+            note: this.bookingData.note,
+            reservationPrice: this.bookingData.reservationPrice,
+            selectedDishes: this.bookingData.selectedDishes,
+        }
+
+        if (bookingPayload.selectedDishes.length === 0) {
+            await this.createReservationWithoutOrder(bookingPayload);
+        } else {
+            await this.createVNPayReservation(bookingPayload);
+        }
+    }
+
+    async createReservationWithoutOrder(bookingPayload) {
+        try {
+            const response = await fetch("/api/reservationapi/noorder", {
+                method: "POST",
+                headers: { "Content-Type": "application/json", "Authorization": `Bearer ${customertoken}` },
+                body: JSON.stringify(bookingPayload)
+            });
+
+            if (response.ok) {
+                const result = await response.json()
+                this.showBookingSuccess(result.reservationResultDto.reservationId || "RES" + Date.now())
+            } else {
+                const error = await response.text()
+                this.showError("Không thể đặt bàn: " + error)
+            }
+        } catch (error) {
+            console.error("Error confirming booking:", error)
+            this.showError("Lỗi khi đặt bàn. Vui lòng thử lại.")
+        } finally {
+            this.hideLoading("bookingConfirmBtn")
+        }
+    }
+
+
+    async createVNPayReservation(bookingPayload) {
+        try {
+            const response = await fetch("/api/reservationapi/vnpay", {
+                method: "POST",
+                headers: { "Content-Type": "application/json", "Authorization": `Bearer ${customertoken}` },
+                body: JSON.stringify(bookingPayload)
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                if (data && data.paymentUrl) {
+                    localStorage.setItem("reservationid", data.reservationid);
+                    window.location.href = data.paymentUrl;
+                } else {
+                    this.showError("Không thể đặt bàn: " + error)
+                }
+            } else {
+                this.showError("Xảy ra lỗi khi đặt bàn.");
+            }
+        } catch (error) {
+            console.error("Error confirming booking:", error)
+            this.showError("Lỗi khi đặt bàn. Vui lòng thử lại.")
+        } finally {
+            this.hideLoading("bookingConfirmBtn")
+        }
+    }
+
+    showBookingSuccess(bookingCode) {
+        // Close booking modal
+        const bookingModal = this.bootstrap.Modal.getInstance(document.getElementById("bookingModal"))
+        bookingModal.hide()
+
+        // Show success modal
+        document.getElementById("bookingCode").textContent = "#" + bookingCode
+        const successModal = new this.bootstrap.Modal(document.getElementById("bookingSuccessModal"))
+        successModal.show()
+    }
+
+    showLoading(elementId) {
+        const element = document.getElementById(elementId)
+        if (element) {
+            element.style.position = "relative"
+            const overlay = document.createElement("div")
+            overlay.className = "loading-overlay"
+            overlay.innerHTML = '<div class="loading-spinner"></div>'
+            element.appendChild(overlay)
+        }
+    }
+
+    hideLoading(elementId) {
+        const element = document.getElementById(elementId)
+        if (element) {
+            const overlay = element.querySelector(".loading-overlay")
+            if (overlay) {
+                overlay.remove()
+            }
+        }
+    }
+
+    showError(message) {
+        // Create toast notification
+        const toast = document.createElement("div")
+        toast.className = "toast-notification error"
+        toast.innerHTML = `
+      <i class="fas fa-exclamation-circle"></i>
+      <span>${message}</span>
+    `
+
+        document.body.appendChild(toast)
+
+        // Show toast
+        setTimeout(() => {
+            toast.classList.add("show")
+        }, 100)
+
+        // Hide toast after 5 seconds
+        setTimeout(() => {
+            toast.classList.remove("show")
+            setTimeout(() => {
+                document.body.removeChild(toast)
+            }, 300)
+        }, 5000)
+    }
+
+    formatCurrency(amount) {
+        return new Intl.NumberFormat("vi-VN", {
+            style: "currency",
+            currency: "VND",
+        }).format(amount)
+    }
+
+    formatDate(dateString) {
+        const date = new Date(dateString)
+        return date.toLocaleDateString("vi-VN", {
+            weekday: "long",
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+        })
+    }
+}
+
+// Initialize booking manager when DOM is loaded
+document.addEventListener("DOMContentLoaded", () => {
+    window.bookingManager = new ModernBookingManager()
+})
+
+// Add toast notification styles
+const toastStyles = `
+<style>
+.toast-notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: #dc3545;
+  color: white;
+  padding: 1rem 1.5rem;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  z-index: 9999;
+  transform: translateX(100%);
+  transition: transform 0.3s ease;
+  box-shadow: 0 8px 25px rgba(220, 53, 69, 0.3);
+}
+
+.toast-notification.show {
+  transform: translateX(0);
+}
+
+.toast-notification.success {
+  background: #28a745;
+  box-shadow: 0 8px 25px rgba(40, 167, 69, 0.3);
+}
+
+.toast-notification i {
+  font-size: 1.2rem;
+}
+</style>
+`
+
+document.head.insertAdjacentHTML("beforeend", toastStyles)

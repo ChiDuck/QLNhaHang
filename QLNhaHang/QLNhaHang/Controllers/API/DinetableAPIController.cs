@@ -53,7 +53,12 @@ namespace QLNhaHang.Controllers.API
         [HttpPost]
         public async Task<ActionResult<Dinetable>> CreateDinetable(Dinetable dinetable)
         {
-            db.Dinetables.Add(dinetable);
+            if (db.Dinetables.Any(t => t.Name == dinetable.Name))
+            {
+                return Conflict("Bàn với tên này đã tồn tại.");
+			}
+
+			db.Dinetables.Add(dinetable);
             await db.SaveChangesAsync();
 
             return CreatedAtAction(nameof(GetDinetable), new { id = dinetable.IdDinetable }, dinetable);
@@ -66,7 +71,12 @@ namespace QLNhaHang.Controllers.API
             if (id != dinetable.IdDinetable)
                 return BadRequest();
 
-            db.Entry(dinetable).State = EntityState.Modified;
+			if (db.Dinetables.Any(t => t.Name == dinetable.Name))
+			{
+				return Conflict("Bàn với tên này đã tồn tại.");
+			}
+
+			db.Entry(dinetable).State = EntityState.Modified;
 
             try
             {
@@ -80,7 +90,7 @@ namespace QLNhaHang.Controllers.API
                     throw;
             }
 
-            return NoContent();
+            return Ok();
         }
 
         // DELETE: api/Dinetable/5 (Xóa bàn)
@@ -101,7 +111,7 @@ namespace QLNhaHang.Controllers.API
             db.Dinetables.Remove(dinetable);
             await db.SaveChangesAsync();
 
-            return NoContent();
+            return Ok();
         }
 
         private bool DinetableExists(int id)

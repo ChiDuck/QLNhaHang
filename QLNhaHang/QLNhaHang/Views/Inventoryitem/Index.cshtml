@@ -44,36 +44,6 @@
 
 
 	<div class="content-card">
-		@*         <div class="inventory-stats">
-            <div class="stat-card">
-                <div class="stat-icon">
-                    <i class="fas fa-boxes"></i>
-                </div>
-                <div class="stat-content">
-                    <div class="stat-number" id="totalItems">0</div>
-                    <div class="stat-label">Tổng nguyên liệu</div>
-                </div>
-            </div>
-            <div class="stat-card warning">
-                <div class="stat-icon">
-                    <i class="fas fa-exclamation-triangle"></i>
-                </div>
-                <div class="stat-content">
-                    <div class="stat-number" id="lowStockItems">0</div>
-                    <div class="stat-label">Sắp hết hàng</div>
-                </div>
-            </div>
-            <div class="stat-card success">
-                <div class="stat-icon">
-                    <i class="fas fa-check-circle"></i>
-                </div>
-                <div class="stat-content">
-                    <div class="stat-number" id="normalStockItems">0</div>
-                    <div class="stat-label">Còn đủ hàng</div>
-                </div>
-            </div>
-        </div>
- *@
 		<div class="inventory-grid" id="inventoryGrid">
 			<!-- Grid items will be rendered here -->
 		</div>
@@ -99,7 +69,7 @@
 
 <!-- Modal chỉnh sửa -->
 <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
-	<div class="modal-dialog modal-lg">
+	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
 				<h5 class="modal-title" id="modalLabel">
@@ -139,6 +109,7 @@
 									Số lượng
 								</label>
 								<input type="number" class="form-control" id="itemAmount" min="0" step="0.1">
+								<div class="invalid-feedback" id="validateAmount">Số lượng không hợp lệ!</div>
 							</div>
 						</div>
 					</div>
@@ -155,11 +126,11 @@
 				</form>
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+				<button type="button" class="btn-dismiss" data-bs-dismiss="modal">
 					<i class="fas fa-times"></i>
 					Hủy
 				</button>
-				<button type="button" class="btn btn-primary" onclick="updateInventoryitem()">
+				<button type="button" class="btn-save" onclick="updateInventoryitem()">
 					<i class="fas fa-save"></i>
 					Lưu thay đổi
 				</button>

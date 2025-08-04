@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using QLNhaHang.DTO;
@@ -55,33 +56,6 @@ namespace QLNhaHang.Controllers.API
 				.ToListAsync();
 		}
 
-		//[HttpGet]
-		//public async Task<ActionResult<IEnumerable<object>>> GetAllActiveReservations()
-		//{
-		//	return await _context.Reservations
-		//		.Where(r => r.IdReservationstatus == 2 || r.IdReservationstatus == 1)
-		//		.Include(r => r.IdReservationstatusNavigation)
-		//		.Include(r => r.IdDinetableNavigation)
-		//		.Include(r => r.IdCustomerNavigation)
-		//		.OrderBy(r => r.Reservationdate)
-		//		.ThenBy(r => r.Reservationtime)
-		//		.Select(r => new
-		//		{
-		//			r.IdReservation,
-		//			r.Phone,
-		//			r.Email,
-		//			r.Reservationdate,
-		//			r.Reservationtime,
-		//			r.Partysize,
-		//			r.Note,
-		//			r.IdReservationstatus,
-		//			Status = r.IdReservationstatusNavigation.Name,
-		//			CustomerName = r.IdCustomerNavigation != null ? r.IdCustomerNavigation.Name : "Khách vãng lai",
-		//			TableName = r.IdDinetableNavigation != null ? r.IdDinetableNavigation.Name : "Chưa chọn bàn",
-		//		})
-		//		.ToListAsync();
-		//}
-
 		// GET: api/Reservations/5
 		[HttpGet("{id}")]
 		public async Task<ActionResult<ReservationDTO>> GetReservationDetail(int id)
@@ -90,6 +64,7 @@ namespace QLNhaHang.Controllers.API
 				.Include(r => r.IdCustomerNavigation)
 				.Include(r => r.IdDinetableNavigation)
 				.Include(r => r.IdReservationstatusNavigation)
+				.Include(r => r.IdStaffNavigation)
 				.Include(r => r.Reservationorders)
 					.ThenInclude(ro => ro.IdDishNavigation)
 				.FirstOrDefaultAsync(r => r.IdReservation == id);
@@ -112,6 +87,7 @@ namespace QLNhaHang.Controllers.API
 				Status = res.IdReservationstatusNavigation?.Name,
 				CustomerName = res.IdCustomerNavigation?.Name,
 				TableName = res.IdDinetableNavigation?.Name,
+				StaffName = res.IdStaffNavigation?.Name,
 				Orders = res.Reservationorders.Select(ro => new ReservationOrderDTO
 				{
 					IdDish = ro.IdDish,
@@ -157,6 +133,7 @@ namespace QLNhaHang.Controllers.API
 			return Ok(result);
 		}
 
+		[Authorize]
 		[HttpPut("{id}/status")]
 		public async Task<IActionResult> UpdateStatus(int id, [FromBody] int newStatus)
 		{
@@ -170,6 +147,9 @@ namespace QLNhaHang.Controllers.API
 			var status = await db.Reservationstatuses.FirstOrDefaultAsync(s => s.IdReservationstatus == newStatus);
 			if (status == null) return BadRequest("Invalid status");
 
+			var idStaff = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+			reservation.IdStaff = idStaff != null ? int.Parse(idStaff) : null;
 			reservation.IdReservationstatus = status.IdReservationstatus;
 			await db.SaveChangesAsync();
 
@@ -422,7 +402,7 @@ namespace QLNhaHang.Controllers.API
 		public int TableId { get; set; }
 		public int TableTypeId { get; set; }
 		public string CustomerName { get; set; }
-		public int? IdStaff { get; set; } 
+		public int? StaffName { get; set; } 
 		public List<SelectedDishDto> SelectedDishes { get; set; }
 	}
 

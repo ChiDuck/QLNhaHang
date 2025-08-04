@@ -39,7 +39,12 @@ namespace QLNhaHang.Controllers.API
         [HttpPost]
         public async Task<ActionResult<Tabletype>> Create(Tabletype dto)
         {
-            db.Tabletypes.Add(dto);
+            if (db.Tabletypes.Any(t => t.Name == dto.Name))
+            {
+                return Conflict("Loại bàn với tên này đã tồn tại.");
+			}
+
+			db.Tabletypes.Add(dto);
             await db.SaveChangesAsync();
             return CreatedAtAction(nameof(Get), new { id = dto.IdTabletype }, dto);
         }
@@ -50,7 +55,12 @@ namespace QLNhaHang.Controllers.API
         {
             if (id != dto.IdTabletype) return BadRequest();
 
-            db.Entry(dto).State = EntityState.Modified;
+			if (db.Tabletypes.Any(t => t.Name == dto.Name))
+			{
+				return Conflict("Loại bàn với tên này đã tồn tại.");
+			}
+
+			db.Entry(dto).State = EntityState.Modified;
 
             try { await db.SaveChangesAsync(); }
             catch (DbUpdateConcurrencyException)
@@ -58,7 +68,7 @@ namespace QLNhaHang.Controllers.API
                 if (!db.Tabletypes.Any(e => e.IdTabletype == id)) return NotFound();
                 throw;
             }
-            return NoContent();
+            return Ok();
         }
 
         [HttpDelete("{id}")]
@@ -79,7 +89,7 @@ namespace QLNhaHang.Controllers.API
             db.Tabletypes.Remove(tabletype);
             await db.SaveChangesAsync();
 
-            return NoContent();
+            return Ok();
         }
 
     }

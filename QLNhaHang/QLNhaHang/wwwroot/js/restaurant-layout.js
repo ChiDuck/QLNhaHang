@@ -1,4 +1,5 @@
 let cart = []
+    console.log("Initializing modern layout...");
 
 document.addEventListener("DOMContentLoaded", async function() {
     // Initialize modern layout features
@@ -323,6 +324,11 @@ function validateInput(e) {
         return false
     }
 
+    if (input.type === "password" && value && !isValidPassword(value)) {
+        input.classList.add("is-invalid")
+        return false
+    }
+
     if (value) {
         input.classList.add("is-valid")
     }
@@ -348,6 +354,10 @@ function isValidPhone(phone) {
     return phoneRegex.test(phone.replace(/\D/g, ""))
 }
 
+function isValidPassword(password) {
+    const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+    return regex.test(password);
+}
 // Initialize animations
 function initializeAnimations() {
     // Intersection Observer for scroll animations
@@ -447,25 +457,6 @@ function formatPrice(price) {
     }).format(price)
 }
 
-// Add notification animations to head
-const notificationStyles = document.createElement("style")
-notificationStyles.textContent = `
-    @keyframes slideInRight {
-        from { transform: translateX(100%); opacity: 0; }
-        to { transform: translateX(0); opacity: 1; }
-    }
-    
-    @keyframes slideOutRight {
-        from { transform: translateX(0); opacity: 1; }
-        to { transform: translateX(100%); opacity: 0; }
-    }
-    
-    .modern-notification {
-        backdrop-filter: blur(10px);
-    }
-`
-document.head.appendChild(notificationStyles)
-
 // Declare functions
 async function updateCartItemQuantity(id, change) {
     const item = cart.find((item) => item.id === id)
@@ -514,9 +505,9 @@ async function saveCart() {
         localStorage.setItem('cart', JSON.stringify(cart));
     }
 }
-
+console.log("Cart initialized:", cart);
 // Declare addToCart function
-async function addToCartGlobal(dish) {
+window.addToCartGlobal = async function addToCartGlobal(dish) {
     const existingItem = cart.find(item => item.id === dish.idDish);
     if (existingItem) {
         existingItem.quantity += 1;
@@ -531,9 +522,7 @@ async function addToCartGlobal(dish) {
     }
     await saveCart()
     updateCartBadge();
-  //  return Promise.resolve()
 }
-
 
 function updateCartBadge() {
     const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);

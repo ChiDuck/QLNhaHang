@@ -32,36 +32,6 @@
 			</div>
 		</div>
 	</div>
-@* 		<div class="stats-cards">
-			<div class="stat-card">
-				<div class="stat-icon">
-					<i class="fas fa-users"></i>
-				</div>
-				<div class="stat-info">
-					<h3 class="stat-number" id="totalStaff">0</h3>
-					<p class="stat-label">Tổng nhân viên</p>
-				</div>
-			</div>
-			<div class="stat-card">
-				<div class="stat-icon active">
-					<i class="fas fa-user-check"></i>
-				</div>
-				<div class="stat-info">
-					<h3 class="stat-number" id="activeStaff">0</h3>
-					<p class="stat-label">Đang làm việc</p>
-				</div>
-			</div>
-			<div class="stat-card">
-				<div class="stat-icon warning">
-					<i class="fas fa-clock"></i>
-				</div>
-				<div class="stat-info">
-					<h3 class="stat-number" id="onShift">0</h3>
-					<p class="stat-label">Đang trong ca</p>
-				</div>
-			</div>
-		</div>
- *@	
 
 	<!-- Staff Grid -->
 	<div class="staff-container">
@@ -75,93 +45,6 @@
 <div class="loading-spinner" id="loadingState">
 	<div class="spinner"></div>
 	<p>Đang tải dữ liệu...</p>
-</div>
-
-<!-- Modal Chi Tiết Nhân Viên -->
-<div class="modal fade" id="staffModal" tabindex="-1" aria-labelledby="staffModalLabel" aria-hidden="true">
-	<div class="modal-dialog modal-lg">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h5 class="modal-title" id="staffModalLabel">
-					<i class="fas fa-user-circle me-2"></i>
-					Thông Tin Chi Tiết Nhân Viên
-				</h5>
-				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-			</div>
-			<div class="modal-body">
-				<div class="staff-detail-container">
-					<div class="staff-photo-section">
-						<div id="staffPhoto" class="staff-photo-wrapper"></div>
-					</div>
-					<div class="staff-info-section">
-						<div class="info-grid">
-							<div class="info-group">
-								<div class="info-item">
-									<label>Mã nhân viên:</label>
-									<span id="staffId"></span>
-								</div>
-								<div class="info-item">
-									<label>Họ và tên:</label>
-									<span id="staffName"></span>
-								</div>
-								<div class="info-item">
-									<label>Số CCCD:</label>
-									<span id="staffCitizenId"></span>
-								</div>
-								<div class="info-item">
-									<label>Giới tính:</label>
-									<span id="staffGender"></span>
-								</div>
-								<div class="info-item">
-									<label>Ngày sinh:</label>
-									<span id="staffBirthday"></span>
-								</div>
-							</div>
-							<div class="info-group">
-								<div class="info-item">
-									<label>Số điện thoại:</label>
-									<span id="staffPhone"></span>
-								</div>
-								<div class="info-item">
-									<label>Email:</label>
-									<span id="staffEmail"></span>
-								</div>
-								<div class="info-item">
-									<label>Ngày vào làm:</label>
-									<span id="staffStartDate"></span>
-								</div>
-								<div class="info-item">
-									<label>Lương theo giờ:</label>
-									<span id="staffHourlySalary"></span>
-								</div>
-								<div class="info-item">
-									<label>Trạng thái:</label>
-									<span id="staffStatus" class="status-badge"></span>
-								</div>
-							</div>
-						</div>
-						<div class="info-full-width">
-							<div class="info-item">
-								<label>Địa chỉ:</label>
-								<span id="staffAddress"></span>
-							</div>
-							<div class="info-item">
-								<label>Vị trí:</label>
-								<span id="staffType" class="position-badge"></span>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-warning" id="editStaffBtn">
-					<i class="fas fa-edit"></i>
-					Sửa thông tin
-				</button>
-				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-			</div>
-		</div>
-	</div>
 </div>
 
 <!-- Modal Chỉnh Sửa Nhân Viên -->
@@ -241,7 +124,7 @@
 				</form>
 			</div>
 			<div class="modal-footer">	
-				<button class="btn btn-success" onclick="submitStaff()">
+				<button class="btn-save" onclick="submitStaff()">
 					<i class="fas fa-save"></i>
 					Xác nhận
 				</button>

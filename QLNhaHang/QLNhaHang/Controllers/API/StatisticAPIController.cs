@@ -76,7 +76,7 @@ namespace QLNhaHang.Controllers.API
 			var today = DateTime.Now.Date;
 
 			var shipRevenue = _context.Shiporders
-				.Where(o => o.Orderdate.Date == today && o.IdOrderstatus >= 3)
+				.Where(o => o.Orderdate.Date == today && ((o.IdOrderstatus >= 3 && o.Transactionid != null) || (o.Transactionid == null && o.IdOrderstatus == 5)) )
 				.Sum(o => (double?)o.Orderprice) ?? 0;
 
 			var reservationRevenue = _context.Reservations
@@ -101,7 +101,7 @@ namespace QLNhaHang.Controllers.API
 			{
 				var day = startOfWeek.AddDays(i);
 				var shipTotal = _context.Shiporders
-					.Where(o => o.Orderdate.Date == day && o.IdOrderstatus >= 3)
+					.Where(o => o.Orderdate.Date == day && ((o.IdOrderstatus >= 3 && o.Transactionid != null) || (o.Transactionid == null && o.IdOrderstatus == 5)))
 					.Sum(o => (double?)o.Orderprice) ?? 0;
 
 				var reservationTotal = _context.Reservations
@@ -133,7 +133,7 @@ namespace QLNhaHang.Controllers.API
 				var date = new DateTime(now.Year, now.Month, d);
 
 				var shipTotal = _context.Shiporders
-					.Where(o => o.Orderdate.Date == date && o.IdOrderstatus >= 3)
+					.Where(o => o.Orderdate.Date == date && ((o.IdOrderstatus >= 3 && o.Transactionid != null) || (o.Transactionid == null && o.IdOrderstatus == 5)))
 					.Sum(o => (double?)o.Orderprice) ?? 0;
 
 				var reservationTotal = _context.Reservations
@@ -162,7 +162,7 @@ namespace QLNhaHang.Controllers.API
 			var result = Enumerable.Range(1, 12).Select(m =>
 			{
 				var shipTotal = _context.Shiporders
-					.Where(o => o.Orderdate.Year == year && o.Orderdate.Month == m && o.IdOrderstatus >= 3)
+					.Where(o => o.Orderdate.Year == year && o.Orderdate.Month == m && ((o.IdOrderstatus >= 3 && o.Transactionid != null) || (o.Transactionid == null && o.IdOrderstatus == 5)))
 					.Sum(o => (double?)o.Orderprice) ?? 0;
 
 				var reservationTotal = _context.Reservations

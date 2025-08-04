@@ -955,3 +955,8 @@
     transform: rotate(360deg);
   }
 }
+
+/* Password Requirements */
+.password-requirements {
+    margin-left: 0.5rem;
+}

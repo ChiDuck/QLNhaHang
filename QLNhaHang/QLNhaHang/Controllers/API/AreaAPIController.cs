@@ -54,7 +54,10 @@ namespace QLNhaHang.Controllers.API
         [HttpPost]
         public async Task<ActionResult<Area>> PostArea(Area area)
         {
-            db.Areas.Add(area);
+            if (db.Areas.Any(a => a.Name == area.Name))
+                return Conflict("Khu vực với tên này đã tồn tại.");
+
+			db.Areas.Add(area);
             await db.SaveChangesAsync();
             return Ok(area);
         }
@@ -66,7 +69,10 @@ namespace QLNhaHang.Controllers.API
             if (id != area.IdArea)
                 return BadRequest();
 
-            db.Entry(area).State = EntityState.Modified;
+			if (db.Areas.Any(a => a.Name == area.Name))
+				return Conflict("Khu vực với tên này đã tồn tại.");
+
+			db.Entry(area).State = EntityState.Modified;
 
             try
             {

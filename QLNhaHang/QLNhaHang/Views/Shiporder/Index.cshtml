@@ -12,38 +12,7 @@
                     Quản lý đơn giao hàng
                 </h1>
             </div>
-@*             <div class="header-right">
-                <div class="stats-cards">
-                    <div class="stat-card">
-                        <div class="stat-icon pending">
-                            <i class="fas fa-clock"></i>
-                        </div>
-                        <div class="stat-info">
-                            <span class="stat-number" id="pendingCount">0</span>
-                            <span class="stat-label">Chờ xử lý</span>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon processing">
-                            <i class="fas fa-cog"></i>
-                        </div>
-                        <div class="stat-info">
-                            <span class="stat-number" id="processingCount">0</span>
-                            <span class="stat-label">Đang xử lý</span>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon completed">
-                            <i class="fas fa-check"></i>
-                        </div>
-                        <div class="stat-info">
-                            <span class="stat-number" id="completedCount">0</span>
-                            <span class="stat-label">Hoàn thành</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
- *@        </div>
+        </div>
     </div>
 
     <!-- Controls Section -->
@@ -252,7 +221,7 @@
                         Cập nhật trạng thái: Đã hoàn thành
                     </button>
                 </div>
-                <button class="btn btn-secondary" data-bs-dismiss="modal">
+                <button class="btn-dismiss" data-bs-dismiss="modal">
                     <i class="fas fa-times"></i>
                     Đóng
                 </button>
@@ -266,5 +235,5 @@
 }
 
 @section Scripts {
-    <script src="~/js/shiporder-enhanced.js"></script>
+    <script src="~/js/shiporder.js"></script>
 }

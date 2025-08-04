@@ -23,46 +23,6 @@
 			</div>
 		</div>
 	</div>
-	<!-- Stats Cards -->
-	@* 		<div class="stats-grid">
-			<div class="stat-card">
-				<div class="stat-icon">
-					<i class="fas fa-chair"></i>
-				</div>
-				<div class="stat-content">
-					<div class="stat-number" id="totalTables">0</div>
-					<div class="stat-label">Tổng số bàn</div>
-				</div>
-			</div>
-			<div class="stat-card">
-				<div class="stat-icon available">
-					<i class="fas fa-check-circle"></i>
-				</div>
-				<div class="stat-content">
-					<div class="stat-number" id="availableTables">0</div>
-					<div class="stat-label">Bàn trống</div>
-				</div>
-			</div>
-			<div class="stat-card">
-				<div class="stat-icon occupied">
-					<i class="fas fa-users"></i>
-				</div>
-				<div class="stat-content">
-					<div class="stat-number" id="occupiedTables">0</div>
-					<div class="stat-label">Bàn có khách</div>
-				</div>
-			</div>
-			<div class="stat-card">
-				<div class="stat-icon">
-					<i class="fas fa-map-marker-alt"></i>
-				</div>
-				<div class="stat-content">
-					<div class="stat-number" id="totalAreas">0</div>
-					<div class="stat-label">Khu vực</div>
-				</div>
-			</div>
-		</div>
- *@	
 
 	<!-- Controls Section -->
 	<div class="controls-section">
@@ -78,11 +38,6 @@
 				<select id="typeFilter" class="form-select">
 					<option value="">Tất cả loại bàn</option>
 				</select>
-				@* 				<select id="statusFilter" class="form-select">
-					<option value="">Tất cả trạng thái</option>
-					<option value="available">Trống</option>
-					<option value="occupied">Có khách</option>
-				</select> *@
 			</div>
 		</div>
 		<div class="view-controls">
@@ -92,10 +47,6 @@
 			<button class="btn btn-outline view-btn" data-view="list">
 				<i class="fas fa-list"></i>
 			</button>
-			@* 			<button class="btn btn-outline" onclick="exportData()">
-				<i class="fas fa-download"></i>
-				Xuất Excel
-			</button> *@
 		</div>
 	</div>
 
@@ -152,17 +103,19 @@
 							<i class="fas fa-tag"></i>
 							Tên bàn
 						</label>
-						<input type="text" class="form-control" id="dinetableName" required />
+						<input type="text" class="form-control" id="dinetableName" />
 						<div class="form-text">Nhập tên bàn (VD: Bàn 01, Bàn VIP 1)</div>
+						<div class="invalid-feedback" id="validateName">Tên không được để trống!</div>
 					</div>
 					<div class="form-group">
 						<label class="form-label">
 							<i class="fas fa-map-marker-alt"></i>
 							Khu vực
 						</label>
-						<select class="form-select" id="dinetableArea" required>
+						<select class="form-select" id="dinetableArea">
 							<option value="">Chọn khu vực</option>
 						</select>
+						<div class="invalid-feedback" id="validateArea">Chưa chọn khu vực!</div>
 					</div>
 
 					<div class="form-group">
@@ -170,36 +123,18 @@
 							<i class="fas fa-chair"></i>
 							Loại bàn
 						</label>
-						<select class="form-select" id="dinetableType" required>
+						<select class="form-select" id="dinetableType">
 							<option value="">Chọn loại bàn</option>
 						</select>
+						<div class="invalid-feedback" id="validateType">Chưa chọn loại bàn!</div>
 					</div>
-					@* <div class="form-group">
-						<label class="form-label">
-							<i class="fas fa-info-circle"></i>
-							Trạng thái
-						</label>
-						<select class="form-select" id="dinetableStatus">
-							<option value="available">Trống</option>
-							<option value="occupied">Có khách</option>
-							<option value="maintenance">Bảo trì</option>
-						</select>
-					</div>
- *@
-					@* <div class="form-group">
-						<label class="form-label">
-							<i class="fas fa-sticky-note"></i>
-							Ghi chú
-						</label>
-						<textarea class="form-control" id="dinetableNote" rows="3" placeholder="Ghi chú thêm về bàn..."></textarea>
-					</div> *@
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+					<button type="button" class="btn-dismiss" data-bs-dismiss="modal">
 						<i class="fas fa-times"></i>
 						Hủy
 					</button>
-					<button type="submit" class="btn btn-primary">
+					<button type="submit" class="btn-save">
 						<i class="fas fa-save"></i>
 						Lưu thông tin
 					</button>
@@ -225,8 +160,8 @@
 				<p class="text-muted">Hành động này không thể hoàn tác.</p>
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-				<button type="button" class="btn btn-danger" id="confirmDelete">
+				<button type="button" class="btn-dismiss" data-bs-dismiss="modal">Hủy</button>
+				<button type="button" class="btn-delete" id="confirmDelete">
 					<i class="fas fa-trash"></i>
 					Xóa bàn
 				</button>
@@ -235,27 +170,6 @@
 	</div>
 </div>
 
-<!-- Toast Container -->
-<div class="toast-container position-fixed top-0 end-0 p-3">
-	<div id="successToast" class="toast" role="alert">
-		<div class="toast-header">
-			<i class="fas fa-check-circle text-success me-2"></i>
-			<strong class="me-auto">Thành công</strong>
-			<button type="button" class="btn-close" data-bs-dismiss="toast"></button>
-		</div>
-		<div class="toast-body" id="successMessage"></div>
-	</div>
-
-	<div id="errorToast" class="toast" role="alert">
-		<div class="toast-header">
-			<i class="fas fa-exclamation-circle text-danger me-2"></i>
-			<strong class="me-auto">Lỗi</strong>
-			<button type="button" class="btn-close" data-bs-dismiss="toast"></button>
-		</div>
-		<div class="toast-body" id="errorMessage"></div>
-	</div>
-</div>
-
 @section Scripts {
-	<script src="~/js/dinetable-enhanced.js"></script>
+	<script src="~/js/dinetable.js"></script>
 }

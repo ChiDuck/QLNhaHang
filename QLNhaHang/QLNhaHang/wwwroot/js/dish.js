@@ -312,10 +312,6 @@ async function loadDishCategories(selectedId = null) {
 
 async function submitDish() {
     try {
-        //const uploadDishPhotoAndGetPath = async () => {
-        //    // Placeholder for uploadDishPhotoAndGetPath function
-        //    // Implement the actual function here
-        //}
         await uploadDishPhotoAndGetPath()
 
         const valName = document.getElementById("validateName")
@@ -415,7 +411,6 @@ async function submitDish() {
         }
     } catch (error) {
         console.error("Error submitting dish:", error)
-        showNotification("Lỗi khi lưu món ăn", "error")
     }
 }
 

@@ -173,12 +173,12 @@
   transition: all 0.3s ease;
 }
 
-.view-btn.active,
-.view-btn:hover {
-  border-color: #3498db;
-  background: #3498db;
-  color: white;
-}
+    .view-btn.active,
+    .view-btn:hover {
+        border-color: #667eea;
+        background: #667eea;
+        color: white;
+    }
 
 .content-section {
   background: white;
@@ -219,21 +219,21 @@
   overflow: hidden;
 }
 
-.table-card:hover {
-  border-color: #3498db;
-  transform: translateY(-3px);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-}
+    .table-card:hover {
+        border-color: #667eea;
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
 
-.table-card::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 4px;
-  background: linear-gradient(45deg, #3498db, #2980b9);
-}
+    .table-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(45deg, #667eea, #764ba2);
+    }
 
 .table-card.occupied::before {
   background: linear-gradient(45deg, #e74c3c, #c0392b);
@@ -352,6 +352,9 @@
 .form-group {
   margin-bottom: 20px;
 }
+.form-group:last-child {
+  margin-bottom: 0;
+}
 
 .form-label {
   font-weight: 600;
@@ -380,11 +383,6 @@
   color: #7f8c8d;
   font-size: 0.85rem;
   margin-top: 5px;
-}
-
-.modal-footer {
-  padding: 20px 30px;
-  border-top: 1px solid #ecf0f1;
 }
 
 .toast {

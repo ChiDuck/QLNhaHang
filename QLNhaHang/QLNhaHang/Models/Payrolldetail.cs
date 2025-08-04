@@ -16,7 +16,7 @@ namespace QLNhaHang.Models
         public double Totalsalary { get; set; }
         public string? Note { get; set; }
 
-        public virtual Payroll IdPayrollNavigation { get; set; } = null!;
-        public virtual Staff IdStaffNavigation { get; set; } = null!;
+        public virtual Payroll? IdPayrollNavigation { get; set; } = null!;
+        public virtual Staff? IdStaffNavigation { get; set; } = null!;
     }
 }

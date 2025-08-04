@@ -1,202 +1,617 @@
-﻿const apiUrl = "/api/reservationapi";
-var reservationlist = [];
-document.addEventListener('DOMContentLoaded',  loadReservations);
+class ReservationManager {
+    constructor() {
+        this.reservationlist = []
+        this.filteredList = []
+        this.currentPage = 1
+        this.itemsPerPage = 12
+        this.currentReservationId = null
+        this.searchTimeout = null
+        this.bootstrap = window.bootstrap // Declare the bootstrap variable
 
-async function loadReservations() {
-    try {
-        const response = await fetch(apiUrl);
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        reservationlist = await response.json();
-        renderReservations();
-    } catch (error) {
-        console.error('Error loading reservations:', error);
-        alert('Có lỗi xảy ra khi tải danh sách đặt bàn');
+        this.init()
     }
-}
 
-function renderReservations() {
-    const tableBody = document.querySelector('#reservationsTable tbody');
-    tableBody.innerHTML = '';
+    init() {
+        this.bindEvents()
+        this.loadReservations()
+    }
 
-    reservationlist.forEach(re => {
-        const row = document.createElement('tr');
-        const bookDate = new Date(re.bookdate);
-        const formattedDate = bookDate.toLocaleString("vi-VN", {
+    bindEvents() {
+        // Search functionality
+        const searchInput = document.getElementById("reservationSearchInput")
+        const clearSearch = document.getElementById("clearSearch")
+
+        searchInput.addEventListener("input", (e) => {
+            clearTimeout(this.searchTimeout)
+            this.searchTimeout = setTimeout(() => {
+                this.handleSearch(e.target.value)
+            }, 300)
+        })
+
+        clearSearch.addEventListener("click", () => {
+            searchInput.value = ""
+            this.handleSearch("")
+        })
+
+        // Filter events
+        document.getElementById("statusFilter").addEventListener("change", () => this.applyFilters())
+        document.getElementById("dateFilter").addEventListener("change", () => this.applyFilters())
+
+        // Refresh button
+        document.getElementById("refreshData").addEventListener("click", () => {
+            this.showLoading()
+            this.loadReservations()
+        })
+
+        // Modal events
+        document.getElementById("btnAcceptReservation").addEventListener("click", () => {
+            if (this.currentReservationId) {
+                this.updateReservationStatus(this.currentReservationId, true)
+            }
+        })
+
+        document.getElementById("btnRejectReservation").addEventListener("click", () => {
+            if (this.currentReservationId) {
+                this.updateReservationStatus(this.currentReservationId, false)
+            }
+        })
+    }
+
+    async loadReservations() {
+        try {
+            this.showLoading()
+            const response = await fetch("/api/reservationapi")
+
+            if (!response.ok) {
+                showNotification("Không thể tải danh sách đặt bàn. Vui lòng thử lại.", "error")
+            }
+
+            this.reservationlist = await response.json()
+            this.filteredList = [...this.reservationlist]
+            //this.updateStats()
+            this.applyFilters()
+            this.hideLoading()
+        } catch (error) {
+            console.error("Error loading reservations:", error)
+            this.hideLoading()
+        }
+    }
+
+    handleSearch(keyword) {
+        const searchInput = document.getElementById("reservationSearchInput")
+        const clearSearch = document.getElementById("clearSearch")
+
+        clearSearch.style.display = keyword ? "block" : "none"
+
+        if (!keyword.trim()) {
+            this.filteredList = [...this.reservationlist]
+        } else {
+            this.filteredList = this.reservationlist.filter(
+                (reservation) =>
+                    reservation.phone?.toLowerCase().includes(keyword.toLowerCase()) ||
+                    reservation.email?.toLowerCase().includes(keyword.toLowerCase()) ||
+                    reservation.customerName?.toLowerCase().includes(keyword.toLowerCase()),
+            )
+        }
+
+        this.currentPage = 1
+        this.applyFilters()
+    }
+
+    applyFilters() {
+        let filtered = [...this.filteredList]
+
+        // Status filter
+        const statusFilter = document.getElementById("statusFilter").value
+        if (statusFilter) {
+            filtered = filtered.filter((reservation) => reservation.idReservationstatus == statusFilter)
+        }
+
+        // Date filter
+        const dateFilter = document.getElementById("dateFilter").value
+        if (dateFilter) {
+            const now = new Date()
+            const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+            const tomorrow = new Date(today.getTime() + 24 * 60 * 60 * 1000)
+
+            filtered = filtered.filter((reservation) => {
+                const reservationDate = new Date(reservation.reservationdate)
+                const resDay = new Date(reservationDate.getFullYear(), reservationDate.getMonth(), reservationDate.getDate())
+
+                switch (dateFilter) {
+                    case "today":
+                        return resDay.getTime() === today.getTime()
+                    case "tomorrow":
+                        return resDay.getTime() === tomorrow.getTime()
+                    case "week":
+                        const weekFromNow = new Date(today.getTime() + 7 * 24 * 60 * 60 * 1000)
+                        return resDay >= today && resDay <= weekFromNow
+                    case "month":
+                        const monthFromNow = new Date(today.getFullYear(), today.getMonth() + 1, today.getDate())
+                        return resDay >= today && resDay <= monthFromNow
+                    default:
+                        return true
+                }
+            })
+        }
+
+        this.filteredList = filtered
+        this.renderReservations()
+        this.renderPagination()
+    }
+
+    timeToMinutes(timeString) {
+        if (!timeString) return 0
+
+        if (typeof timeString === "object" && timeString.hours !== undefined) {
+            return timeString.hours * 60 + timeString.minutes
+        }
+
+        if (typeof timeString === "string") {
+            const parts = timeString.split(":")
+            return Number.parseInt(parts[0]) * 60 + Number.parseInt(parts[1])
+        }
+
+        return 0
+    }
+
+    renderReservations() {
+        const reservationsGrid = document.getElementById("reservationsGrid")
+        const emptyState = document.getElementById("emptyState")
+
+        if (this.filteredList.length === 0) {
+            reservationsGrid.style.display = "none"
+            emptyState.style.display = "block"
+            document.getElementById("paginationContainer").style.display = "none"
+            return
+        }
+
+        reservationsGrid.style.display = "grid"
+        emptyState.style.display = "none"
+        document.getElementById("paginationContainer").style.display = "flex"
+
+        const startIndex = (this.currentPage - 1) * this.itemsPerPage
+        const endIndex = startIndex + this.itemsPerPage
+        const pageItems = this.filteredList.slice(startIndex, endIndex)
+
+        reservationsGrid.innerHTML = ""
+
+        pageItems.forEach((reservation) => {
+            const reservationCard = this.createReservationCard(reservation)
+            reservationsGrid.appendChild(reservationCard)
+        })
+
+        // Add animation
+        const cards = reservationsGrid.querySelectorAll(".reservation-card")
+        cards.forEach((card, index) => {
+            card.style.opacity = "0"
+            card.style.transform = "translateY(20px)"
+            setTimeout(() => {
+                card.style.transition = "all 0.3s ease"
+                card.style.opacity = "1"
+                card.style.transform = "translateY(0)"
+            }, index * 100)
+        })
+    }
+
+    createReservationCard(reservation) {
+        const card = document.createElement("div")
+        card.className = "reservation-card"
+
+        const statusClass = this.getStatusClass(reservation.idReservationstatus)
+        const statusText = this.getStatusText(reservation.idReservationstatus)
+        const bookDate = new Date(reservation.bookdate).toLocaleString("vi-VN")
+        const reservationDate = this.formatDate(reservation.reservationdate)
+        const reservationTime = this.formatTime(reservation.reservationtime)
+
+        card.innerHTML = `
+            <div class="reservation-header">
+                <div class="reservation-id">
+                    <i class="fas fa-calendar-check"></i>
+                    #${reservation.idReservation}
+                </div>
+                <span class="reservation-status ${statusClass}">${statusText}</span>
+            </div>
+            <div class="reservation-datetime">
+                <i class="fas fa-calendar-alt"></i>
+                ${reservationDate} - ${reservationTime}
+            </div>  
+            <div class="reservation-info">
+                <div class="info-row">
+                    <span class="info-label">
+                        <i class="fas fa-user"></i>
+                        Khách hàng:
+                    </span>
+                    <span class="info-value">${reservation.customerName || "Khách vãng lai"}</span>
+                </div>               
+                <div class="info-row">
+                    <span class="info-label">
+                        <i class="fas fa-users"></i>
+                        Số người:
+                    </span>
+                    <span class="info-value">${reservation.partysize} người</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">
+                        <i class="fas fa-table"></i>
+                        Bàn:
+                    </span>
+                    <span class="info-value">${reservation.tableName || "Chưa chọn"}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">
+                        <i class="fas fa-clock"></i>
+                        Tạo lúc:
+                    </span>
+                    <span class="info-value">${bookDate}</span>
+                </div>
+            </div>                    
+            <div class="reservation-actions">
+                <button class="btn-view" onclick="reservationManager.showReservationDetail(${reservation.idReservation})">
+                    <i class="fas fa-eye"></i>
+                    Xem chi tiết
+                </button>
+            </div>
+        `
+
+        return card
+    }
+
+    async showReservationDetail(id) {
+        try {
+            this.currentReservationId = id
+            const response = await fetch(`/api/reservationapi/${id}`)
+
+            if (!response.ok) {
+                showNotification("Không thể tải chi tiết đặt bàn.", "error")
+
+            }
+
+            const data = await response.json()
+            this.populateReservationModal(data)
+
+            const modal = new this.bootstrap.Modal(document.getElementById("reservationDetailModal"))
+            modal.show()
+        } catch (error) {
+            console.error("Error loading reservation detail:", error)
+        }
+    }
+
+    populateReservationModal(data) {
+        // Basic info
+        document.getElementById("res-id").textContent = data.idReservation
+        document.getElementById("res-customer").textContent = data.customerName || "Khách vãng lai"
+        document.getElementById("res-phone").textContent = data.phone || "Không có"
+        document.getElementById("res-email").textContent = data.email || "Không có"
+
+        const bookDate = new Date(data.bookdate)
+        const formattedBookDate = bookDate.toLocaleString("vi-VN", {
             day: "2-digit",
             month: "2-digit",
             year: "numeric",
             hour: "2-digit",
-            minute: "2-digit"
-        });
-        row.innerHTML = `
-            <td>${re.idReservation}</td>
-            <td>${formattedDate}</td>
-            <td>${re.customerName}</td>
-            <td>${re.phone ?? ''}</td>
-            <td>${re.email ?? ''}</td>
-            <td>${re.partysize}</td>
-            <td>${re.tableName}</td>
-            <td>${formatDate(re.reservationdate)} ${formatTime(re.reservationtime)}</td>
-            <td><span class="badge ${getStatusBadgeClass(re.idReservationstatus)}">${re.status}</span></td>
-            <td class="text-center">
-                <button class="btn btn-sm btn-info view-btn" data-id="${re.idReservation}">
-                    <i class="fas fa-eye"></i>
-                </button>
-            </td>
-        `;
-        tableBody.appendChild(row);
-    });
+            minute: "2-digit",
+        })
+        document.getElementById("res-bookdate").textContent = formattedBookDate
 
-    // Thêm sự kiện cho nút xem chi tiết
-    document.querySelectorAll('.view-btn').forEach(btn => {
-        btn.addEventListener('click', () => showReservationDetail(btn.dataset.id));
-    });
-}
+        // Reservation info
+        document.getElementById("res-date").textContent = this.formatDate(data.reservationdate)
+        document.getElementById("res-time").textContent = this.formatTime(data.reservationtime)
+        document.getElementById("res-party").textContent = data.partysize + " người"
+        document.getElementById("res-table").textContent = data.tableName || "Chưa chọn bàn"
+        document.getElementById("res-staff").textContent = data.staffName || "Chưa xử lý"
 
-async function searchReservations() {
-    const keyword = document.getElementById("reservationSearchInput").value.trim();
-    const tbody = document.getElementById("reservationTableBody");
-    tbody.innerHTML = "";
+        // Payment info
+        document.getElementById("res-price").textContent = this.formatCurrency(data.reservationprice || 0)
+        document.getElementById("res-note").textContent = data.note || "Không có"
+        document.getElementById("res-status").textContent = data.status || "Không xác định"
 
-    if (!keyword) return;
-
-    try {
-        const res = await fetch(`/api/reservationapi/search?keyword=${encodeURIComponent(keyword)}`);
-        const data = await res.json();
-
-        if (!res.ok) {
-            alert(data.message || "Lỗi tìm kiếm.");
-            return;
+        // Transaction ID
+        const transidRow = document.getElementById("res-transid-row")
+        if (data.transactionid) {
+            document.getElementById("res-transid").textContent = data.transactionid
+            transidRow.style.display = "flex"
+        } else {
+            transidRow.style.display = "none"
         }
 
-        if (data.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="6">Không tìm thấy đặt bàn nào.</td></tr>`;
-            return;
+        // Status badge
+        const statusBadge = document.getElementById("resStatusBadge")
+        statusBadge.textContent = data.status;
+        statusBadge.className = `reservation-status-badge ${this.getStatusClass(data.idReservationstatus)}`
+
+        // Orders
+        this.renderReservationOrders(data.orders)
+
+        // Action buttons
+        this.setupReservationActionButtons(data.status)
+    }
+
+    renderReservationOrders(orders) {
+        const orderSection = document.getElementById("res-order-section")
+        const ordersList = document.getElementById("res-orders")
+
+        if (!orders || orders.length === 0) {
+            orderSection.style.display = "none"
+            return
         }
-        reservationlist = data; // Cập nhật danh sách đặt bàn
-        renderReservations(); 
 
-    } catch (err) {
-        console.error("Lỗi khi gọi API:", err);
-        alert("Không thể kết nối đến máy chủ.");
+        orderSection.style.display = "block"
+        ordersList.innerHTML = ""
+
+        orders.forEach((order) => {
+            const orderItem = document.createElement("div")
+            orderItem.className = "order-item"
+            orderItem.innerHTML = `
+                <img src="${order.dishPhoto || "/placeholder.svg?height=60&width=60"}" 
+                     alt="${order.dishName}" class="order-image" />
+                <div class="order-info">
+                    <div class="order-name">${order.dishName}</div>
+                    <div class="order-quantity">Số lượng: ${order.quantity}</div>
+                </div>
+                <div class="order-total">${this.formatCurrency(order.total)}</div>
+            `
+            ordersList.appendChild(orderItem)
+        })
+    }
+
+    setupReservationActionButtons(status) {
+        const btnAccept = document.getElementById("btnAcceptReservation")
+        const btnReject = document.getElementById("btnRejectReservation")
+
+        if (status === "Chờ xác nhận") {
+            btnAccept.style.display = "inline-flex"
+            btnReject.style.display = "inline-flex"
+        } else {
+            btnAccept.style.display = "none"
+            btnReject.style.display = "none"
+        }
+    }
+
+    async updateReservationStatus(id, isAccepted) {
+        const status = isAccepted ? 2 : 3
+        const statusText = isAccepted ? "Đã chấp nhận" : "Đã từ chối"
+        console.log(localStorage.getItem("token"));
+        try {
+            const response = await fetch(`/api/reservationapi/${id}/status`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json", "Authorization": `Bearer ${localStorage.getItem("token")}` },
+                body: JSON.stringify(status),
+            })
+
+            if (!response.ok) {
+                showNotification("Lỗi: " +response, "error")
+            }
+
+            showNotification(`Đã cập nhật đơn đặt bàn thành: ${statusText}`)
+
+            // Close modal
+            const modal = this.bootstrap.Modal.getInstance(document.getElementById("reservationDetailModal"))
+            modal.hide()
+
+            // Reload data
+            await this.loadReservations()
+        } catch (error) {
+            console.error("Error updating reservation status:", error)
+        }
+    }
+
+    renderPagination() {
+        const totalItems = this.filteredList.length
+        const totalPages = Math.ceil(totalItems / this.itemsPerPage)
+        const startIndex = (this.currentPage - 1) * this.itemsPerPage
+        const endIndex = Math.min(startIndex + this.itemsPerPage, totalItems)
+
+        // Update pagination info
+        document.getElementById("paginationInfo").textContent =
+            `Hiển thị ${startIndex + 1} - ${endIndex} của ${totalItems} đặt bàn`
+
+        // Generate pagination controls
+        const paginationControls = document.getElementById("paginationControls")
+        paginationControls.innerHTML = ""
+
+        if (totalPages <= 1) return
+
+        // Previous button
+        const prevBtn = document.createElement("button")
+        prevBtn.className = "page-btn"
+        prevBtn.innerHTML = '<i class="fas fa-chevron-left"></i>'
+        prevBtn.disabled = this.currentPage === 1
+        prevBtn.addEventListener("click", () => {
+            if (this.currentPage > 1) {
+                this.currentPage--
+                this.renderReservations()
+                this.renderPagination()
+            }
+        })
+        paginationControls.appendChild(prevBtn)
+
+        // Page numbers
+        const startPage = Math.max(1, this.currentPage - 2)
+        const endPage = Math.min(totalPages, this.currentPage + 2)
+
+        if (startPage > 1) {
+            const firstBtn = this.createPageButton(1)
+            paginationControls.appendChild(firstBtn)
+
+            if (startPage > 2) {
+                const ellipsis = document.createElement("span")
+                ellipsis.textContent = "..."
+                ellipsis.className = "page-ellipsis"
+                paginationControls.appendChild(ellipsis)
+            }
+        }
+
+        for (let i = startPage; i <= endPage; i++) {
+            const pageBtn = this.createPageButton(i)
+            paginationControls.appendChild(pageBtn)
+        }
+
+        if (endPage < totalPages) {
+            if (endPage < totalPages - 1) {
+                const ellipsis = document.createElement("span")
+                ellipsis.textContent = "..."
+                ellipsis.className = "page-ellipsis"
+                paginationControls.appendChild(ellipsis)
+            }
+
+            const lastBtn = this.createPageButton(totalPages)
+            paginationControls.appendChild(lastBtn)
+        }
+
+        // Next button
+        const nextBtn = document.createElement("button")
+        nextBtn.className = "page-btn"
+        nextBtn.innerHTML = '<i class="fas fa-chevron-right"></i>'
+        nextBtn.disabled = this.currentPage === totalPages
+        nextBtn.addEventListener("click", () => {
+            if (this.currentPage < totalPages) {
+                this.currentPage++
+                this.renderReservations()
+                this.renderPagination()
+            }
+        })
+        paginationControls.appendChild(nextBtn)
+    }
+
+    createPageButton(pageNumber) {
+        const btn = document.createElement("button")
+        btn.className = `page-btn ${pageNumber === this.currentPage ? "active" : ""}`
+        btn.textContent = pageNumber
+        btn.addEventListener("click", () => {
+            this.currentPage = pageNumber
+            this.renderReservations()
+            this.renderPagination()
+        })
+        return btn
+    }
+
+    updateStats() {
+        // Count today's reservations
+        const today = new Date()
+        const todayStr = today.toISOString().split("T")[0]
+        const todayCount = this.reservationlist.filter((r) => {
+            const resDate = new Date(r.reservationdate).toISOString().split("T")[0]
+            return resDate === todayStr
+        }).length
+
+    }
+
+    getStatusClass(status) {
+        switch (status) {
+            case 1:
+                return "status-pending"
+            case 2:
+                return "status-confirmed"
+            case 3:
+                return "status-rejected"
+            case 4:
+                return "status-completed"
+            case 5:
+                return "status-cancelled"
+            default:
+                return "status-pending"
+        }
+    }
+
+    getStatusText(status) {
+        switch (status) {
+            case 1:
+                return "Chờ xác nhận"
+            case 2:
+                return "Đã xác nhận"
+            case 3:
+                return "Đã từ chối"
+            case 4:
+                return "Đã hoàn thành"
+            case 5:
+                return "Đã hủy"
+            default:
+                return "Không xác định"
+        }
+    }
+
+    formatDate(dateString) {
+        const date = new Date(dateString)
+        return date.toLocaleDateString("vi-VN")
+    }
+
+    formatTime(time) {
+        if (!time) return "--:--"
+
+        if (typeof time === "object" && time.hours !== undefined && time.minutes !== undefined) {
+            return `${time.hours.toString().padStart(2, "0")}:${time.minutes.toString().padStart(2, "0")}`
+        }
+
+        if (typeof time === "string") {
+            const parts = time.split(":")
+            return `${parts[0].padStart(2, "0")}:${parts[1].padStart(2, "0")}`
+        }
+
+        return "--:--"
+    }
+
+    formatCurrency(amount) {
+        return new Intl.NumberFormat("vi-VN", {
+            style: "currency",
+            currency: "VND",
+        }).format(amount)
+    }
+
+    showLoading() {
+        document.getElementById("loadingContainer").style.display = "block"
+        document.getElementById("reservationsGrid").style.display = "none"
+        document.getElementById("emptyState").style.display = "none"
+        document.getElementById("paginationContainer").style.display = "none"
+    }
+
+    hideLoading() {
+        document.getElementById("loadingContainer").style.display = "none"
     }
 }
 
-function formatDate(dateString) {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('vi-VN');
-}
+// Initialize the manager when DOM is loaded
+let reservationManager
+document.addEventListener("DOMContentLoaded", () => {
+    reservationManager = new ReservationManager()
 
-function formatTime(time) {
-    // Kiểm tra nếu time không tồn tại hoặc null/undefined
-    if (!time) return '--:--';
-
-    // Nếu time là đối tượng TimeSpan (trường hợp từ C#)
-    if (typeof time === 'object' && time.hours !== undefined && time.minutes !== undefined) {
-        return `${time.hours.toString().padStart(2, '0')}:${time.minutes.toString().padStart(2, '0')}`;
+    // Add notification styles
+    const notificationStyles = `
+    .notification {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 1rem 1.5rem;
+        border-radius: 12px;
+        color: white;
+        font-weight: 500;
+        z-index: 9999;
+        transform: translateX(100%);
+        transition: transform 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        max-width: 400px;
     }
 
-    // Nếu time là chuỗi
-    if (typeof time === 'string') {
-        // Xử lý chuỗi thời gian (HH:MM:SS hoặc HH:MM)
-        const parts = time.split(':');
-        return `${parts[0].padStart(2, '0')}:${parts[1].padStart(2, '0')}`;
+    .notification.success {
+        background: linear-gradient(135deg, #48bb78, #38a169);
     }
 
-    // Trường hợp khác
-    return '--:--';
-}
-
-function getStatusBadgeClass(status) {
-    switch (status) {
-        case 1: return 'bg-primary';
-        case 2: return 'bg-success';
-        case 3: return 'bg-danger';
-        case 4: return 'bg-secondary';
-        case 5: return 'bg-warning text-dark';
-        default: return 'bg-info text-dark';
-    }
-}
-
-async function showReservationDetail(id) {
-    const res = await fetch(`${apiUrl}/${id}`);
-    const data = await res.json();
-
-    document.getElementById("res-id").innerText = data.idReservation;
-    const bookDate = new Date(data.bookdate);
-    const formattedDate = bookDate.toLocaleString("vi-VN", {
-        day: "2-digit",
-        month: "2-digit",
-        year: "numeric",
-        hour: "2-digit",
-        minute: "2-digit"
-    });
-    document.getElementById("res-bookdate").innerText = formattedDate;
-    document.getElementById("res-datetime").innerText = formatDate(data.reservationdate) + ' - ' + formatTime(data.reservationtime);
-    document.getElementById("res-party").innerText = data.partysize;
-    document.getElementById("res-note").innerText = data.note || "-";
-    document.getElementById("res-customer").innerText = data.customerName || "Khách vãng lai";
-    document.getElementById("res-phone").innerText = data.phone || "-";
-    document.getElementById("res-email").innerText = data.email || "-";
-    document.getElementById("res-status").innerText = data.status || "-";
-    const formattedprice = data.reservationprice.toLocaleString('vi-VN', {
-        style: 'currency',
-        currency: 'VND'
-    });
-    document.getElementById("res-price").innerText = formattedprice;
-    document.getElementById("res-transid").innerText = data.transactionid || "-";
-    document.getElementById("res-table").innerText = data.tableName || "-";
-
-    const tbody = document.getElementById("res-orders");
-    tbody.innerHTML = "";
-    console.log(data.orders);
-    if (data.orders !== []) {
-        document.getElementById("res-order-section").hidden = false;
-        data.orders.forEach(order => {
-            tbody.innerHTML += `
-            <tr>
-                <td><img src="${order.dishPhoto}" width="50"/></td>
-                <td>${order.dishName}</td>
-                <td>${order.quantity}</td>
-                <td>${order.total}</td>
-            </tr>
-        `;
-        });
+    .notification.error {
+        background: linear-gradient(135deg, #f56565, #e53e3e);
     }
 
-    // Ẩn/Hiện nút theo trạng thái
-    const btnAccept = document.getElementById('btnAcceptReservation');
-    const btnReject = document.getElementById('btnRejectReservation');
-
-    if (data.status === "Chờ xác nhận") {
-        btnAccept.style.display = 'inline-block';
-        btnReject.style.display = 'inline-block';
-        btnAccept.onclick = () => updateReservationStatus(id, true);
-        btnReject.onclick = () => updateReservationStatus(id, false);
-    } else {
-        btnAccept.style.display = 'none';
-        btnReject.style.display = 'none';
+    .notification.show {
+        transform: translateX(0);
     }
+`
 
-    new bootstrap.Modal(document.getElementById("reservationDetailModal")).show();
-}
-
-async function updateReservationStatus(id, isAccepted) {
-    const status = isAccepted ? 2 : 3;
-
-    const res = await fetch(`/api/reservationapi/${id}/status`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(status)
-    });
-    const updated = status == 2 ? "Đã chấp nhận" : "Đã từ chối";
-    if (res.ok) {
-        alert(`Đã cập nhật đơn đặt bàn thành: ${updated}`);
-        bootstrap.Modal.getInstance('#reservationDetailModal').hide();
-        await loadReservations(); // reload danh sách
-    } else {
-        alert("Cập nhật trạng thái thất bại.");
+    if (!document.querySelector("#notification-styles")) {
+        const styleSheet = document.createElement("style")
+        styleSheet.id = "notification-styles"
+        styleSheet.textContent = notificationStyles
+        document.head.appendChild(styleSheet)
     }
-}
+})

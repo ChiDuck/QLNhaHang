@@ -99,7 +99,7 @@ namespace QLNhaHang.Controllers.API
 			dish.IdDish = 0;
 			if (db.Dishes.Any(d => d.Name == dish.Name))
 			{
-				return BadRequest("Món ăn đã tồn tại.");
+				return Conflict("Món ăn đã tồn tại.");
 			}
 			// Đảm bảo không gán cả Inventoryitem navigation
 			foreach (var ingredient in dish.Dishingredients)
@@ -150,6 +150,11 @@ namespace QLNhaHang.Controllers.API
 			if (id != updatedDish.IdDish)
 				return BadRequest("ID không khớp");
 
+			if (db.Dishes.Any(d => d.IdDish != id && d.Name == updatedDish.Name))
+			{
+				return Conflict("Món ăn với tên này đã tồn tại.");
+			}
+
 			var existingDish = await db.Dishes
 				.Include(d => d.Dishingredients)
 				.FirstOrDefaultAsync(d => d.IdDish == id);
@@ -193,5 +198,6 @@ namespace QLNhaHang.Controllers.API
 				return StatusCode(500, "Lỗi khi cập nhật món ăn: " + ex.Message);
 			}
 		}
+
 	}
 }

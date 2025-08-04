@@ -68,7 +68,7 @@ function createStaffCard(staff) {
             .join("")
             .toUpperCase()
         : "NV"
-    const avatar = staff.photo ? `<img src="${staff.photo}" alt="Avatar">` : initials
+    const avatar = staff.photo ? `<img src="${staff.photo}" alt="Avatar" style="width:100%; height:100%">` : initials
 
     card.innerHTML = `
         <div class="staff-header">
@@ -217,8 +217,11 @@ async function showStaffDetail(id) {
                                 <div class="staff-detail-body">
                                     <div class="detail-group">
                                         <label>ID:</label>
-									<span id="staffId">${staff.idStaff}</span>
-
+									    <span id="staffId">${staff.idStaff}</span>
+                                    </div>
+                                    <div class="detail-group">
+                                        <label>CCCD/CMND:</label>
+									    <span id="staffId">${staff.citizenid}</span>
                                     </div>
                                     <div class="detail-group">
                                         <label>Số điện thoại:</label>
@@ -229,12 +232,20 @@ async function showStaffDetail(id) {
                                         <span>${staff.email || "Chưa cập nhật"}</span>
                                     </div>
                                     <div class="detail-group">
+                                        <label>Giới tính:</label>
+                                        <span>${staff.gender || "Chưa cập nhật"}</span>
+                                    </div>
+                                    <div class="detail-group">
                                         <label>Ngày sinh:</label>
                                         <span>${staff.birthday ? new Date(staff.birthday).toLocaleDateString("vi-VN") : "Chưa cập nhật"}</span>
                                     </div>
                                     <div class="detail-group">
                                         <label>Địa chỉ:</label>
                                         <span>${staff.address || "Chưa cập nhật"}</span>
+                                    </div>
+                                    <div class="detail-group">
+                                        <label>Ngày vào làm:</label>
+                                        <span>${staff.startdate ? new Date(staff.startdate).toLocaleDateString("vi-VN") : "Chưa cập nhật"}</span>
                                     </div>
                                     <div class="detail-group">
                                         <label>Lương:</label>
@@ -244,14 +255,15 @@ async function showStaffDetail(id) {
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-warning" onclick="editStaff(${staff.idStaff})">
+                            <button type="button" class="btn-edit" onclick="editStaff(${staff.idStaff})">
                                 <i class="fas fa-edit"></i>
                                 Sửa
                             </button>
-                            <button type="button" class="btn btn-danger" id="deleteStaffBtn">
+                             ${staff.idStaff !== 1 ? `
+                            <button type="button" class="btn-delete" id="deleteStaffBtn">
                                 <i class="fas fa-trash"></i>
-                                Xóa
-                            </button>
+                                Sa thải
+                            </button>` : ''}
                         </div>
                     </div>
                 </div>
@@ -272,14 +284,16 @@ async function showStaffDetail(id) {
         modal.show()
 
         // Gắn sự kiện cho nút xóa trong modal chi tiết
-        document.getElementById("deleteStaffBtn").addEventListener("click", function () {
-            const staffId = document.getElementById("staffId").textContent;
-            const staffName = document.getElementById("staffName").textContent;
-            document.getElementById("staffIdToDelete").textContent = staffId;
-            document.getElementById("staffNameToDelete").textContent = staffName;
-            new bootstrap.Modal(document.getElementById("confirmDeleteModal")).show();
-            bootstrap.Modal.getInstance(document.getElementById("staffModal")).hide();
-        });
+        if (staff.idStaff !== 1) {
+            document.getElementById("deleteStaffBtn").addEventListener("click", function () {
+                const staffId = document.getElementById("staffId").textContent;
+                const staffName = document.getElementById("staffName").textContent;
+                document.getElementById("staffIdToDelete").textContent = staffId;
+                document.getElementById("staffNameToDelete").textContent = staffName;
+                new bootstrap.Modal(document.getElementById("confirmDeleteModal")).show();
+                bootstrap.Modal.getInstance(document.getElementById("staffModal")).hide();
+            });
+        }
 
         // Gắn sự kiện xác nhận xóa
         document.getElementById("confirmDeleteBtn").addEventListener("click", async function () {
@@ -336,14 +350,13 @@ async function editStaff(id) {
         document.getElementById("editHourlySalary").value = staff.hourlysalary || "";
         document.getElementById("editStaffType").value = staff.idStafftype || "";
 
-        // Đặt tiêu đề modal
-        document.getElementById("staffEditModalLabel").textContent = "Chỉnh Sửa Nhân Viên";
+        document.getElementById("staffEditModalLabel").innerHTML = '<i class="fas fa-edit"></i> Chỉnh sửa nhân viên'  
 
         // Hiển thị modal
         new bootstrap.Modal(document.getElementById("staffEditModal")).show();
         bootstrap.Modal.getInstance(document.getElementById("staffModal")).hide();
     } catch (error) {
-        showNotification("Không thể tải thông tin nhân viên", "error");
+        console.error("Không thể tải thông tin nhân viên");
     }
 }
 
@@ -379,13 +392,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document.getElementById("addStaffBtn").addEventListener("click", async function () {
         resetStaffForm();
-        document.getElementById("staffEditModalLabel").textContent = "Thêm Nhân Viên";
-        await populateStaffTypeDropdown();
-        new bootstrap.Modal(document.getElementById("staffEditModal")).show();
+        document.getElementById("staffEditModalLabel").innerHTML = '<i class="fas fa-plus"></i> Thêm nhân viên';
+        await populateStaffTypeDropdown()
+        new bootstrap.Modal(document.getElementById("staffEditModal")).show()
     });
 
     document.getElementById("editStaffBtn").addEventListener("click", function () {
-        const staffId = document.getElementById("editIdStaff").value || document.getElementById("staffId").textContent;
+        const staffId = document.getElementById("editIdStaff").value || document.getElementById("staffId").textContent
         editStaff(staffId);
    });
 })
@@ -534,6 +547,8 @@ async function submitStaff() {
         return;
     }
 
+    await uploadStaffPhotoAndGetPath()
+
     // Chuẩn bị dữ liệu gửi lên API
     const staffData = {
         IdStaff: formData.get("IdStaff") ? parseInt(formData.get("IdStaff")) : undefined,
@@ -551,8 +566,7 @@ async function submitStaff() {
         IdStafftype: parseInt(formData.get("IdStafftype"))
     };
 
-
-    console.log(staffData.IdStaff);
+    console.log(staffData);
     // Thêm mới nhân viên (POST)
     if (!formData.get("IdStaff")) {
         try {
@@ -570,10 +584,10 @@ async function submitStaff() {
                 loadStaffList();
             } else {
                 const err = await res.text();
-                showNotification("Không thể thêm nhân viên: " + err, "error");
+                showNotification("Lỗi: " + err, "error");
             }
         } catch (error) {
-            showNotification("Lỗi khi thêm nhân viên", "error");
+            console.error("Lỗi khi thêm nhân viên", "error");
         }
     } else {
         // Sửa nhân viên (PUT)

@@ -43,11 +43,11 @@ namespace QLNhaHang.Controllers.API
 				.Include(w => w.IdStaffNavigation)
 				.Select(w => new
 				{
-					id = w.IdStaff,
-					name = w.IdStaffNavigation.Name,
-					type = w.IdStaffNavigation.IdStafftypeNavigation.Name,
-					attended = w.Attended,
-					islate = w.Islate
+					w.IdStaff,
+					w.IdStaffNavigation.Name,
+					StaffType = w.IdStaffNavigation.IdStafftypeNavigation.Name,
+					w.Attended,
+					w.Islate
 				}).ToListAsync();
 
 			var now = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow,

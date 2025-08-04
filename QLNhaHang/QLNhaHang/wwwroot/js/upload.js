@@ -11,7 +11,7 @@
     });
 
     if (!res.ok) {
-        alert("Upload ảnh thất bại!");
+        showNotification("Upload ảnh thất bại!", "error");
         return null;
     }
 
@@ -32,7 +32,7 @@ async function uploadDishPhotoAndGetPath() {
     });
 
     if (!res.ok) {
-        alert("Upload ảnh thất bại!");
+        showNotification("Upload ảnh thất bại!", "error");
         return null;
     }
 

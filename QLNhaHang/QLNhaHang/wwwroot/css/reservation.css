@@ -338,7 +338,7 @@
 }
 
 .status-completed {
-    background: linear-gradient(135deg, #bbbbbdba, #6e6e6e);
+    background: linear-gradient(135deg, #bbbdba, #6e6e6e);
     color: white;
 }
 
@@ -521,7 +521,7 @@
 .reservation-detail-content {
     display: flex;
     flex-direction: column;
-    gap: 2rem;
+    gap: 1rem;
 }
 
 .detail-section {

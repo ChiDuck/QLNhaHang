@@ -11,6 +11,47 @@ document.addEventListener("DOMContentLoaded", () => {
         showLoadingState()
         getAllInventoryitems()
     })
+
+    // Add notification styles
+    const notificationStyles = `
+    .notification {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 1rem 1.5rem;
+        border-radius: 12px;
+        color: white;
+        font-weight: 500;
+        z-index: 9999;
+        transform: translateX(100%);
+        transition: transform 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        max-width: 400px;
+    }
+
+    .notification.success {
+        background: linear-gradient(135deg, #48bb78, #38a169);
+    }
+
+    .notification.error {
+        background: linear-gradient(135deg, #f56565, #e53e3e);
+    }
+
+    .notification.show {
+        transform: translateX(0);
+    }
+`
+
+    if (!document.querySelector("#notification-styles")) {
+        const styleSheet = document.createElement("style")
+        styleSheet.id = "notification-styles"
+        styleSheet.textContent = notificationStyles
+        document.head.appendChild(styleSheet)
+    }
+
 })
 
 async function initializeInventoryPage() {
@@ -110,11 +151,11 @@ function createInventoryItemCard(item) {
         </div>
         
         <div class="item-actions">
-            <button class="btn btn-edit" onclick="showEditForm(${item.idInventoryitem})" title="Chỉnh sửa">
+            <button class="btn-edit" onclick="showEditForm(${item.idInventoryitem})" title="Chỉnh sửa">
                 <i class="fas fa-edit"></i>
                 Sửa
             </button>
-            <button class="btn btn-delete" onclick="deleteInventoryitem(${item.idInventoryitem})" title="Xóa">
+            <button class="btn-delete" onclick="deleteInventoryitem(${item.idInventoryitem})" title="Xóa">
                 <i class="fas fa-trash"></i>
                 Xóa
             </button>
@@ -125,20 +166,13 @@ function createInventoryItemCard(item) {
 }
 
 function getStockStatus(amount) {
+    if (amount == 0) {
+        return { level: "low", text: "Hết hàng" }
+    }
     if (amount < 10) {
         return { level: "low", text: "Sắp hết" }
     }
     return { level: "normal", text: "Còn đủ" }
-}
-
-function updateStats() {
-    const totalItems = inventoryitemlist.length
-    const lowStockItems = inventoryitemlist.filter((item) => item.amount < 10).length
-    const normalStockItems = totalItems - lowStockItems
-
-    document.getElementById("totalItems").textContent = totalItems
-    document.getElementById("lowStockItems").textContent = lowStockItems
-    document.getElementById("normalStockItems").textContent = normalStockItems
 }
 
 async function searchInventoryItems() {
@@ -286,6 +320,13 @@ async function updateInventoryitem() {
         clearFieldError("itemUnit", "validateUnit")
     }
 
+    if (isNaN(amount) || amount < 0) {
+        showFieldError("itemAmount", "validateAmount")
+        isValid = false
+    } else {
+        clearFieldError("itemAmount", "validateAmount")
+    }
+
     if (!isValid) return
 
     const item = { name, unit, amount, idInventoryitemtype: typeId }
@@ -301,14 +342,12 @@ async function updateInventoryitem() {
             showNotification(id ? "Cập nhật thành công!" : "Thêm mới thành công!", "success")
             bootstrap.Modal.getInstance(document.getElementById("editModal")).hide()
             await getAllInventoryitems()
-        //    updateStats()
         } else {
             const error = await res.text()
-            throw new Error(error)
+            showNotification("Lỗi: " + error, "error")
         }
     } catch (error) {
-        console.error("Lỗi khi lưu:", error)
-        showNotification("Có lỗi xảy ra khi lưu dữ liệu", "error")
+        console.error(error)
     }
 }
 
@@ -329,34 +368,32 @@ function clearFieldError(fieldId, errorId) {
 function clearValidation() {
     clearFieldError("itemName", "validateName")
     clearFieldError("itemUnit", "validateUnit")
+    clearFieldError("itemAmount", "validateAmount")
 }
 
-function showNotification(message, type = "info") {
+function showNotification(message, type = "success") {
     // Create notification element
     const notification = document.createElement("div")
-    notification.className = `alert alert-${type === "error" ? "danger" : type} alert-dismissible fade show notification-toast`
-    notification.style.cssText = `
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        z-index: 9999;
-        min-width: 300px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    `
-
+    notification.className = `notification ${type}`
     notification.innerHTML = `
-        ${message}
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        <i class="fas fa-${type === "success" ? "check-circle" : "exclamation-circle"}"></i>
+        <span>${message}</span>
     `
 
     document.body.appendChild(notification)
 
-    // Auto remove after 5 seconds
+    // Show notification
+    setTimeout(() => notification.classList.add("show"), 100)
+
+    // Hide notification after 3 seconds
     setTimeout(() => {
-        if (notification.parentNode) {
-            notification.remove()
-        }
-    }, 5000)
+        notification.classList.remove("show")
+        setTimeout(() => {
+            if (document.body.contains(notification)) {
+                document.body.removeChild(notification)
+            }
+        }, 300)
+    }, 3000)
 }
 
 // Add search on Enter key

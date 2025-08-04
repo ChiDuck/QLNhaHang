@@ -108,10 +108,27 @@ namespace QLNhaHang.Controllers.API
 		{
 			if (!ModelState.IsValid)
 			{
-				return BadRequest(ModelState);
+				return BadRequest("Vui lòng nhập đầy đủ thông tin bắt buộc");
+			}
+
+			if (db.Staff.Any(s => s.Citizenid == staff.Citizenid))
+			{
+				return Conflict("Số CMND/CCCD đã tồn tại.");
+			}
+			if (db.Staff.Any(s => s.Phone == staff.Phone))
+			{
+				return Conflict("Số điện thoại đã tồn tại.");
+			}
+			if (db.Staff.Any(s => s.Email == staff.Email))
+			{
+				return Conflict("Email đã tồn tại.");
 			}
 
 			staff.PasswordHash = BCrypt.Net.BCrypt.HashPassword(staff.PasswordHash);
+			if (staff.Startdate == null)
+			{
+				staff.Startdate = DateTime.Now;
+			}
 
 			db.Staff.Add(staff);
 			await db.SaveChangesAsync();
@@ -122,6 +139,24 @@ namespace QLNhaHang.Controllers.API
 		[HttpPut("{id}")]
 		public async Task<IActionResult> UpdateStaff(int id, [FromBody] Staff editstaff)
 		{
+			if (!ModelState.IsValid)
+			{
+				return BadRequest("Vui lòng nhập đầy đủ thông tin bắt buộc");
+			}
+
+			if (db.Staff.Any(s => s.Citizenid == editstaff.Citizenid && s.IdStaff != editstaff.IdStaff))
+			{
+				return Conflict("Số CMND/CCCD đã tồn tại.");
+			}
+			if (db.Staff.Any(s => s.Phone == editstaff.Phone && s.IdStaff != editstaff.IdStaff))
+			{
+				return Conflict("Số điện thoại đã tồn tại.");
+			}
+			if (db.Staff.Any(s => s.Email == editstaff.Email && s.IdStaff != editstaff.IdStaff))
+			{
+				return Conflict("Email đã tồn tại.");
+			}
+
 			var staff = await db.Staff.FindAsync(id);
 			if (staff == null) return NotFound();
 
@@ -197,8 +232,15 @@ namespace QLNhaHang.Controllers.API
 			var excludedIds = exclude?.Split(',').Select(int.Parse).ToList() ?? new();
 			var staff = await db.Staff
 				.Where(s => !excludedIds.Contains(s.IdStaff))
-				.Select(s => new { id = s.IdStaff, name = s.Name, type = s.IdStafftypeNavigation != null ? s.IdStafftypeNavigation.Name : null })
-				.ToListAsync();
+				.Select(s => new
+				{
+					s.IdStaff,
+					s.Name,
+					s.Phone,
+					s.Email,
+					s.Photo,
+					StaffType = s.IdStafftypeNavigation != null ? s.IdStafftypeNavigation.Name : null
+				}).ToListAsync();
 
 			return Ok(staff);
 		}

@@ -57,71 +57,6 @@ html {
     min-height: 100%;
 }
 
-#staffTable th {
-    background-color: #343a40;
-    color: white;
-    text-align: center;
-}
-
-#staffTable td {
-    vertical-align: middle;
-}
-
-/* Modal styles */
-#staffModal .modal-body {
-    padding: 20px;
-}
-
-#staffModal img {
-    max-width: 200px;
-    max-height: 200px;
-    border-radius: 5px;
-    border: 1px solid #ddd;
-}
-
-#staffModal p {
-    margin-bottom: 10px;
-    padding-bottom: 5px;
-    border-bottom: 1px solid #eee;
-}
-
-#staffModal strong {
-    min-width: 120px;
-    display: inline-block;
-    color: #555;
-}
-/* Hiệu ứng hover cho bảng nhân viên */
-
-#staffTable tbody tr:hover {
-    background-color: #f8f9fa;
-    /*transform: scale(1.005);*/
-    /*box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);*/
-}
-
-    /* Làm đậm text khi hover */
-    #staffTable tbody tr:hover td {
-        /*font-weight: 500;*/
-        color: #212529;
-    }
-
-/* Nút thêm nhân viên */
-#addStaffBtn {
-    padding: 8px 16px;
-    font-weight: 500;
-}
-
-/* Modal chỉnh sửa */
-#staffEditModal .modal-header {
-    background-color: #ffc107;
-    color: #212529;
-}
-
-/* Hiệu ứng hover cho nút */
-.btn:hover {
-    transform: translateY(-1px);
-    transition: transform 0.2s ease;
-}
-
 /* Form input */
 .form-control, .form-select {
     border-radius: 0.35rem;
@@ -135,26 +70,79 @@ html {
     }
 }
 
-/* Nút xóa */
-#deleteStaffBtn {
-    margin-right: auto;
-    transition: all 0.2s;
+.btn-edit {
+    background: linear-gradient(135deg, #ffc619, #d46f02);
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
 }
-
-    #deleteStaffBtn:hover {
-        transform: translateY(-1px);
-        transition: transform 0.2s ease;
+    .btn-edit:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(255, 182, 25, 0.3);
     }
 
-/* Modal xác nhận xóa */
-#confirmDeleteModal .modal-body {
-    padding: 1.5rem;
+.btn-delete {
+    background: linear-gradient(135deg, #f56565, #bf1313);
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+    .btn-delete:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(217, 20, 20, 0.2);
+    }
+
+.btn-save {
+    background: linear-gradient(135deg, #369e66, #097034);
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+    .btn-save:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(25, 135, 84, 0.2);
+    }
+
+.btn-dismiss {
+    background: linear-gradient(135deg, #bbbdba, #6e6e6e);
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
 }
 
-#confirmDeleteModal .text-danger {
-    font-weight: 500;
-}
-
-#staffNameToDelete {
-    color: #dc3545;
-}
+    .btn-dismiss:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(25, 135, 84, 0.2);
+    }

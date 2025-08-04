@@ -85,7 +85,12 @@ namespace QLNhaHang.Controllers.API
             if (id != updatedItem.IdInventoryitem)
                 return BadRequest("ID không khớp");
 
-            var existingItem = await db.Inventoryitems.FindAsync(id);
+			if (db.Inventoryitems.Any(i => i.Name == updatedItem.Name))
+			{
+				return Conflict("Nguyên liệu đã tồn tại.");
+			}
+
+			var existingItem = await db.Inventoryitems.FindAsync(id);
             if (existingItem == null)
                 return NotFound();
 
@@ -111,7 +116,12 @@ namespace QLNhaHang.Controllers.API
         [HttpPost]
         public async Task<IActionResult> CreateInventoryitem(Inventoryitem item)
         {
-            db.Inventoryitems.Add(item);
+            if (db.Inventoryitems.Any(i => i.Name == item.Name))
+            {
+                return Conflict("Nguyên liệu đã tồn tại.");
+			}
+
+			db.Inventoryitems.Add(item);
             await db.SaveChangesAsync();
             return Ok(item);
         }

@@ -2,9 +2,6 @@ document.addEventListener("DOMContentLoaded", () => {
   // Initialize animations
   initializeAnimations()
 
-  // Load popular dishes
-  loadPopularDishes()
-
   // Initialize smooth scrolling
   initializeSmoothScrolling()
 
@@ -37,61 +34,6 @@ function initializeAnimations() {
   document.querySelectorAll(".section-title").forEach((title) => {
     observer.observe(title)
   })
-}
-
-// Load popular dishes
-async function loadPopularDishes() {
-  const container = document.getElementById("popularDishes")
-
-  try {
-    // Show loading state
-    container.innerHTML = `
-            <div class="col-12 text-center">
-                <div class="loading-spinner"></div>
-                <p class="mt-3">Đang tải món ăn nổi bật...</p>
-            </div>
-        `
-
-    const response = await fetch("/api/dishapi/popular")
-    if (!response.ok) throw new Error("Failed to load dishes")
-
-    const dishes = await response.json()
-
-    if (dishes.length === 0) {
-      container.innerHTML = `
-                <div class="col-12 text-center">
-                    <p class="text-muted">Chưa có món ăn nổi bật</p>
-                </div>
-            `
-      return
-    }
-
-    // Render dishes
-    container.innerHTML = ""
-    dishes.slice(0, 6).forEach((dish) => {
-      const dishCard = createDishCard(dish)
-      container.appendChild(dishCard)
-    })
-
-    // Add animation to dish cards
-    setTimeout(() => {
-      document.querySelectorAll(".dish-card-home").forEach((card, index) => {
-        setTimeout(() => {
-          card.classList.add("animate__animated", "animate__fadeInUp")
-        }, index * 50)
-      })
-    }, 100)
-  } catch (error) {
-    console.error("Error loading popular dishes:", error)
-    container.innerHTML = `
-            <div class="col-12 text-center">
-                <div class="alert alert-warning">
-                    <i class="fas fa-exclamation-triangle me-2"></i>
-                    Không thể tải món ăn nổi bật. Vui lòng thử lại sau.
-                </div>
-            </div>
-        `
-  }
 }
 
 // Create dish card element

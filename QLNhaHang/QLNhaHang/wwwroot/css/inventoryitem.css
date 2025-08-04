@@ -1,3 +1,27 @@
+:root {
+    --primary-color: #6366f1;
+    --primary-dark: #4f46e5;
+    --success-color: #10b981;
+    --warning-color: #f59e0b;
+    --danger-color: #ef4444;
+    --info-color: #3b82f6;
+    --text-primary: #1f2937;
+    --text-secondary: #6b7280;
+    --text-muted: #9ca3af;
+    --bg-primary: #ffffff;
+    --bg-secondary: #f9fafb;
+    --bg-tertiary: #f3f4f6;
+    --border-color: #e5e7eb;
+    --border-light: #f3f4f6;
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    --radius-sm: 6px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --transition: all 0.2s ease;
+}
+
 .inventory-container {
     max-width: 1400px;
     margin: 0 auto;
@@ -262,18 +286,20 @@
 }
 
 .inventory-item {
-    background: white;
-    border: 1px solid #e9ecef;
-    border-radius: 8px;
-    padding: 1.5rem;
-    transition: all 0.3s ease;
+    padding: 1.25rem;
+    background: var(--bg-primary);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border-color);
+    transition: var(--transition);
     position: relative;
+    animation: slideUp 0.5s ease-out;
 }
 
     .inventory-item:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-        border-color: var(--primary-color);
+        transform: translateY(-4px);
+        box-shadow: var(--shadow-lg);
     }
 
 .item-header {
@@ -300,14 +326,13 @@
 }
 
 .item-details {
-    margin-bottom: 1.5rem;
+    margin-bottom: .7rem;
 }
 
 .detail-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 0.5rem;
     padding: 0.5rem 0;
     border-bottom: 1px solid #f8f9fa;
 }
@@ -359,28 +384,6 @@
         font-size: 0.9rem;
         border-radius: 6px;
         transition: all 0.3s ease;
-    }
-
-.btn-edit {
-    background: #ffc107;
-    color: #212529;
-    border: none;
-}
-
-    .btn-edit:hover {
-        background: #e0a800;
-        transform: translateY(-1px);
-    }
-
-.btn-delete {
-    background: #dc3545;
-    color: white;
-    border: none;
-}
-
-    .btn-delete:hover {
-        background: #c82333;
-        transform: translateY(-1px);
     }
 
 .loading-state {
@@ -438,7 +441,7 @@
 }
 
 .modal-header {
-    background: var(--primary-color);
+    background: linear-gradient(135deg, #667eea, #764ba2);
     color: white;
     border-radius: 12px 12px 0 0;
     padding: 1.5rem;

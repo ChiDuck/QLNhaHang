@@ -337,8 +337,8 @@ class ProfileManager {
                 headers: { Authorization: `Bearer ${this.customerToken}` },
             })
 
-            if (!response.ok) throw new Error("Failed to load reservations")
-
+            if (!response.ok) showNotification("Lỗi: Không thể tải lịch đặt bàn.", "error")
+            console.log(response)
             const reservations = await response.json()
             this.renderReservations(reservations)
         } catch (error) {
@@ -349,6 +349,73 @@ class ProfileManager {
                 "Bạn chưa có lịch đặt bàn nào",
             )
         }
+    }
+
+    async showReservationDetail(id) {
+        try {
+            this.currentReservationId = id
+            const response = await fetch(`/api/reservationapi/${id}`)
+
+            if (!response.ok) {
+                showNotification("Không thể tải chi tiết đặt bàn.", "error")
+
+            }
+
+            const data = await response.json()
+            this.populateReservationModal(data)
+
+            const modal = new bootstrap.Modal(document.getElementById("reservationDetailModal"))
+            modal.show()
+        } catch (error) {
+            console.error("Error loading reservation detail:", error)
+        }
+    }
+
+    populateReservationModal(data) {
+        // Basic info
+        document.getElementById("res-id").textContent = data.idReservation
+        document.getElementById("res-customer").textContent = data.customerName || "Khách vãng lai"
+        document.getElementById("res-phone").textContent = data.phone || "Không có"
+        document.getElementById("res-email").textContent = data.email || "Không có"
+
+        const bookDate = new Date(data.bookdate)
+        const formattedBookDate = bookDate.toLocaleString("vi-VN", {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+        })
+        document.getElementById("res-bookdate").textContent = formattedBookDate
+
+        // Reservation info
+        document.getElementById("res-date").textContent = this.formatDate(data.reservationdate)
+        document.getElementById("res-time").textContent = this.formatTime(data.reservationtime)
+        document.getElementById("res-party").textContent = data.partysize + " người"
+        document.getElementById("res-table").textContent = data.tableName || "Chưa chọn bàn"
+        document.getElementById("res-staff").textContent = data.staffName || "Chưa xử lý"
+
+        // Payment info
+        document.getElementById("res-price").textContent = this.formatCurrency(data.reservationprice || 0)
+        document.getElementById("res-note").textContent = data.note || "Không có"
+        document.getElementById("res-status").textContent = data.status || "Không xác định"
+
+        // Transaction ID
+        const transidRow = document.getElementById("res-transid-row")
+        if (data.transactionid) {
+            document.getElementById("res-transid").textContent = data.transactionid
+            transidRow.style.display = "flex"
+        } else {
+            transidRow.style.display = "none"
+        }
+
+        // Status badge
+        const statusBadge = document.getElementById("resStatusBadge")
+        statusBadge.textContent = data.status;
+        statusBadge.className = `reservation-status-badge ${this.getStatusClass(data.idReservationstatus)}`
+
+        // Orders
+        this.renderReservationOrders(data.orders)
     }
 
     renderReservations(reservations) {
@@ -393,6 +460,34 @@ class ProfileManager {
     `,
             )
             .join("")
+    }
+
+    renderReservationOrders(orders) {
+        const orderSection = document.getElementById("res-order-section")
+        const ordersList = document.getElementById("res-orders")
+
+        if (!orders || orders.length === 0) {
+            orderSection.style.display = "none"
+            return
+        }
+
+        orderSection.style.display = "block"
+        ordersList.innerHTML = ""
+
+        orders.forEach((order) => {
+            const orderItem = document.createElement("div")
+            orderItem.className = "order-item"
+            orderItem.innerHTML = `
+                <img src="${order.dishPhoto || "/placeholder.svg?height=60&width=60"}" 
+                     alt="${order.dishName}" class="order-image" />
+                <div class="order-info">
+                    <div class="order-name">${order.dishName}</div>
+                    <div class="order-quantity">Số lượng: ${order.quantity}</div>
+                </div>
+                <div class="order-total">${this.formatCurrency(order.total)}</div>
+            `
+            ordersList.appendChild(orderItem)
+        })
     }
 
     async loadOrders() {
@@ -457,76 +552,6 @@ class ProfileManager {
     `,
             )
             .join("")
-    }
-
-    async loadFavorites() {
-        const container = document.getElementById("favoritesList")
-
-        if (!this.favorites.length) {
-            container.innerHTML = this.createEmptyState(
-                "heart",
-                "Chưa có món yêu thích",
-                "Hãy thêm những món ăn bạn yêu thích",
-            )
-            return
-        }
-
-        try {
-            // Load dish details for favorites
-            const dishPromises = this.favorites.map((dishId) =>
-                fetch(`/api/dishapi/${dishId}`).then((res) => (res.ok ? res.json() : null)),
-            )
-
-            const dishes = (await Promise.all(dishPromises)).filter(Boolean)
-            this.renderFavorites(dishes)
-        } catch (error) {
-            console.error("Error loading favorites:", error)
-            container.innerHTML = this.createEmptyState(
-                "exclamation-triangle",
-                "Lỗi tải dữ liệu",
-                "Không thể tải danh sách yêu thích",
-            )
-        }
-    }
-
-    renderFavorites(dishes) {
-        const container = document.getElementById("favoritesList")
-
-        container.innerHTML = dishes
-            .map(
-                (dish) => `
-      <div class="favorite-item">
-        <div class="favorite-image" style="background-image: url('${dish.photo || "/placeholder.svg?height=180&width=280"}')">
-          <button class="favorite-remove" onclick="profileManager.removeFavorite(${dish.idDish})">
-            <i class="fas fa-heart-broken"></i>
-          </button>
-        </div>
-        <div class="favorite-content">
-          <div class="favorite-name">${dish.name}</div>
-          <div class="favorite-price">${this.formatPrice(dish.price)}</div>
-        </div>
-      </div>
-    `,
-            )
-            .join("")
-    }
-
-    removeFavorite(dishId) {
-        this.favorites = this.favorites.filter((id) => id !== dishId)
-        localStorage.setItem("dishFavorites", JSON.stringify(this.favorites))
-        this.loadFavorites()
-        this.updateBadges([], []) // Update badges
-        this.showNotification("info", "Đã xóa", "Đã xóa khỏi danh sách yêu thích")
-    }
-
-    clearAllFavorites() {
-        if (confirm("Bạn có chắc muốn xóa tất cả món ăn yêu thích?")) {
-            this.favorites = []
-            localStorage.setItem("dishFavorites", JSON.stringify(this.favorites))
-            this.loadFavorites()
-            this.updateBadges([], [])
-            this.showNotification("info", "Đã xóa", "Đã xóa tất cả món ăn yêu thích")
-        }
     }
 
     async showOrderDetail(orderId) {
@@ -649,16 +674,31 @@ class ProfileManager {
         }
     }
 
+    formatDate(dateString) {
+        const date = new Date(dateString)
+        return date.toLocaleDateString("vi-VN")
+    }
+
+    formatTime(time) {
+        if (!time) return "--:--"
+
+        if (typeof time === "object" && time.hours !== undefined && time.minutes !== undefined) {
+            return `${time.hours.toString().padStart(2, "0")}:${time.minutes.toString().padStart(2, "0")}`
+        }
+
+        if (typeof time === "string") {
+            const parts = time.split(":")
+            return `${parts[0].padStart(2, "0")}:${parts[1].padStart(2, "0")}`
+        }
+
+        return "--:--"
+    }
+
     formatCurrency(amount) {
         return new Intl.NumberFormat("vi-VN", {
             style: "currency",
             currency: "VND",
         }).format(amount)
-    }
-
-    showReservationDetail(reservationId) {
-        // Implementation for showing reservation detail modal
-        console.log("Show reservation detail:", reservationId)
     }
 
     async saveNotificationSettings() {
@@ -711,18 +751,25 @@ class ProfileManager {
     }
 
     getReservationStatus(reservation) {
-        // Implement based on your reservation status logic
-        return reservation.status || "confirmed"
+        const statusMap = {
+            1: "pending",
+            2: "confirmed",
+            3: "rejected",
+            4: "completed",
+            5: "cancelled",
+        }
+        return statusMap[reservation.status] || "confirmed"
     }
 
     getReservationStatusText(reservation) {
         const statusMap = {
-            confirmed: "Đã xác nhận",
-            completed: "Hoàn thành",
-            cancelled: "Đã hủy",
-            pending: "Chờ xác nhận",
+            1: "Chờ xác nhận",
+            2: "Đã chấp nhận",
+            3: "Đã từ chối",
+            4: "Đã hoàn thành",
+            5: "Đã hủy",
         }
-        return statusMap[reservation.status] || "Đã xác nhận"
+        return statusMap[reservation.status] || "Không xác định"
     }
 
     getOrderStatus(order) {

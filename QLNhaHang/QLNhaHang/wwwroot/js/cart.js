@@ -21,23 +21,6 @@ async function loadCart() {
     updateCartBadge();
 }
 
-// Save cart to localStorage or server
-//async function saveCart() {
-//    if (isLoggedIn()) {
-//        // Save cart to server
-//        await fetch('/api/cartapi', {
-//            method: 'POST',
-//            headers: {
-//                'Content-Type': 'application/json',
-//                'Authorization': 'Bearer ' + localStorage.getItem('customertoken')
-//            },
-//            body: JSON.stringify(cart)
-//        });
-//    } else {
-//        localStorage.setItem('cart', JSON.stringify(cart));
-//    }
-//}
-
 // Remove from cart
 async function removeFromCart(id) {
     cart = cart.filter(item => item.id !== id);

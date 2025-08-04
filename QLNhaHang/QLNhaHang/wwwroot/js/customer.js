@@ -8,7 +8,7 @@ async function getAllCustomers() {
         if (!response.ok) throw new Error("Lấy danh sách khách hàng thất bại.")
         customerlist = await response.json()
         loadCustomers()
-       // updateStats()
+        // updateStats()
         console.log(customerlist)
     } catch (error) {
         console.error("Error:", error)
@@ -95,32 +95,13 @@ function createCustomerCard(customer) {
             </div>
         </div>
         <div class="customer-actions">
-            <button class="btn btn-danger" onclick="deleteCustomer(${customer.idCustomer})">
-                <i class="fas fa-trash"></i>
-                Xóa
-            </button>
+            <button class="btn-view" onclick="showCustomerDetail(${customer.idCustomer})">
+                    <i class="fas fa-eye"></i>
+                    Xem chi tiết
+                </button>
         </div>
     `
     return card
-}
-
-function updateStats() {
-    document.getElementById("totalCustomers").textContent = customerlist.length
-
-    // Calculate new customers (registered in last 30 days)
-    const thirtyDaysAgo = new Date()
-    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)
-
-    const newCustomers = customerlist.filter((c) => {
-        if (!c.registeredDate) return false
-        return new Date(c.registeredDate) > thirtyDaysAgo
-    }).length
-
-    document.getElementById("newCustomers").textContent = newCustomers
-
-    // VIP customers (customers with orders > 10 or total spent > 5M)
-    // This would need additional API call to get order data
-    document.getElementById("vipCustomers").textContent = "0"
 }
 
 function showLoading(show) {
@@ -232,6 +213,72 @@ async function deleteCustomer(id) {
     }
 }
 
+async function showCustomerDetail(id) {
+    const response = await fetch(`/api/customerapi/${id}`);
+    const data = await response.json();
+
+    // Hiển thị thông tin cơ bản
+    document.getElementById("customerName").innerText = data.name;
+    document.getElementById("customerBirthday").innerText = data.birthday ? new Date(data.birthday).toLocaleDateString("vi-VN") : "Chưa cập nhật"
+    document.getElementById("customerPhone").innerText = data.phone ?? "Không có";
+    document.getElementById("customerEmail").innerText = data.email ?? "Không có";
+    document.getElementById("customerAddress").innerText = data.address ?? "Không có";
+
+    // Đặt bàn
+    let reservationList = "";
+    data.reservations.forEach(res => {
+        reservationList += `
+        <div class="card mb-2">
+            <div class="card-header" data-bs-toggle="collapse" data-bs-target="#res${res.idReservation}">
+                Đặt bàn #${res.idReservation} - Ngày ${res.reservationdate.split("T")[0]}
+            </div>
+            <div id="res${res.idReservation}" class="collapse">
+                <div class="card-body">
+                    <p><strong>Giờ:</strong> ${res.reservationtime}</p>
+                    <p><strong>Số người:</strong> ${res.partysize}</p>
+                    <p><strong>Bàn:</strong> ${res.table ?? "Không rõ"}</p>
+                    <p><strong>Trạng thái:</strong> ${res.status ?? "Chưa rõ"}</p>
+                    <p><strong>Nhân viên xử lý:</strong> ${res.staffName ?? "Không có"}</p>
+                    <p><strong>Ghi chú:</strong> ${res.note ?? "Không có"}</p>
+                    <ul>${res.dishes.map(d => `<li>${d.dishName} x${d.quantity}</li>`).join("")}</ul>
+                </div>
+            </div>
+        </div>`;
+    });
+    document.getElementById("reservationList").innerHTML = reservationList;
+
+    // Giao hàng
+    let shipList = "";
+    data.shiporders.forEach(so => {
+        shipList += `
+        <div class="card mb-2">
+            <div class="card-header" data-bs-toggle="collapse" data-bs-target="#ship${so.idShiporder}">
+                Giao hàng #${so.idShiporder} - Ngày ${so.orderdate.split("T")[0]}
+            </div>
+            <div id="ship${so.idShiporder}" class="collapse">
+                <div class="card-body">
+                    <p><strong>Giá:</strong> ${so.orderprice} VND</p>
+                    <p><strong>Trạng thái:</strong> ${so.status ?? "Không rõ"}</p>
+                    <p><strong>Địa chỉ giao:</strong> ${so.shipaddress ?? "Không có"}</p>
+                    <p><strong>Nhân viên:</strong> ${so.staffName ?? "Không có"}</p>
+                    <p><strong>Mã giao dịch:</strong> ${so.transactionid ?? "Không có"}</p>
+                    <p><strong>Ghi chú:</strong> ${so.note ?? "Không có"}</p>
+                    <ul>${so.dishes.map(d => `<li>${d.dishName} x${d.quantity}</li>`).join("")}</ul>
+                </div>
+            </div>
+        </div>`;
+    });
+    document.getElementById("shiporderList").innerHTML = shipList;
+
+    document.getElementById("deleteBtn").onclick = () => {
+        deleteCustomer(data.idCustomer);
+        bootstrap.Modal.getInstance(document.getElementById("customerDetailModal")).hide();
+    }
+
+    new bootstrap.Modal(document.getElementById("customerDetailModal")).show();
+}
+
+
 // Add notification styles
 const notificationStyles = `
 .notification {
@@ -267,3 +314,4 @@ const notificationStyles = `
 const styleSheet = document.createElement("style")
 styleSheet.textContent = notificationStyles
 document.head.appendChild(styleSheet)
+

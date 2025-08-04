@@ -37,7 +37,7 @@ namespace QLNhaHang.Service
 
 				dishesHtml = $@"
 					<p><strong>Món đã đặt:</strong></p>
-					<table border='1' cellspacing='0' cellpadding='5' style='border-collapse:collapse; width:100%'>
+					<table border='1' cellspacing='0' cellpadding='5' style='border-collapse:collapse; width:60%'>
 						<tr>
 							<th style='text-align:left'>Tên món</th>
 							<th style='text-align:center'>Số lượng</th>

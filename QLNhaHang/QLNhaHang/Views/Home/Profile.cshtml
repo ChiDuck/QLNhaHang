@@ -13,28 +13,11 @@
                     <div class="avatar-circle">
                         <i class="fas fa-user"></i>
                     </div>
-  @*                   <button class="avatar-edit-btn" title="Thay đổi ảnh đại diện">
-                        <i class="fas fa-camera"></i>
-                    </button> *@
                 </div>
                 <div class="profile-info">
                     <h1 class="profile-name" id="profileHeaderName">Đang tải...</h1>
                     <p class="profile-email" id="profileHeaderEmail">Đang tải...</p>
-@*                     <div class="profile-stats">
-                        <div class="stat-item">
-                            <span class="stat-number" id="totalOrders">0</span>
-                            <span class="stat-label">Đơn hàng</span>
-                        </div>
-                        <div class="stat-item">
-                            <span class="stat-number" id="totalReservations">0</span>
-                            <span class="stat-label">Đặt bàn</span>
-                        </div>
-                        <div class="stat-item">
-                            <span class="stat-number" id="memberSince">2024</span>
-                            <span class="stat-label">Thành viên từ</span>
-                        </div>
-                    </div>
- *@                </div>
+               </div>
             </div>
         </div>
     </section>
@@ -61,19 +44,10 @@
                                 <span>Lịch sử đơn hàng</span>
                                 <span class="nav-badge" id="ordersBadge">0</span>
                             </button>
-                           @*  <button class="profile-nav-item" data-section="favorites">
-                                <i class="fas fa-heart me-3"></i>
-                                <span>Món ăn yêu thích</span>
-                                <span class="nav-badge" id="favoritesBadge">0</span>
-                            </button> *@
                             <button class="profile-nav-item" data-section="changepassword">
                                 <i class="fas fa-lock me-3"></i>
                                 <span>Đổi mật khẩu</span>
                             </button>
-                            @* <button class="profile-nav-item" data-section="notifications">
-                                <i class="fas fa-bell me-3"></i>
-                                <span>Thông báo</span>
-                            </button> *@
                         </nav>
                     </div>
                 </div>
@@ -147,14 +121,6 @@
                                 <h5 class="section-title">
                                     <i class="fas fa-calendar-check me-2"></i>Lịch sử đặt bàn
                                 </h5>
-@*                                 <div class="section-actions">
-                                    <select class="filter-select" id="reservationFilter">
-                                        <option value="">Tất cả</option>
-                                        <option value="confirmed">Đã xác nhận</option>
-                                        <option value="completed">Hoàn thành</option>
-                                        <option value="cancelled">Đã hủy</option>
-                                    </select>
-                                </div> *@
                             </div>
 
                             <div id="reservationsList" class="items-list">
@@ -173,15 +139,7 @@
                                 <h5 class="section-title">
                                     <i class="fas fa-shopping-bag me-2"></i>Lịch sử đơn hàng
                                 </h5>
-                                <div class="section-actions">
-                                    <select class="filter-select" id="orderFilter">
-                                        <option value="">Tất cả</option>
-                                        <option value="1">Chờ xác nhận</option>
-                                        <option value="2">Từ chối</option>
-                                        <option value="3">Đang thực hiện</option>
-                                        <option value="4">Đang giao</option>
-                                        <option value="5">Đã hoàn thành</option>
-                                    </select>                     
+                                <div class="section-actions">                   
                                 </div>
                             </div>
 
@@ -274,7 +232,7 @@
                                 </button>
                             </form>
 
-                            <div id="passwordMessage" class="modern-alert mt-3" style="display: none;"></div>
+                            <div id="passwordMessage" class="modern-alert mt-3" style="display: none; margin-top:.5rem;"></div>
                         </div>
                     </div>
 
@@ -460,28 +418,131 @@
 </div>
 
 <!-- Reservation Detail Modal -->
-<div class="modal fade modern-modal" id="reservationDetailModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content modern-modal-content">
-            <div class="modal-header modern-modal-header">
-                <h5 class="modal-title">
-                    <i class="fas fa-calendar-check me-2"></i>Chi tiết đặt bàn
-                </h5>
-                <button type="button" class="btn-close modern-btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body modern-modal-body">
-                <div id="reservationDetailContent">
-                    <!-- Content will be loaded by JS -->
+<div class="modal fade" id="reservationDetailModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title-section">
+                    <h5 class="modal-title">
+                        <i class="fas fa-calendar-check"></i>
+                        Chi tiết đặt bàn #<span id="res-id"></span>
+                    </h5>
+                    <span class="reservation-status-badge" id="resStatusBadge"></span>
                 </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal">
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="reservation-detail-content">
+                    <!-- Customer Info -->
+                    <div class="detail-section">
+                        <h6 class="section-title">
+                            <i class="fas fa-user"></i>
+                            Thông tin khách hàng
+                        </h6>
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <label>Tên khách hàng:</label>
+                                <span id="res-customer"></span>
+                            </div>
+                            <div class="info-item">
+                                <label>Số điện thoại:</label>
+                                <span id="res-phone"></span>
+                            </div>
+                            <div class="info-item">
+                                <label>Email:</label>
+                                <span id="res-email"></span>
+                            </div>
+                            <div class="info-item">
+                                <label>Ngày tạo đơn:</label>
+                                <span id="res-bookdate"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Reservation Info -->
+                    <div class="detail-section">
+                        <h6 class="section-title">
+                            <i class="fas fa-calendar-alt"></i>
+                            Thông tin đặt bàn
+                        </h6>
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <label>Ngày đặt:</label>
+                                <span id="res-date"></span>
+                            </div>
+                            <div class="info-item">
+                                <label>Giờ đặt:</label>
+                                <span id="res-time"></span>
+                            </div>
+                            <div class="info-item">
+                                <label>Số người:</label>
+                                <span id="res-party"></span>
+                            </div>
+                            <div class="info-item">
+                                <label>Bàn:</label>
+                                <span id="res-table"></span>
+                            </div>
+                            <div class="info-item">
+                                <label>Nhân viên xử lý:</label>
+                                <span id="res-staff"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Payment Info -->
+                    <div class="detail-section">
+                        <h6 class="section-title">
+                            <i class="fas fa-credit-card"></i>
+                            Thông tin thanh toán
+                        </h6>
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <label>Tổng tiền:</label>
+                                <span id="res-price" class="price-value"></span>
+                            </div>
+                            <div class="info-item" id="res-transid-row">
+                                <label>Mã giao dịch:</label>
+                                <span id="res-transid"></span>
+                            </div>
+                            <div class="info-item">
+                                <label>Ghi chú:</label>
+                                <span id="res-note"></span>
+                            </div>
+                            <div class="info-item">
+                                <label>Trạng thái:</label>
+                                <span id="res-status"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Order Items -->
+                    <div class="detail-section" id="res-order-section" style="display: none;">
+                        <h6 class="section-title">
+                            <i class="fas fa-utensils"></i>
+                            Món ăn đã đặt
+                        </h6>
+                        <div class="orders-list" id="res-orders">
+                            <!-- Orders will be populated here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times"></i>
+                    Đóng
+                </button>
             </div>
         </div>
     </div>
 </div>
+
 
 @section Styles {
     <link rel="stylesheet" href="~/css/profile.css" asp-append-version="true" />
 }
 
 @section Scripts {
-    <script src="~/js/profile-enhanced.js" asp-append-version="true"></script>
+    <script src="~/js/profile.js" asp-append-version="true"></script>
 }

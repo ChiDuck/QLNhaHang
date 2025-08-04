@@ -93,7 +93,9 @@
                                 <td>@i.IdInventoryitemNavigation?.Unit</td>
                                 <td><input type="number" value="@i.Amount" class="form-control form-control-sm" min="0.01" /></td>
                                 <td class="text-center">
-                                    <button type="button" class="btn btn-sm btn-danger" onclick="removeIngredientRow(this)">X</button>
+                                    <button type="button" class="btn btn-sm btn-danger" onclick="removeIngredientRow(this)">
+                                        <i class="fas fa-times"></i>
+                                    </button>
                                 </td>
                             </tr>
                         }
@@ -107,13 +109,23 @@
 </div>
 
 <div class="modal-footer">
-    <button class="btn btn-success" onclick="submitDish()">Lưu</button>
     @if (isEdit)
     {
-        <button class="btn btn-secondary" onclick="returnToDetail(@dishId)">Trở lại</button>
+        <button class="btn-dismiss" onclick="returnToDetail(@dishId)">
+            <i class="fas fa-times"></i>
+            Trở lại
+        </button>
     }
     else
     {
-        <button class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+        <button class="btn-dismiss" data-bs-dismiss="modal">
+            <i class="fas fa-times"></i>
+            Đóng
+        </button>
     }
+    <button class="btn-save" onclick="submitDish()">
+        <i class="fas fa-save"></i>
+        Lưu
+    </button>
+
 </div>

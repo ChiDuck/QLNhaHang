@@ -8,7 +8,7 @@ async function getAllAreas() {
         if (!res.ok) throw new Error("Lỗi khi tải danh sách khu vực")
         areasData = await res.json()
         await loadAreas()
-       // updateStats()
+        // updateStats()
     } catch (error) {
         console.error("Error:", error)
         showNotification("Lỗi khi tải dữ liệu", "error")
@@ -64,11 +64,11 @@ function createAreaCard(area) {
             </div>
         </div>
         <div class="area-actions">
-            <button class="btn btn-warning" onclick="showEditForm(${area.idArea})">
+            <button class="btn-edit" onclick="showEditForm(${area.idArea})">
                 <i class="fas fa-edit"></i>
                 Sửa
             </button>
-            <button class="btn btn-danger" onclick="deleteArea(${area.idArea})">
+            <button class="btn-delete" onclick="deleteArea(${area.idArea})">
                 <i class="fas fa-trash"></i>
                 Xóa
             </button>
@@ -149,6 +149,7 @@ function showAddForm() {
     document.getElementById("areaModalTitle").innerText = "Thêm khu vực"
     document.getElementById("areaId").value = ""
     document.getElementById("areaName").value = ""
+    clearValidation()
     new bootstrap.Modal(document.getElementById("areaModal")).show()
 }
 
@@ -160,7 +161,7 @@ async function showEditForm(id) {
         document.getElementById("areaModalTitle").innerText = "Sửa khu vực"
         document.getElementById("areaId").value = data.idArea
         document.getElementById("areaName").value = data.name
-
+        clearValidation()
         bootstrap.Modal.getOrCreateInstance(document.getElementById("areaModal")).show()
     } catch (error) {
         showNotification("Lỗi khi tải thông tin khu vực", "error")
@@ -173,11 +174,16 @@ async function submitArea() {
         Name: document.getElementById("areaName").value.trim(),
     }
 
+    let isValid = true
+
     if (!area.Name) {
-        showNotification("Vui lòng nhập tên khu vực", "error")
-        return
+        showFieldError("areaName", "validateName")
+        isValid = false
+    } else {
+        clearFieldError("areaName", "validateName")
     }
 
+    if (!isValid) return
     try {
         const method = area.IdArea == 0 ? "POST" : "PUT"
         const url = area.IdArea == 0 ? apiUrl : `${apiUrl}/${area.IdArea}`
@@ -201,6 +207,23 @@ async function submitArea() {
     }
 }
 
+function showFieldError(fieldId, errorId) {
+    const field = document.getElementById(fieldId)
+    const error = document.getElementById(errorId)
+    field.classList.add("is-invalid")
+    error.style.display = "block"
+}
+
+function clearFieldError(fieldId, errorId) {
+    const field = document.getElementById(fieldId)
+    const error = document.getElementById(errorId)
+    field.classList.remove("is-invalid")
+    error.style.display = "none"
+}
+
+function clearValidation() {
+    clearFieldError("areaName", "validateName")
+}
 document.getElementById("areaForm").addEventListener("submit", async (e) => {
     e.preventDefault()
     await submitArea()
@@ -220,7 +243,7 @@ async function deleteArea(id) {
             showNotification("Không thể xóa: " + error, "error")
         }
     } catch (error) {
-        showNotification("Lỗi kết nối", "error")
+        console.error("Lỗi kết nối", "error")
     }
 }
 

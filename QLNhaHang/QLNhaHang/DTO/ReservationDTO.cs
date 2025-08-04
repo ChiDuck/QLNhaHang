@@ -16,7 +16,8 @@
 		public string? Status { get; set; }
         public string? CustomerName { get; set; }
         public string? TableName { get; set; }
-        public List<ReservationOrderDTO> Orders { get; set; } = new();
+        public string? StaffName { get; set; }
+		public List<ReservationOrderDTO> Orders { get; set; } = new();
     }
 
     public class ReservationOrderDTO

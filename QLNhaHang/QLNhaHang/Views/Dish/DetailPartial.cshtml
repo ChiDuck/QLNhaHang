@@ -40,6 +40,10 @@
     </table>
 </div>
 <div class="modal-footer">
-    <button class="btn btn-warning" onclick="openEditDishModal(@Model.IdDish)">Sửa món</button>
-    <button type="button" class="btn btn-danger" onclick="deleteDish(@Model.IdDish)">Xóa</button>
+    <button class="btn-edit" onclick="openEditDishModal(@Model.IdDish)">
+        Sửa món</button>
+    <button type="button" class="btn-delete" onclick="deleteDish(@Model.IdDish)">
+        <i class="fas fa-trash"></i>
+        Xóa
+    </button>
 </div>
