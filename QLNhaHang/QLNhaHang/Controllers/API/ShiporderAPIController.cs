@@ -43,8 +43,8 @@ namespace QLNhaHang.Controllers.API
 					s.Orderprice,
 					s.Note,
 					s.IdOrderstatus,
-					OrderstatusName = s.IdOrderstatusNavigation.Name,
-					s.IdCart,
+					OrderstatusName = s.IdOrderstatusNavigation != null ? s.IdOrderstatusNavigation.Name : "Không xác định",
+					s.IdCart
 				})
 				.OrderByDescending(s => s.Orderdate)
 				.ToListAsync();

@@ -2,39 +2,6 @@
 let checkoutModal = null;
 const DEFAULT_SHIPPING_FEE = 15000;
 
-// Cập nhật thông tin đơn hàng
-function updateOrderSummary() {
-    const shiporderSummary = document.getElementById('shiporderSummary');
-    shiporderSummary.innerHTML = '';
-
-    let subtotal = 0;
-
-    cart.forEach(item => {
-        const itemTotal = item.price * item.quantity;
-        subtotal += itemTotal;
-
-        const itemElement = document.createElement('div');
-        itemElement.className = 'd-flex justify-content-between mb-2';
-        itemElement.innerHTML = `
-      <span>${item.name} x ${item.quantity}</span>
-      <span>${formatPrice(itemTotal)}</span>
-    `;
-        shiporderSummary.appendChild(itemElement);
-    });
-
-    document.getElementById('subtotal').textContent = formatPrice(subtotal);
-
-    // Tính tổng tiền (tạm tính + phí ship nếu có)
-    const isShipping = document.getElementById('isShipping').checked;
-    const shippingFee = isShipping ? DEFAULT_SHIPPING_FEE : 0;
-    const totalPrice = subtotal + shippingFee;
-
-    document.getElementById('shippingFee').textContent = formatPrice(shippingFee);
-    document.getElementById('totalPrice').textContent = formatPrice(totalPrice);
-}
-
-// Khai báo biến toàn cục
-
 // Khởi tạo khi trang tải xong
 document.addEventListener('DOMContentLoaded', async function () {
     checkoutModal = new bootstrap.Modal(document.getElementById('checkoutModal'));
@@ -61,26 +28,8 @@ document.addEventListener('DOMContentLoaded', async function () {
     document.getElementById('submitOrderBtn').addEventListener('click', submitOrder);
 });
 
-//// Checkout
-//async function checkout() {
-//    if (cart.length === 0) return;
-//    if (isLoggedIn()) {
-//        // Send order to server
-//        await checkoutToAPI();
-//    } else {
-//        // Save to localStorage and redirect to login
-//        localStorage.setItem('cart', JSON.stringify(cart));
-//        showToast('Vui lòng đăng nhập để đặt hàng');
-//        new bootstrap.Modal(document.getElementById('loginModal')).show();
-//    }
-//}
-
 // Mở modal thanh toán
 async function openCheckoutModal() {
-    //if (cart.length === 0) {
-    //    alert('Giỏ hàng của bạn đang trống');
-    //    return;
-    //}
     console.log(customertoken);
     if (customertoken) {
         try {

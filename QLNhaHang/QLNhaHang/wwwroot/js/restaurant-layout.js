@@ -103,9 +103,9 @@ function initializeModals() {
             })
         })
 
-        checkoutModal.addEventListener("shown.bs.modal", () => {
-            updateModernCheckoutModal()
-        })
+    //    checkoutModal.addEventListener("shown.bs.modal", () => {
+    //        updateModernCheckoutModal()
+    //    })
     }
 
     // Enhanced auth modals
@@ -215,37 +215,37 @@ function addCartEventListeners() {
 }
 
 // Update modern checkout modal
-function updateModernCheckoutModal() {
-    const orderSummary = document.getElementById("orderSummary")
-    const subtotal = document.getElementById("subtotal")
-    const totalPrice = document.getElementById("totalPrice")
+//function updateModernCheckoutModal() {
+//    const orderSummary = document.getElementById("orderSummary")
+//    const subtotal = document.getElementById("subtotal")
+//    const totalPrice = document.getElementById("totalPrice")
 
-    if (!cart || cart.length === 0) return
+//    if (!cart || cart.length === 0) return
 
-    // Clear existing items
-    orderSummary.innerHTML = ""
+//    // Clear existing items
+//    orderSummary.innerHTML = ""
 
-    let subtotalAmount = 0
+//    let subtotalAmount = 0
 
-    cart.forEach((item) => {
-        const itemTotal = item.price * item.quantity
-        subtotalAmount += itemTotal
+//    cart.forEach((item) => {
+//        const itemTotal = item.price * item.quantity
+//        subtotalAmount += itemTotal
 
-        const orderItem = document.createElement("div")
-        orderItem.className = "order-item"
-        orderItem.innerHTML = `
-            <div class="order-item-info">
-                <div class="order-item-name">${item.name}</div>
-                <div class="order-item-details">Số lượng: ${item.quantity}</div>
-            </div>
-            <div class="order-item-price">${formatPrice(itemTotal)}</div>
-        `
-        orderSummary.appendChild(orderItem)
-    })
+//        const orderItem = document.createElement("div")
+//        orderItem.className = "order-item"
+//        orderItem.innerHTML = `
+//            <div class="order-item-info">
+//                <div class="order-item-name">${item.name}</div>
+//                <div class="order-item-details">Số lượng: ${item.quantity}</div>
+//            </div>
+//            <div class="order-item-price">${formatPrice(itemTotal)}</div>
+//        `
+//        orderSummary.appendChild(orderItem)
+//    })
 
-    subtotal.textContent = formatPrice(subtotalAmount)
-    updateTotalPrice()
-}
+//    subtotal.textContent = formatPrice(subtotalAmount)
+//    updateTotalPrice()
+//}
 
 // Update shipping fee
 function updateShippingFee() {

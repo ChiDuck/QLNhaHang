@@ -148,7 +148,6 @@ class ProfileManager {
     updateBadges(reservations, orders) {
         document.getElementById("reservationsBadge").textContent = reservations.length || 0
         document.getElementById("ordersBadge").textContent = orders.length || 0
-        document.getElementById("favoritesBadge").textContent = this.favorites.length || 0
     }
 
     showSection(sectionName) {
@@ -769,7 +768,7 @@ class ProfileManager {
             4: "Đã hoàn thành",
             5: "Đã hủy",
         }
-        return statusMap[reservation.status] || "Không xác định"
+        return statusMap[reservation.status] || "Đã hủy"
     }
 
     getOrderStatus(order) {
@@ -780,7 +779,7 @@ class ProfileManager {
             4: "delivering",
             5: "completed",
         }
-        return statusMap[order.idOrderstatus] || 0
+        return statusMap[order.idOrderstatus] || "cancelled"
     }
 
     getOrderStatusText(order) {
@@ -791,7 +790,7 @@ class ProfileManager {
             4: "Đang giao",
             5: "Đã hoàn thành",
         }
-        return statusMap[order.idOrderstatus] || "cancelled"
+        return statusMap[order.idOrderstatus] || "Đã hủy"
     }
 
     canCancelReservation(reservation) {

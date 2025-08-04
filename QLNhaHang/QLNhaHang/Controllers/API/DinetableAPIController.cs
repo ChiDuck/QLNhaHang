@@ -71,7 +71,7 @@ namespace QLNhaHang.Controllers.API
             if (id != dinetable.IdDinetable)
                 return BadRequest();
 
-			if (db.Dinetables.Any(t => t.Name == dinetable.Name))
+			if (db.Dinetables.Any(t => t.Name == dinetable.Name && t.IdDinetable != id))
 			{
 				return Conflict("Bàn với tên này đã tồn tại.");
 			}

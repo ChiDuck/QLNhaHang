@@ -1,5 +1,6 @@
 class ModernBookingManager {
     constructor() {
+        this.category = "0"
         this.currentStep = 1
         this.totalSteps = 4
         this.bookingData = {
@@ -63,10 +64,9 @@ class ModernBookingManager {
             this.bookingData.partySize = Number.parseInt(e.target.value)
         })
 
-        // Dish search
-        //document.getElementById("dishSearchInput").addEventListener("input", (e) => {
-        //    this.filterDishes(e.target.value)
-        //})
+        document.getElementById("dishSearchInput").addEventListener("input", (e) => {
+            this.filterDishes(e.target.value)
+        })
 
         // Category buttons
         document.querySelectorAll(".category-btn").forEach((btn) => {
@@ -259,7 +259,7 @@ class ModernBookingManager {
             })
         }
 
-        this.renderDishes(this.availableDishes)
+        this.filterByCategory(this.category)
         this.updateSelectedDishesDisplay()
     }
 
@@ -286,7 +286,7 @@ class ModernBookingManager {
         }
         console.log("Updated selected dishes:", this.availableDishes)
         console.log("Updated selected dishes:", this.selectedDishes)
-        this.renderDishes(this.availableDishes)
+        this.filterByCategory(this.category)
         this.updateSelectedDishesDisplay()
     }
 
@@ -342,11 +342,12 @@ class ModernBookingManager {
 
         // Filter dishes
         let filtered = this.availableDishes
-        if (category !== "all") {
+        if (category !== "0") {
             filtered = this.availableDishes.filter(
-                (dish) => dish.categoryName && dish.categoryName.toLowerCase().includes(category.toLowerCase()),
+                (dish) => dish.idDishcategory && dish.idDishcategory == category,
             )
         }
+        this.category = category
         this.renderDishes(filtered)
     }
 

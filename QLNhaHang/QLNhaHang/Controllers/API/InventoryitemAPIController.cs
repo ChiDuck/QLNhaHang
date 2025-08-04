@@ -85,7 +85,7 @@ namespace QLNhaHang.Controllers.API
             if (id != updatedItem.IdInventoryitem)
                 return BadRequest("ID không khớp");
 
-			if (db.Inventoryitems.Any(i => i.Name == updatedItem.Name))
+			if (db.Inventoryitems.Any(i => i.Name == updatedItem.Name && i.IdInventoryitem != id))
 			{
 				return Conflict("Nguyên liệu đã tồn tại.");
 			}
